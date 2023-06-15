@@ -1,5 +1,6 @@
 import { NftOrdering } from "alchemy-sdk";
 import * as Sentry from "@sentry/nextjs";
+import { MAX_TOKEN_ID, nftUrl } from "@/lib/constants";
 import { alchemy, alchemyLens } from "@/lib/clients";
 
 export async function getNfts(account: string) {
@@ -53,5 +54,26 @@ export async function getLensNfts(account: string) {
       },
     });
     return [];
+  }
+}
+
+type TokenId = number & { __tokenIdBrand: never };
+
+function isTokenId(value: number): value is TokenId {
+  return value >= 0 && value <= MAX_TOKEN_ID;
+}
+
+export async function getNftAsset(tokenId: number): Promise<void> {
+  if (isTokenId(tokenId)) {
+    const response = await fetch(`${nftUrl}/${tokenId}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } else {
+    throw new Error(`TokenId must be between 0 and ${MAX_TOKEN_ID}`);
   }
 }

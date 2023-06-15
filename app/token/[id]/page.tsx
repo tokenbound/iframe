@@ -1,6 +1,5 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { OwnedNft, NftContract } from "alchemy-sdk";
 import useSWR from "swr";
@@ -9,11 +8,12 @@ import {
   getAccountStatus,
   getLensNfts,
   getNfts,
+  getNftAsset,
   handleNftApprovals,
 } from "@/lib/utils";
 import { rpcClient } from "@/lib/clients";
-import { Tooltip } from "@/components/ui";
 import { Exclamation, TbLogo } from "@/components/icon";
+import { Tooltip } from "@/components/ui";
 
 type Query = {
   tokenId: string;
@@ -52,12 +52,53 @@ export default function Token({ params }: { params: { id: string } }) {
     approvals: false,
   });
 
-  const router = useRouter();
-  // const tokenId = router.asPath.replace("/", "");
-
-  // console.log({ router });
-  // const { tokenId } = router.query as Query;
   const tokenId = params.id;
+
+  const useSapienzGear = ({
+    tokenId,
+    refreshInterval = 30000,
+    cacheKey,
+  }: {
+    tokenId: number;
+    refreshInterval?: number;
+    cacheKey?: string;
+  }) => {
+    const { data } = useSWR(cacheKey ?? `sapienzGear-${tokenId}`, () => getNftAsset(tokenId), {
+      refreshInterval: refreshInterval,
+      shouldRetryOnError: true,
+      retry: 3,
+    });
+    return {
+      gear: data ?? null,
+    };
+  };
+
+  const { gear: swrGear } = useSapienzGear({
+    tokenId: parseInt(tokenId as string),
+  });
+
+  const swrGearArray: string[] = Array.isArray(swrGear) ? swrGear : [];
+
+  useEffect(() => {
+    if (swrGear !== null) {
+      const imagePromises = swrGearArray.map((src: string) => {
+        return new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = resolve;
+          image.onerror = reject;
+          image.src = src;
+        });
+      });
+
+      Promise.all(imagePromises)
+        .then(() => {
+          setImagesLoaded(true);
+        })
+        .catch((error) => {
+          console.error("Error loading images:", error);
+        });
+    }
+  }, [swrGear]);
 
   const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
     const result = await getAccount(Number(tokenId));
@@ -147,10 +188,17 @@ export default function Token({ params }: { params: { id: string } }) {
   };
 
   const [addressHovered, setAddressHovered] = useState(false);
+  const [tokenBarHovered, setTokenBarHovered] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setTokenBarHovered(false);
+    }, 3000);
+  }, []);
 
   return (
-    <div className="w-screen h-screen bg-black">
-      <div className="relative max-h-screen mx-auto bg-black max-w-screen aspect-square">
+    <div className="w-screen h-screen bg-white">
+      <div className="relative max-h-screen mx-auto bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4] max-w-screen aspect-square overflow-hidden">
         {/* {isLoading ||
         (!imagesLoaded && (
           <div className="absolute w-[100vw] h-[100vh] z-50 flex items-center justify-center bg-black text-white">
@@ -172,9 +220,19 @@ export default function Token({ params }: { params: { id: string } }) {
           ) : (
             <></>
           )}
-
+          <div
+            onMouseEnter={() => setTokenBarHovered(true)}
+            onMouseLeave={() => setTokenBarHovered(false)}
+            className="absolute z-[9] bottom-0 w-full h-6"
+          ></div>
           {tokens.length && (
-            <div className="absolute z-10 w-full px-4 bottom-6">
+            <div
+              onMouseEnter={() => setTokenBarHovered(true)}
+              onMouseLeave={() => setTokenBarHovered(false)}
+              className={`absolute z-10 w-full px-4 transition bottom-6 ${
+                tokenBarHovered ? "" : "translate-y-full"
+              }`}
+            >
               <div className="flex items-end justify-between w-full">
                 <div
                   onMouseEnter={() => setTokenInfoTooltip(true)}
@@ -238,18 +296,26 @@ export default function Token({ params }: { params: { id: string } }) {
                     ) : (
                       <></>
                     )}
-                    <img
-                      className={`transition w-full rounded-lg opacity-100"
+                    <div
+                      className="w-full h-auto bg-center bg-no-repeat bg-contain aspect-square rounded-xl"
+                      style={{
+                        backgroundImage: `url(${
+                          token.media[0]?.thumbnail || token.media[0]?.raw
+                        }) `,
+                      }}
+                    ></div>
+                    {/* <img
+                        className={`transition w-full rounded-lg opacity-100"
                           } `}
-                      src={token.media[0]?.thumbnail || token.media[0]?.raw}
-                      alt="image layer"
-                    />
+                        src={token.media[0]?.thumbnail || token.media[0]?.raw}
+                        alt="image layer"
+                      /> */}
                   </div>
                 ))}
 
                 {tokens.length === 6 && (
                   <div
-                    className="relative w-full h-full rounded-lg"
+                    className="relative w-full h-auto rounded-lg"
                     onMouseEnter={() =>
                       handleTokenInfoTooltip(
                         tokens[5].contract.name,
@@ -266,12 +332,22 @@ export default function Token({ params }: { params: { id: string } }) {
                     ) : (
                       <></>
                     )}
-                    <img
+                    <div
+                      className="w-full h-auto opacity-100 aspect-square transtion"
+                      style={{
+                        backgroundImage: `url(${
+                          tokens[5].media[0]?.thumbnail || tokens[5].media[0]?.raw
+                        }) `,
+                      }}
+                    ></div>
+                    {/* <img
                       className={`transition w-full rounded-lg opacity-100"
                           } `}
-                      src={tokens[5].media[0]?.thumbnail || tokens[5].media[0]?.raw}
+                      src={
+                        tokens[5].media[0]?.thumbnail || tokens[5].media[0]?.raw
+                      }
                       alt="image layer"
-                    />
+                    /> */}
                   </div>
                 )}
                 {tokens.length < 6 &&
@@ -291,18 +367,24 @@ export default function Token({ params }: { params: { id: string } }) {
             </div>
           )}
           <div className="relative w-full">
-            <div className="absolute bottom-0 w-full h-12 bg-gradient-to-t from-black backdrop-blur-sm"></div>
-            <img
-              // className={`transition w-full ${
-              //   imagesLoaded ? "opacity-100" : "blur-xl opacity-0"
-              // } `}
-              className={`transition w-full opacity-100 opacity-0"
-            } `}
-              src={"/soul.gif"}
-              alt="image layer"
-              // onLoad={onLoad}
-              // onError={onLoad}
-            />
+            <div
+              className={`grid w-full grid-cols-1 grid-rows-1 transition ${
+                imagesLoaded ? "" : "blur-xl"
+              }`}
+            >
+              {swrGear ? (
+                swrGearArray.map((layer: string, i: number) => (
+                  <img
+                    key={i}
+                    src={`${layer}`}
+                    alt="Sapienz Token Image"
+                    className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
+                  />
+                ))
+              ) : (
+                <div className="w-full h-full bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4]"></div>
+              )}
+            </div>
           </div>
         </div>
         {/* )} */}
