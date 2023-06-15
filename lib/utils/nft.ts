@@ -73,6 +73,7 @@ export async function getNftAsset(tokenId: number): Promise<void> {
 
     const data = await response.json();
     return data;
+    // return data.image.replace("ipfs://", "https://ipfs.io/ipfs/");
   } else {
     throw new Error(`TokenId must be between 0 and ${MAX_TOKEN_ID}`);
   }
