@@ -46,12 +46,17 @@ export const TokenBar = ({
   };
   return (
     <>
-      {!isEmpty(tokens) && (
+      <div
+        onMouseEnter={() => setTokenBarHovered(true)}
+        onMouseLeave={() => setTokenBarHovered(false)}
+        className="absolute z-[9] bottom-0 w-full h-6"
+      ></div>
+      {true && (
         <div
           onMouseEnter={() => setTokenBarHovered(true)}
           onMouseLeave={() => setTokenBarHovered(false)}
           className={`absolute z-10 w-full px-4 transition bottom-6 ${
-            tokenBarHovered ? "" : "translate-y-full"
+            tokenBarHovered && tokens.length ? "" : "translate-y-full"
           }`}
         >
           <div className="flex items-end justify-between w-full">
@@ -96,71 +101,73 @@ export const TokenBar = ({
               </p>
             </div>
           </div>
-          <div className="grid w-full grid-cols-6 p-3 rounded-lg rounded-tr-none gap-x-3 bg-white/60">
-            {[...tokens].slice(0, 5).map((token: TbaOwnedNft, i: number) => (
-              <div
-                key={i}
-                className="relative w-full h-full rounded-lg"
-                onMouseEnter={() =>
-                  handleTokenInfoTooltip(token.contract.name, token.title, token.hasApprovals)
-                }
-                onMouseLeave={() => setTokenInfoTooltip(false)}
-              >
-                {isLocked && (
-                  <div className="absolute z-10 w-3 h-3 top-3 right-3">
-                    <Exclamation />
-                  </div>
-                )}
+          {!isEmpty(tokens) && (
+            <div className="grid w-full grid-cols-6 p-3 rounded-lg rounded-tr-none gap-x-3 bg-white/60">
+              {[...tokens].slice(0, 5).map((token: TbaOwnedNft, i: number) => (
                 <div
-                  className="w-full h-auto bg-center bg-no-repeat bg-contain aspect-square rounded-xl"
-                  style={{
-                    backgroundImage: `url(${token.media[0]?.thumbnail || token.media[0]?.raw}) `,
-                  }}
-                ></div>
-              </div>
-            ))}
-
-            {tokens.length === 6 && (
-              <div
-                className="relative w-full h-auto rounded-lg"
-                onMouseEnter={() =>
-                  handleTokenInfoTooltip(
-                    tokens[5].contract.name,
-                    tokens[5].title,
-                    tokens[5].hasApprovals
-                  )
-                }
-                onMouseLeave={() => setTokenInfoTooltip(false)}
-              >
-                {isLocked && (
-                  <div className="absolute z-10 w-3 h-3 top-3 right-3">
-                    <Exclamation />
-                  </div>
-                )}
-                <div
-                  className="w-full h-auto opacity-100 aspect-square transtion"
-                  style={{
-                    backgroundImage: `url(${
-                      tokens[5].media[0]?.thumbnail || tokens[5].media[0]?.raw
-                    }) `,
-                  }}
-                ></div>
-              </div>
-            )}
-            {tokens.length < 6 &&
-              Array.from({ length: 6 - tokens.length }).map((_, i) => (
-                <div key={i} className="w-full h-full rounded-lg">
-                  <div className="w-full h-full border-[2px] border-white border-dashed bg-white/50 rounded-lg"></div>
+                  key={i}
+                  className="relative w-full h-full rounded-lg"
+                  onMouseEnter={() =>
+                    handleTokenInfoTooltip(token.contract.name, token.title, token.hasApprovals)
+                  }
+                  onMouseLeave={() => setTokenInfoTooltip(false)}
+                >
+                  {isLocked && (
+                    <div className="absolute z-10 w-3 h-3 top-3 right-3">
+                      <Exclamation />
+                    </div>
+                  )}
+                  <div
+                    className="w-full h-auto bg-center bg-no-repeat bg-contain aspect-square rounded-xl"
+                    style={{
+                      backgroundImage: `url(${token.media[0]?.thumbnail || token.media[0]?.raw}) `,
+                    }}
+                  ></div>
                 </div>
               ))}
-            {tokens.length > 6 && (
-              <div className="w-full h-full rounded-lg">
-                <div className="flex items-center justify-center w-full h-full rounded-lg bg-black/20">
-                  <span className="text-lg font-bold text-white">+{tokens.length - 5}</span>
+
+              {tokens.length === 6 && (
+                <div
+                  className="relative w-full h-auto rounded-lg"
+                  onMouseEnter={() =>
+                    handleTokenInfoTooltip(
+                      tokens[5].contract.name,
+                      tokens[5].title,
+                      tokens[5].hasApprovals
+                    )
+                  }
+                  onMouseLeave={() => setTokenInfoTooltip(false)}
+                >
+                  {isLocked && (
+                    <div className="absolute z-10 w-3 h-3 top-3 right-3">
+                      <Exclamation />
+                    </div>
+                  )}
+                  <div
+                    className="w-full h-auto opacity-100 aspect-square transtion"
+                    style={{
+                      backgroundImage: `url(${
+                        tokens[5].media[0]?.thumbnail || tokens[5].media[0]?.raw
+                      }) `,
+                    }}
+                  ></div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+              {tokens.length < 6 &&
+                Array.from({ length: 6 - tokens.length }).map((_, i) => (
+                  <div key={i} className="w-full h-full rounded-lg">
+                    <div className="w-full h-full border-[2px] border-white border-dashed bg-white/50 rounded-lg"></div>
+                  </div>
+                ))}
+              {tokens.length > 6 && (
+                <div className="w-full h-full rounded-lg">
+                  <div className="flex items-center justify-center w-full h-full rounded-lg bg-black/20">
+                    <span className="text-lg font-bold text-white">+{tokens.length - 5}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </>

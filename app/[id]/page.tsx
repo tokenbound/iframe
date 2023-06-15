@@ -12,10 +12,10 @@ import {
   handleNftApprovals,
 } from "@/lib/utils";
 import { rpcClient } from "@/lib/clients";
-import { Exclamation, TbLogo } from "@/components/icon";
+import { Exclamation } from "@/components/icon";
 import { Tooltip } from "@/components/ui";
 import { useNft } from "@/lib/hooks";
-import { TbaOwnedNft, TokenInfo } from "@/lib/types";
+import { TbaOwnedNft } from "@/lib/types";
 import { TokenBar } from "./TokenBar";
 
 export default function Token({ params }: { params: { id: string } }) {
@@ -86,8 +86,7 @@ export default function Token({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     async function fetchNfts(account: string) {
-      const data = await getNfts(account);
-      const lensData = await getLensNfts(account);
+      const [data, lensData] = await Promise.all([getNfts(account), getLensNfts(account)]);
 
       if (data) {
         setNfts(data);
@@ -140,7 +139,8 @@ export default function Token({ params }: { params: { id: string } }) {
 
   return (
     <div className="w-screen h-screen bg-white">
-      <div className="relative max-h-screen mx-auto bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4] max-w-screen aspect-square overflow-hidden">
+      <div className="relative max-h-screen mx-auto bg-black max-w-screen aspect-square overflow-hidden">
+        {/* <div className="relative max-h-screen mx-auto bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4] max-w-screen aspect-square overflow-hidden"> */}
         <div className="relative w-full h-full">
           {isLocked && (
             <div className="absolute top-0 right-0 z-10 w-16 h-16">
@@ -176,7 +176,8 @@ export default function Token({ params }: { params: { id: string } }) {
                   />
                 ))
               ) : (
-                <div className="w-full h-full bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4]"></div>
+                // <div className="w-full h-full bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4]"></div>
+                <></>
               )}
             </div>
           </div>
