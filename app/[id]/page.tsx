@@ -8,16 +8,12 @@ import {
   getAccountStatus,
   getLensNfts,
   getNfts,
-  getNftAsset,
   handleNftApprovals,
 } from "@/lib/utils";
 import { rpcClient } from "@/lib/clients";
 import { Exclamation, TbLogo } from "@/components/icon";
 import { Tooltip } from "@/components/ui";
-
-type Query = {
-  tokenId: string;
-};
+import { useNft } from "@/lib/hooks";
 
 interface TbaOwnedNft extends OwnedNft {
   hasApprovals?: boolean | undefined;
@@ -32,7 +28,6 @@ interface TokenInfo {
 
 export default function Token({ params }: { params: { id: string } }) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [blurToggle, setBlurToggle] = useState(false);
   // incase this setting isLocked fails we set null to maybe show a diff state.
   const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
   const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
@@ -44,7 +39,6 @@ export default function Token({ params }: { params: { id: string } }) {
     }[]
   >();
 
-  const [tokenApprovalTooltip, setTokenApprovalsTooltip] = useState(false);
   const [tokenInfoTooltip, setTokenInfoTooltip] = useState(false);
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>({
     collection: "",
@@ -54,34 +48,17 @@ export default function Token({ params }: { params: { id: string } }) {
 
   const tokenId = params.id;
 
-  const useSapienzGear = ({
-    tokenId,
-    refreshInterval = 30000,
-    cacheKey,
-  }: {
-    tokenId: number;
-    refreshInterval?: number;
-    cacheKey?: string;
-  }) => {
-    const { data } = useSWR(cacheKey ?? `sapienzGear-${tokenId}`, () => getNftAsset(tokenId), {
-      refreshInterval: refreshInterval,
-      shouldRetryOnError: true,
-      retry: 3,
-    });
-    return {
-      gear: data ?? null,
-    };
-  };
-
-  const { gear: swrGear } = useSapienzGear({
+  const { data: nftData } = useNft({
     tokenId: parseInt(tokenId as string),
   });
 
-  const swrGearArray: string[] = Array.isArray(swrGear) ? swrGear : [];
+  let nftDataArray: string[] = [];
+  if (nftData && Array.isArray(nftData)) nftDataArray = nftData;
+  if (nftData && !Array.isArray(nftData)) nftDataArray = [nftData];
 
   useEffect(() => {
-    if (swrGear !== null) {
-      const imagePromises = swrGearArray.map((src: string) => {
+    if (nftData !== null) {
+      const imagePromises = nftDataArray.map((src: string) => {
         return new Promise((resolve, reject) => {
           const image = new Image();
           image.onload = resolve;
@@ -98,7 +75,7 @@ export default function Token({ params }: { params: { id: string } }) {
           console.error("Error loading images:", error);
         });
     }
-  }, [swrGear]);
+  }, [nftData]);
 
   const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
     const result = await getAccount(Number(tokenId));
@@ -196,16 +173,11 @@ export default function Token({ params }: { params: { id: string } }) {
     }, 3000);
   }, []);
 
+  console.log({ nftData });
+
   return (
     <div className="w-screen h-screen bg-white">
       <div className="relative max-h-screen mx-auto bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4] max-w-screen aspect-square overflow-hidden">
-        {/* {isLoading ||
-        (!imagesLoaded && (
-          <div className="absolute w-[100vw] h-[100vh] z-50 flex items-center justify-center bg-black text-white">
-            <div>Loading Sapienz Data...</div>
-          </div>
-        ))} */}
-        {/* {data && ( */}
         <div className="relative w-full h-full">
           {isLocked ? (
             <div className="absolute top-0 right-0 z-10 w-16 h-16">
@@ -304,12 +276,6 @@ export default function Token({ params }: { params: { id: string } }) {
                         }) `,
                       }}
                     ></div>
-                    {/* <img
-                        className={`transition w-full rounded-lg opacity-100"
-                          } `}
-                        src={token.media[0]?.thumbnail || token.media[0]?.raw}
-                        alt="image layer"
-                      /> */}
                   </div>
                 ))}
 
@@ -372,8 +338,8 @@ export default function Token({ params }: { params: { id: string } }) {
                 imagesLoaded ? "" : "blur-xl"
               }`}
             >
-              {swrGear ? (
-                swrGearArray.map((layer: string, i: number) => (
+              {nftData ? (
+                nftDataArray.map((layer: string, i: number) => (
                   <img
                     key={i}
                     src={`${layer}`}
