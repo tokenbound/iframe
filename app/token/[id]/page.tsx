@@ -1,5 +1,6 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { OwnedNft, NftContract } from "alchemy-sdk";
 import useSWR from "swr";
@@ -29,7 +30,7 @@ interface TokenInfo {
   approvals?: boolean | undefined;
 }
 
-export default function Token() {
+export default function Token({ params }: { params: { id: string } }) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [blurToggle, setBlurToggle] = useState(false);
   // incase this setting isLocked fails we set null to maybe show a diff state.
@@ -53,7 +54,10 @@ export default function Token() {
 
   const router = useRouter();
   // const tokenId = router.asPath.replace("/", "");
-  const { tokenId } = router.query as Query;
+
+  // console.log({ router });
+  // const { tokenId } = router.query as Query;
+  const tokenId = params.id;
 
   const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
     const result = await getAccount(Number(tokenId));

@@ -118,10 +118,7 @@ interface GetApproved {
   error?: string;
 }
 
-export async function getApproved(
-  account: string,
-  tokenId: number
-): Promise<GetApproved> {
+export async function getApproved(account: string, tokenId: number): Promise<GetApproved> {
   try {
     const response = (await rpcClient.readContract({
       address: account as `0x${string}`,
@@ -178,12 +175,8 @@ export async function handleNftApprovals(nfts: OwnedNft[], account: string) {
       return [];
     }
 
-    const erc721Nfts = nfts.filter(
-      (nft) => nft.contract.tokenType === "ERC721"
-    );
-    const erc1155Nfts = nfts.filter(
-      (nft) => nft.contract.tokenType === "ERC1155"
-    );
+    const erc721Nfts = nfts.filter((nft) => nft.contract.tokenType === "ERC721");
+    const erc1155Nfts = nfts.filter((nft) => nft.contract.tokenType === "ERC1155");
 
     const nftsToGetTokenApprovals: Nft[] = [];
     const nftsWithGlobalApprovals: Nft[] = [];
@@ -200,9 +193,7 @@ export async function handleNftApprovals(nfts: OwnedNft[], account: string) {
     });
 
     const approvals = await Promise.all(
-      nftsToGetTokenApprovals.map((nft) =>
-        getApproved(nft.contract.address, Number(nft.tokenId))
-      )
+      nftsToGetTokenApprovals.map((nft) => getApproved(nft.contract.address, Number(nft.tokenId)))
     );
 
     const erc721NftsTokenApprovals = nftsToGetTokenApprovals.map((nft, i) => ({
