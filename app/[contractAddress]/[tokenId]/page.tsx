@@ -1,7 +1,6 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
-import { NftContract } from "alchemy-sdk";
 import useSWR from "swr";
 import { isNil } from "lodash";
 import {
@@ -15,25 +14,26 @@ import { rpcClient } from "@/lib/clients";
 import { Exclamation } from "@/components/icon";
 import { Tooltip } from "@/components/ui";
 import { useNft } from "@/lib/hooks";
-import { TbaOwnedNft } from "@/lib/types";
+import { NftApprovalStatus, TbaOwnedNft } from "@/lib/types";
 import { TokenBar } from "./TokenBar";
 
-export default function Token({ params }: { params: { id: string } }) {
+interface TokenParams {
+  params: {
+    tokenId: string;
+    contractAddress: string;
+  };
+}
+
+export default function Token({ params }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  // incase this setting isLocked fails we set null to maybe show a diff state.
   const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
   const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
-  const [nftApprovalStatus, setNftApprovalStatus] = useState<
-    {
-      contract: string | NftContract;
-      hasApprovals?: boolean;
-      tokenId: string;
-    }[]
-  >();
-
+  const [nftApprovalStatus, setNftApprovalStatus] = useState<NftApprovalStatus[]>();
   const [tokenInfoTooltip, setTokenInfoTooltip] = useState(false);
 
-  const tokenId = params.id;
+  console.log({ params });
+
+  const { tokenId, contractAddress } = params;
 
   const { data: nftData } = useNft({
     tokenId: parseInt(tokenId as string),
@@ -65,7 +65,7 @@ export default function Token({ params }: { params: { id: string } }) {
   }, [nftData]);
 
   const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
-    const result = await getAccount(Number(tokenId));
+    const result = await getAccount(Number(tokenId), contractAddress);
     return result.data;
   });
 

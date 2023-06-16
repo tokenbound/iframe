@@ -1,13 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { rpcClient } from "@/lib/clients/viem";
 import { implementationAbi, tokenboundAbi } from "@/lib/abi";
-import {
-  chainId,
-  collectionAddress,
-  implementationAddress,
-  salt,
-  tokenboundAddress,
-} from "@/lib/constants";
+import { chainId, implementationAddress, salt, tokenboundAddress } from "@/lib/constants";
 
 interface GetAccountStatus {
   data?: boolean;
@@ -46,13 +40,13 @@ interface GetAccount {
   error?: string;
 }
 
-export async function getAccount(tokenId: number): Promise<GetAccount> {
+export async function getAccount(tokenId: number, contractAddress: string): Promise<GetAccount> {
   try {
     const response = (await rpcClient.readContract({
       address: tokenboundAddress as `0x${string}`,
       abi: tokenboundAbi,
       functionName: "account",
-      args: [implementationAddress, chainId, collectionAddress, tokenId, salt],
+      args: [implementationAddress, chainId, contractAddress, tokenId, salt],
     })) as string;
 
     return { data: response };
