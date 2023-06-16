@@ -30,9 +30,6 @@ export default function Token({ params }: TokenParams) {
   const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
   const [nftApprovalStatus, setNftApprovalStatus] = useState<NftApprovalStatus[]>();
   const [tokenInfoTooltip, setTokenInfoTooltip] = useState(false);
-
-  console.log({ params });
-
   const { tokenId, contractAddress } = params;
 
   const { data: nftData } = useNft({
@@ -43,6 +40,7 @@ export default function Token({ params }: TokenParams) {
   if (nftData && Array.isArray(nftData)) nftDataArray = nftData;
   if (nftData && !Array.isArray(nftData)) nftDataArray = [nftData];
 
+  // Make sure all images are loaded before displaying it on the DOM.
   useEffect(() => {
     if (nftData !== null) {
       const imagePromises = nftDataArray.map((src: string) => {
@@ -64,18 +62,22 @@ export default function Token({ params }: TokenParams) {
     }
   }, [nftData]);
 
+  // Fetch nft's TBA
   const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
     const result = await getAccount(Number(tokenId), contractAddress);
     return result.data;
   });
 
+  // Get nft's TBA account bytecode to check if account is deployed or not
   const { data: accountBytecode } = useSWR(
     account ? `/account/${account}/bytecode` : null,
     async () => rpcClient.getBytecode({ address: account as `0x${string}` })
   );
 
+  const accountIsDeployed = accountBytecode && accountBytecode?.length > 2;
+
   const { data: isLocked } = useSWR(account ? `/account/${account}/locked` : null, async () => {
-    if (!accountBytecode || accountBytecode?.length <= 2) {
+    if (!accountIsDeployed) {
       return false;
     }
 
@@ -84,6 +86,7 @@ export default function Token({ params }: TokenParams) {
     return data ?? false;
   });
 
+  // fetch nfts inside TBA
   useEffect(() => {
     async function fetchNfts(account: string) {
       const [data, lensData] = await Promise.all([getNfts(account), getLensNfts(account)]);
@@ -101,9 +104,10 @@ export default function Token({ params }: TokenParams) {
     }
   }, [account, accountBytecode]);
 
+  // Handle approvals nfts inside TBA.
   useEffect(() => {
     async function getApprovals(nfts: TbaOwnedNft[], account: string) {
-      if (!accountBytecode || accountBytecode?.length <= 2) {
+      if (!accountIsDeployed) {
         return;
       }
 
@@ -117,7 +121,7 @@ export default function Token({ params }: TokenParams) {
     if (nfts.length && account) {
       getApprovals(nfts, account);
     }
-  }, [nfts, account, accountBytecode]);
+  }, [nfts, account, accountIsDeployed]);
 
   const [tokens, setTokens] = useState<TbaOwnedNft[]>([]);
 
@@ -142,7 +146,8 @@ export default function Token({ params }: TokenParams) {
       <div className="relative max-h-screen mx-auto bg-black max-w-screen aspect-square overflow-hidden">
         {/* <div className="relative max-h-screen mx-auto bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4] max-w-screen aspect-square overflow-hidden"> */}
         <div className="relative w-full h-full">
-          {isLocked && (
+          {/* if accountDeployed is true and isLocked is false */}
+          {!isLocked && accountIsDeployed && (
             <div className="absolute top-0 right-0 z-10 w-16 h-16">
               <Tooltip
                 lineOne="This token account is Unlocked or has Approvals."
