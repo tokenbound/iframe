@@ -3,19 +3,14 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { isNil } from "lodash";
-import {
-  getAccount,
-  getAccountStatus,
-  getLensNfts,
-  getNfts,
-  handleNftApprovals,
-} from "@/lib/utils";
+import { getAccount, getAccountStatus, getLensNfts, getNfts } from "@/lib/utils";
 import { rpcClient } from "@/lib/clients";
 import { Exclamation } from "@/components/icon";
 import { Tooltip } from "@/components/ui";
-import { useNft } from "@/lib/hooks";
+import { useNft, useGetApprovals } from "@/lib/hooks";
 import { NftApprovalStatus, TbaOwnedNft } from "@/lib/types";
 import { TokenBar } from "./TokenBar";
+import { getAddress } from "viem";
 
 interface TokenParams {
   params: {
@@ -28,7 +23,6 @@ export default function Token({ params }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
   const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
-  const [nftApprovalStatus, setNftApprovalStatus] = useState<NftApprovalStatus[]>();
   const [tokenInfoTooltip, setTokenInfoTooltip] = useState(false);
   const { tokenId, contractAddress } = params;
 
@@ -104,33 +98,35 @@ export default function Token({ params }: TokenParams) {
     }
   }, [account, accountBytecode]);
 
-  // Handle approvals nfts inside TBA.
-  useEffect(() => {
-    async function getApprovals(nfts: TbaOwnedNft[], account: string) {
-      if (!accountIsDeployed) {
-        return;
-      }
-
-      const approvals = await handleNftApprovals(nfts, account);
-
-      if (approvals) {
-        setNftApprovalStatus(approvals);
-      }
-    }
-
-    if (nfts.length && account) {
-      getApprovals(nfts, account);
-    }
-  }, [nfts, account, accountIsDeployed]);
-
   const [tokens, setTokens] = useState<TbaOwnedNft[]>([]);
+
+  const allNfts = [...nfts, ...lensNfts];
+
+  const { data: approvalData } = useGetApprovals(
+    allNfts.map((nft) => nft.contract.address),
+    account
+  );
 
   useEffect(() => {
     if (nfts !== undefined && nfts.length) {
       nfts.map((token) => {
-        const foundApproval = nftApprovalStatus?.find(
-          (item) => item.contract === token.contract.address && item.tokenId === token.tokenId
-        );
+        const foundApproval = approvalData?.find((item: any) => {
+          const contract = item?.value?.contract;
+          const tokenIds = item?.approvedTokenIds;
+          const approvalForAll = item.nftApprovalForAll;
+
+          if (getAddress(contract) === getAddress(token.contract.address) && approvalForAll) {
+            return true;
+          }
+
+          if (
+            getAddress(contract) === getAddress(token.contract.address) &&
+            tokenIds &&
+            tokenIds.includes(String(token.tokenId))
+          ) {
+            return true;
+          }
+        });
 
         token.hasApprovals = foundApproval?.hasApprovals || false;
       });
@@ -139,7 +135,7 @@ export default function Token({ params }: TokenParams) {
         setTokens([...nfts, ...lensNfts]);
       }
     }
-  }, [nfts, nftApprovalStatus]);
+  }, [nfts, approvalData, lensNfts]);
 
   return (
     <div className="w-screen h-screen bg-white">
@@ -147,7 +143,7 @@ export default function Token({ params }: TokenParams) {
         {/* <div className="relative max-h-screen mx-auto bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4] max-w-screen aspect-square overflow-hidden"> */}
         <div className="relative w-full h-full">
           {/* if accountDeployed is true and isLocked is false */}
-          {!isLocked && accountIsDeployed && (
+          {(!isLocked || approvalData.length) && accountIsDeployed && (
             <div className="absolute top-0 right-0 z-10 w-16 h-16">
               <Tooltip
                 lineOne="This token account is Unlocked or has Approvals."

@@ -1,1 +1,1 @@
-export const graphApiKey = process.env.GRAPH_API_KEY || "";
+export const nxyzApiKey = process.env.NEXT_PUBLIC_NXYZ_API_KEY || "";

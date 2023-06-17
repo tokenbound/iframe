@@ -30,6 +30,7 @@
   "devDependencies": {
     "@types/lodash": "^4.14.195",
     "autoprefixer": "10.4.14",
+    "encoding": "^0.1.13",
     "postcss": "8.4.24",
     "tailwindcss": "3.3.2"
   }
