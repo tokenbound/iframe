@@ -8,6 +8,8 @@ import type {
 
 import clsx, { ClassValue } from "clsx";
 
+// Polymorphic Box component
+
 export interface BoxComponentProps {
   className?: ClassValue;
   children?: ReactNode;
