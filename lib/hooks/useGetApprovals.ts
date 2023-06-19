@@ -8,7 +8,6 @@ export const useGetApprovals = (contracts: string[], owner?: string, chainID = "
   const ignoreFetch = !owner || !contracts || contracts.length === 0;
 
   return useSWR(ignoreFetch ? null : apiUrl, async (url) => {
-    console.log({ url });
     const response = await fetch(url, {
       headers: {
         accept: "application/json",

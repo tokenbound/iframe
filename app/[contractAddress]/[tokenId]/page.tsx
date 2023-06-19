@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { isNil } from "lodash";
 import { getAccount, getAccountStatus, getLensNfts, getNfts } from "@/lib/utils";
-import { rpcClient } from "@/lib/clients";
+import { alchemy, rpcClient } from "@/lib/clients";
 import { Exclamation } from "@/components/icon";
 import { Tooltip } from "@/components/ui";
-import { useNft, useGetApprovals } from "@/lib/hooks";
-import { NftApprovalStatus, TbaOwnedNft } from "@/lib/types";
+import { useGetApprovals } from "@/lib/hooks";
+import { TbaOwnedNft } from "@/lib/types";
 import { TokenBar } from "./TokenBar";
 import { getAddress } from "viem";
 
@@ -28,21 +28,46 @@ export default function Token({ params, searchParams }: TokenParams) {
   const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
   const [tokenInfoTooltip, setTokenInfoTooltip] = useState(false);
   const { tokenId, contractAddress } = params;
-  const { apiEndpoint } = searchParams;
+  // const { apiEndpoint } = searchParams;
 
-  const { data: nftData } = useNft({
-    tokenId: parseInt(tokenId as string),
-    apiEndpoint,
+  // const { data: nftData } = useNft({
+  //   tokenId: parseInt(tokenId as string),
+  //   apiEndpoint,
+  // });
+
+  // let nftDataArray: string[] = [];
+  // if (nftData && Array.isArray(nftData)) nftDataArray = nftData;
+  // if (nftData && !Array.isArray(nftData)) nftDataArray = [nftData];
+
+  // // Make sure all images are loaded before displaying it on the DOM.
+  // useEffect(() => {
+  //   if (nftData !== null) {
+  //     const imagePromises = nftDataArray.map((src: string) => {
+  //       return new Promise((resolve, reject) => {
+  //         const image = new Image();
+  //         image.onload = resolve;
+  //         image.onerror = reject;
+  //         image.src = src;
+  //       });
+  //     });
+
+  //     Promise.all(imagePromises)
+  //       .then(() => {
+  //         setImagesLoaded(true);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error loading images:", error);
+  //       });
+  //   }
+  // }, [nftData]);
+
+  const { data: nftMetadata } = useSWR(`nft/metadata/${contractAddress}/${tokenId}`, () => {
+    return alchemy.nft.getNftMetadataBatch([{ contractAddress, tokenId }]);
   });
 
-  let nftDataArray: string[] = [];
-  if (nftData && Array.isArray(nftData)) nftDataArray = nftData;
-  if (nftData && !Array.isArray(nftData)) nftDataArray = [nftData];
-
-  // Make sure all images are loaded before displaying it on the DOM.
   useEffect(() => {
-    if (nftData !== null) {
-      const imagePromises = nftDataArray.map((src: string) => {
+    if (!isNil(nftMetadata) && nftMetadata.length) {
+      const imagePromises = [nftMetadata[0]?.media[0].gateway].map((src: string) => {
         return new Promise((resolve, reject) => {
           const image = new Image();
           image.onload = resolve;
@@ -59,7 +84,7 @@ export default function Token({ params, searchParams }: TokenParams) {
           console.error("Error loading images:", error);
         });
     }
-  }, [nftData]);
+  }, [nftMetadata]);
 
   // Fetch nft's TBA
   const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
@@ -172,7 +197,17 @@ export default function Token({ params, searchParams }: TokenParams) {
                 imagesLoaded ? "" : "blur-xl"
               }`}
             >
-              {!isNil(nftData) ? (
+              {!isNil(nftMetadata) ? (
+                <img
+                  src={`${nftMetadata[0]?.media[0].gateway}`}
+                  alt="Nft image"
+                  className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
+                />
+              ) : (
+                // <div className="w-full h-full bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4]"></div>
+                <></>
+              )}
+              {/* {!isNil(nftData) ? (
                 nftDataArray.map((layer: string, i: number) => (
                   <img
                     key={i}
@@ -184,7 +219,7 @@ export default function Token({ params, searchParams }: TokenParams) {
               ) : (
                 // <div className="w-full h-full bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4]"></div>
                 <></>
-              )}
+              )} */}
             </div>
           </div>
         </div>
