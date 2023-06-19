@@ -1,5 +1,3 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
 ## Getting Started
 
 First, run the development server:
@@ -18,7 +16,31 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Environment Variables
+
+You will need to fill in the env variables in your `.env.local` file for local development with the `env.example` file. Tokenbound related variables have been filled however you will need to get sign up for accounts for Alchemy and n.xyz.
+
+We rely on [Alchemy](https://dashboard.alchemy.com/) to help with indexing NFT information, and [n.xyz](https://app.n.xyz/) for contract approval statuses. You will need to create an account with both and fill in the relevant variables in your `.env.local` file.
+
+For `n.xyz` make sure you set the `CORS` setting to your local development address or to `*` all addresses.
+
+`PROVIDER_ENDPOINT` can be the same as your `ALCHEMY_KEY` just use the `https` link instead.
+
+## Getting your NFT artwork to show up in the iFrame.
+
+The contract address and tokenId of you NFT collection is grabbed from the URL params `/contractAddress/tokenId`.
+
+The image assets of your collection is then fetched from the `useNft` hook in `app/hooks/useNft.tsx` using the environment variable `NEXT_PUBLIC_NFT_ENDPOINT`. If you want to customize and reshape the data of from the `NEXT_PUBLIC_NFT_ENDPOINT` endpoint then make those edits inside the `getNftAssets` in `/lib/utils/nft.ts`. You can see commented out code on how you would return image from an the Azuki metadata server there for reference.
+
+The image render will in the page.tsx file will then be expecting an array of images. If you have one image that should work just fine as well.
+
 ## Learn More
+
+To learn more about Tokenbound, take a look at the following resources:
+
+- [Tokenbound Documentation](https://docs.tokenbound.org/)
+- [Learn tokenbound](https://tokenbound.org/)
+- [EIP-6551](https://eips.ethereum.org/EIPS/eip-6551)
 
 To learn more about Next.js, take a look at the following resources:
 
