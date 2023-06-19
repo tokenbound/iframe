@@ -8,6 +8,8 @@ import type {
 
 import clsx, { ClassValue } from "clsx";
 
+// Polymorphic Box Component
+
 export interface BoxComponentProps {
   className?: ClassValue;
   children?: ReactNode;
@@ -16,28 +18,18 @@ export interface BoxComponentProps {
 
 export const DefaultBoxElement = "div";
 
-export type BoxProps<E extends ElementType = ElementType> =
-  PolymorphicPropsWithRef<BoxComponentProps, E>;
+export type BoxProps<E extends ElementType = ElementType> = PolymorphicPropsWithRef<
+  BoxComponentProps,
+  E
+>;
 
 export function MainBox<E extends ElementType = typeof DefaultBoxElement>(
-  {
-    as,
-    className,
-    id,
-    ...props
-  }: PolymorphicPropsWithoutRef<BoxComponentProps, E>,
+  { as, className, id, ...props }: PolymorphicPropsWithoutRef<BoxComponentProps, E>,
   ref: React.ForwardedRef<E>
 ) {
   const Element: ElementType = as || DefaultBoxElement;
 
-  return (
-    <Element
-      ref={ref}
-      id={id}
-      className={clsx(`tb-box`, className)}
-      {...props}
-    />
-  );
+  return <Element ref={ref} id={id} className={clsx(`tb-box`, className)} {...props} />;
 }
 
 export const Box: PolymorphicForwardRefExoticComponent<
