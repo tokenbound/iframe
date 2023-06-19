@@ -63,9 +63,12 @@ function isTokenId(value: number): value is TokenId {
   return value >= 0 && value <= MAX_TOKEN_ID;
 }
 
-export async function getNftAsset(tokenId: number): Promise<string[] | string> {
+export async function getNftAsset(
+  tokenId: number,
+  apiEndpoint?: string
+): Promise<string[] | string> {
   if (isTokenId(tokenId)) {
-    const response = await fetch(`${nftUrl}/${tokenId}`);
+    const response = await fetch(`${apiEndpoint || nftUrl}/${tokenId}`);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

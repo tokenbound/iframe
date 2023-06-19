@@ -17,17 +17,22 @@ interface TokenParams {
     tokenId: string;
     contractAddress: string;
   };
+  searchParams: {
+    apiEndpoint: string;
+  };
 }
 
-export default function Token({ params }: TokenParams) {
+export default function Token({ params, searchParams }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
   const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
   const [tokenInfoTooltip, setTokenInfoTooltip] = useState(false);
   const { tokenId, contractAddress } = params;
+  const { apiEndpoint } = searchParams;
 
   const { data: nftData } = useNft({
     tokenId: parseInt(tokenId as string),
+    apiEndpoint,
   });
 
   let nftDataArray: string[] = [];
