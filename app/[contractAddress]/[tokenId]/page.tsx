@@ -11,6 +11,7 @@ import { useGetApprovals } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
 import { TokenBar } from "./TokenBar";
 import { getAddress } from "viem";
+import { TokenDetail } from "./TokenDetail";
 
 interface TokenParams {
   params: {
@@ -184,13 +185,14 @@ export default function Token({ params, searchParams }: TokenParams) {
               </Tooltip>
             </div>
           )}
-          <TokenBar
+          {/* <TokenBar
             account={account}
             isLocked={isLocked}
             tokenInfoTooltip={tokenInfoTooltip}
             tokens={tokens}
             setTokenInfoTooltip={setTokenInfoTooltip}
-          />
+          /> */}
+          <TokenDetail className="relative" />
           <div className="relative w-full">
             <div
               className={`grid w-full grid-cols-1 grid-rows-1 transition ${
