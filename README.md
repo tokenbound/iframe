@@ -1,6 +1,20 @@
 ## Getting Started
 
-First, run the development server:
+1. Fork the repo
+2. Fill in environment variables in `.env.local` file
+3. Sign up for the Alchemy and n.xyz accounts and fill in the relevant variables in your `.env.local` file.
+
+Install
+
+```bash
+npm install
+
+yarn
+
+pnpm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
