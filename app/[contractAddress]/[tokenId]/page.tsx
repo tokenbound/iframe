@@ -29,6 +29,7 @@ export default function Token({ params, searchParams }: TokenParams) {
   const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
   const [tokenInfoTooltip, setTokenInfoTooltip] = useState(false);
   const { tokenId, contractAddress } = params;
+  const [showTokenDetail, setShowTokenDetail] = useState(false);
   // const { apiEndpoint } = searchParams;
 
   // const { data: nftData } = useNft({
@@ -170,9 +171,9 @@ export default function Token({ params, searchParams }: TokenParams) {
 
   return (
     <div className="w-screen h-screen bg-white">
-      <div className="relative max-h-screen mx-auto bg-black max-w-screen aspect-square overflow-hidden">
+      <div className="relative max-h-screen mx-auto max-w-screen aspect-square overflow-hidden">
         {/* <div className="relative max-h-screen mx-auto bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4] max-w-screen aspect-square overflow-hidden"> */}
-        <div className="relative w-full h-full">
+        <div className={`relative w-full h-full`}>
           {/* if accountDeployed is true and isLocked is false */}
           {(!isLocked || approvalData.length) && accountIsDeployed && (
             <div className="absolute top-0 right-0 z-10 w-16 h-16">
@@ -192,12 +193,17 @@ export default function Token({ params, searchParams }: TokenParams) {
             tokens={tokens}
             setTokenInfoTooltip={setTokenInfoTooltip}
           /> */}
-          <TokenDetail className="relative" />
+          <TokenDetail
+            isOpen={showTokenDetail}
+            handleOpenClose={setShowTokenDetail}
+            approvalTokensCount={10}
+            account={account}
+          />
           <div className="relative w-full">
             <div
               className={`grid w-full grid-cols-1 grid-rows-1 transition ${
                 imagesLoaded ? "" : "blur-xl"
-              }`}
+              } ${showTokenDetail ? "blur-xl" : ""}`}
             >
               {!isNil(nftMetadata) ? (
                 <img

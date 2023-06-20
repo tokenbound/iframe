@@ -12,8 +12,10 @@ module.exports = {
         "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        "tb-transparent": "rgba(217, 217, 217, 0.2)",
+        "tb-transparent": "rgba(217, 217, 217, 0.4)",
         "tb-shadow": "0px 1px 14px rgba(0, 0, 0, 0.12)",
+        "tb-warning-primary": "#FF8A00",
+        "tb-warning-secondary": "rgba(255, 138, 0, 0.1)",
       },
       transitionProperty: {
         width: "width",
