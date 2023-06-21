@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { isNil } from "lodash";
 import { getAccount, getAccountStatus, getLensNfts, getNfts } from "@/lib/utils";
 import { alchemy, rpcClient } from "@/lib/clients";
-import { Exclamation } from "@/components/icon";
+import { Exclamation, TbLogo } from "@/components/icon";
 import { Tooltip } from "@/components/ui";
 import { useGetApprovals } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
@@ -203,20 +203,20 @@ export default function Token({ params, searchParams }: TokenParams) {
             />
           )}
           <div className="relative h-full w-full">
-            <div
-              className={`grid w-full grid-cols-1 grid-rows-1 transition ${
-                imagesLoaded ? "" : "blur-xl"
-              } ${showTokenDetail ? "blur-xl" : ""}`}
-            >
+            <div className={`grid w-full grid-cols-1 grid-rows-1 transition`}>
               {!isNil(nftMetadata) ? (
                 <img
                   src={`${nftMetadata[0]?.media[0].gateway}`}
                   alt="Nft image"
-                  className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
+                  className={`col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0 ${
+                    imagesLoaded ? "" : "blur-xl"
+                  } ${showTokenDetail ? "blur-xl" : ""}`}
                 />
               ) : (
                 // <div className="w-full h-full bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4]"></div>
-                <></>
+                <div className="h-20 w-20 absolute -translate-x-[50%] -translate-y-[50%] top-[50%] left-[50%] z-10">
+                  <TbLogo />
+                </div>
               )}
               {/* {!isNil(nftData) ? (
                 nftDataArray.map((layer: string, i: number) => (
