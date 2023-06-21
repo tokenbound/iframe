@@ -70,23 +70,21 @@ export const Panel = ({ className, approvalTokensCount, account, tokens }: Props
         onTabChange={(tab) => setCurrentTab(tab)}
       />
       <TabPanel value={TABS.COLLECTABLES} currentTab={currentTab}>
-        <div>
-          {tokens && tokens.length ? (
-            <ul className="grid grid-cols-3 gap-2">
-              {[...tokens, ...tokens].map((t, i) => (
-                <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
-                  <img
-                    src={`${t.media[0]?.gateway}`}
-                    alt="Nft image"
-                    className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
-                  />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <></>
-          )}
-        </div>
+        {tokens && tokens.length ? (
+          <ul className="grid grid-cols-3 gap-2 overflow-y-auto h-[300px]">
+            {[...tokens, ...tokens].map((t, i) => (
+              <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
+                <img
+                  src={`${t.media[0]?.gateway}`}
+                  alt="Nft image"
+                  className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
+                />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <></>
+        )}
       </TabPanel>
       <TabPanel value={TABS.ASSETS} currentTab={currentTab}>
         <div>I am a asset</div>

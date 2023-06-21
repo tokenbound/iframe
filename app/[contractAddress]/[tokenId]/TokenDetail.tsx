@@ -51,7 +51,7 @@ export const TokenDetail = ({
       />
       {isOpen && (
         <motion.div
-          className="z-10 absolute w-full overflow-y-auto h-full bottom-0"
+          className="z-10 absolute w-full h-full bottom-0"
           animate={currentAnimate}
           variants={variants}
           onScroll={handleScroll}
