@@ -193,13 +193,16 @@ export default function Token({ params, searchParams }: TokenParams) {
             tokens={tokens}
             setTokenInfoTooltip={setTokenInfoTooltip}
           /> */}
-          <TokenDetail
-            isOpen={showTokenDetail}
-            handleOpenClose={setShowTokenDetail}
-            approvalTokensCount={10}
-            account={account}
-          />
-          <div className="relative w-full">
+          {account && nftMetadata && (
+            <TokenDetail
+              isOpen={showTokenDetail}
+              handleOpenClose={setShowTokenDetail}
+              approvalTokensCount={10}
+              account={account}
+              tokens={tokens}
+            />
+          )}
+          <div className="relative h-full w-full">
             <div
               className={`grid w-full grid-cols-1 grid-rows-1 transition ${
                 imagesLoaded ? "" : "blur-xl"

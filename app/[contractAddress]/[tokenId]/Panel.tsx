@@ -1,8 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import clsx from "clsx";
 import { useState } from "react";
 import { Check, Exclamation } from "@/components/icon";
 import { Tabs, TabPanel } from "@/components/ui";
 import { shortenAddress } from "@/lib/utils";
+import { TbaOwnedNft } from "@/lib/types";
 
 export const TABS = {
   COLLECTABLES: "Collectables",
@@ -13,9 +15,10 @@ interface Props {
   className?: string;
   approvalTokensCount?: number;
   account?: string;
+  tokens: TbaOwnedNft[];
 }
 
-export const Panel = ({ className, approvalTokensCount, account }: Props) => {
+export const Panel = ({ className, approvalTokensCount, account, tokens }: Props) => {
   const [addressHovered, setAddressHovered] = useState(false);
   const [copied, setCopied] = useState(false);
   const [currentTab, setCurrentTab] = useState(TABS.COLLECTABLES);
@@ -67,7 +70,23 @@ export const Panel = ({ className, approvalTokensCount, account }: Props) => {
         onTabChange={(tab) => setCurrentTab(tab)}
       />
       <TabPanel value={TABS.COLLECTABLES} currentTab={currentTab}>
-        <div>I am a collectable</div>
+        <div>
+          {tokens && tokens.length ? (
+            <ul className="grid grid-cols-3 gap-2">
+              {[...tokens, ...tokens].map((t, i) => (
+                <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
+                  <img
+                    src={`${t.media[0]?.gateway}`}
+                    alt="Nft image"
+                    className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <></>
+          )}
+        </div>
       </TabPanel>
       <TabPanel value={TABS.ASSETS} currentTab={currentTab}>
         <div>I am a asset</div>
