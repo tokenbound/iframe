@@ -1,7 +1,13 @@
-import { Check, Exclamation } from "@/components/icon";
-import { shortenAddress } from "@/lib/utils";
 import clsx from "clsx";
 import { useState } from "react";
+import { Check, Exclamation } from "@/components/icon";
+import { Tabs, TabPanel } from "@/components/ui";
+import { shortenAddress } from "@/lib/utils";
+
+export const TABS = {
+  COLLECTABLES: "Collectables",
+  ASSETS: "Assets",
+};
 
 interface Props {
   className?: string;
@@ -12,6 +18,7 @@ interface Props {
 export const Panel = ({ className, approvalTokensCount, account }: Props) => {
   const [addressHovered, setAddressHovered] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [currentTab, setCurrentTab] = useState(TABS.COLLECTABLES);
 
   const displayedAddress = addressHovered ? account : shortenAddress(account || "");
 
@@ -54,6 +61,17 @@ export const Panel = ({ className, approvalTokensCount, account }: Props) => {
           </p>
         </div>
       )}
+      <Tabs
+        tabs={Object.values(TABS)}
+        currentTab={currentTab}
+        onTabChange={(tab) => setCurrentTab(tab)}
+      />
+      <TabPanel value={TABS.COLLECTABLES} currentTab={currentTab}>
+        <div>I am a collectable</div>
+      </TabPanel>
+      <TabPanel value={TABS.ASSETS} currentTab={currentTab}>
+        <div>I am a asset</div>
+      </TabPanel>
     </div>
   );
 };

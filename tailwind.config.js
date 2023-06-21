@@ -16,6 +16,7 @@ module.exports = {
         "tb-shadow": "0px 1px 14px rgba(0, 0, 0, 0.12)",
         "tb-warning-primary": "#FF8A00",
         "tb-warning-secondary": "rgba(255, 138, 0, 0.1)",
+        "tb-text-gray": "#666D74",
       },
       transitionProperty: {
         width: "width",
