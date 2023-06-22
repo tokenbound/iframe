@@ -1,6 +1,6 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { isNil } from "lodash";
 import { getAccount, getAccountStatus, getLensNfts, getNfts } from "@/lib/utils";
@@ -30,6 +30,18 @@ export default function Token({ params, searchParams }: TokenParams) {
   const [tokenInfoTooltip, setTokenInfoTooltip] = useState(false);
   const { tokenId, contractAddress } = params;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
+  const mainDisplayRef = useRef<HTMLDivElement | null>(null);
+  const [mainDisplayHeight, setMainDisplayHeight] = useState(0);
+
+  useEffect(() => {
+    // Make sure the ref is assigned and the component is mounted
+    if (mainDisplayRef && mainDisplayRef.current) {
+      // Access and log the height of the element
+      const height = mainDisplayRef.current.offsetHeight;
+      setMainDisplayHeight(height);
+      console.log("Element height:", height);
+    }
+  }, [mainDisplayRef]);
   // const { apiEndpoint } = searchParams;
 
   // const { data: nftData } = useNft({
@@ -173,7 +185,7 @@ export default function Token({ params, searchParams }: TokenParams) {
     <div className="w-screen h-screen bg-white">
       <div className="relative max-h-screen mx-auto max-w-screen aspect-square overflow-hidden">
         {/* <div className="relative max-h-screen mx-auto bg-gradient-to-b from-[#ab96d3] via-[#fbaaac] to-[#ffe8c4] max-w-screen aspect-square overflow-hidden"> */}
-        <div className={`relative w-full h-full`}>
+        <div className={`relative w-full h-full`} ref={mainDisplayRef}>
           {/* if accountDeployed is true and isLocked is false */}
           {(!isLocked || approvalData.length) && accountIsDeployed && (
             <div className="absolute top-0 right-0 z-10 w-16 h-16">
@@ -200,6 +212,8 @@ export default function Token({ params, searchParams }: TokenParams) {
               approvalTokensCount={10}
               account={account}
               tokens={tokens}
+              mainHeight={mainDisplayHeight}
+              title={nftMetadata[0].title}
             />
           )}
           <div className="relative h-full w-full">

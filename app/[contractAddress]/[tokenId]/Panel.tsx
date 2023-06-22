@@ -16,9 +16,10 @@ interface Props {
   approvalTokensCount?: number;
   account?: string;
   tokens: TbaOwnedNft[];
+  title: string;
 }
 
-export const Panel = ({ className, approvalTokensCount, account, tokens }: Props) => {
+export const Panel = ({ className, approvalTokensCount, account, tokens, title }: Props) => {
   const [addressHovered, setAddressHovered] = useState(false);
   const [copied, setCopied] = useState(false);
   const [currentTab, setCurrentTab] = useState(TABS.COLLECTABLES);
@@ -32,7 +33,7 @@ export const Panel = ({ className, approvalTokensCount, account, tokens }: Props
         "bg-white border-t-0 rounded-t-lg overflow-y-auto pt-5 px-5 space-y-3"
       )}
     >
-      <h1 className="text-base font-bold uppercase">Token # 1</h1>
+      <h1 className="text-base font-bold text-black uppercase">{title}</h1>
       {account && (
         <span
           className="py-2 px-4 bg-[#F6F8FA] rounded-2xl text-xs font-bold text-[#666D74] inline-block hover:cursor-pointer"
@@ -71,7 +72,7 @@ export const Panel = ({ className, approvalTokensCount, account, tokens }: Props
       />
       <TabPanel value={TABS.COLLECTABLES} currentTab={currentTab}>
         {tokens && tokens.length ? (
-          <ul className="grid grid-cols-3 gap-2 overflow-y-auto h-[300px]">
+          <ul className="grid grid-cols-3 gap-2 overflow-y-auto">
             {[...tokens, ...tokens].map((t, i) => (
               <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
                 <img

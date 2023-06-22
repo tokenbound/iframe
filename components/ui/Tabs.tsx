@@ -6,7 +6,6 @@ interface Props
 }
 
 export const Tabs = ({ tabs, currentTab, onTabChange, ...props }: Props) => {
-  console.log({ tabs, currentTab });
   return (
     <ul className="flex items-center justify-start space-x-2 border-b-[1px]" {...props}>
       {tabs.map((tab) => {

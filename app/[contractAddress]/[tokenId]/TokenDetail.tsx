@@ -11,12 +11,14 @@ interface Props {
   approvalTokensCount?: number;
   account?: string;
   tokens: TbaOwnedNft[];
+  mainHeight: number;
+  title: string;
 }
 
 const variants = {
   open: { y: "50%", transition: { duration: 0.75 } },
   closed: { y: "120%", transition: { duration: 0.75 } },
-  scroll: { y: "10%", transition: { duration: 0.75 } },
+  scroll: { y: "30%", transition: { duration: 0.75 } },
 } as Variants;
 
 export const TokenDetail = ({
@@ -26,6 +28,8 @@ export const TokenDetail = ({
   approvalTokensCount,
   account,
   tokens,
+  mainHeight,
+  title,
 }: Props) => {
   const [hasScrolled, setHasScrolled] = useState(false);
 
@@ -43,6 +47,11 @@ export const TokenDetail = ({
     if (isOpen && !hasScrolled) setHasScrolled(true);
   };
 
+  const maxPanelHeight = mainHeight * 0.9;
+  const height = `h-[${maxPanelHeight}px]`;
+
+  console.log({ maxPanelHeight, mainHeight, height });
+
   return (
     <div className={className}>
       <TokenboundLogo
@@ -51,14 +60,19 @@ export const TokenDetail = ({
       />
       {isOpen && (
         <motion.div
-          className="z-10 absolute w-full h-full bottom-0"
+          className={`max-w-[1080px] z-10 absolute w-full ${height} bottom-0 overflow-y-auto`}
           animate={currentAnimate}
           variants={variants}
           onScroll={handleScroll}
           onClick={handleScroll}
           initial={{ y: "120%" }}
         >
-          <Panel approvalTokensCount={approvalTokensCount} account={account} tokens={tokens} />
+          <Panel
+            approvalTokensCount={approvalTokensCount}
+            account={account}
+            tokens={tokens}
+            title={title}
+          />
         </motion.div>
       )}
     </div>
