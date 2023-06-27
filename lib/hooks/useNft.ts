@@ -32,15 +32,19 @@ export const useNft = ({
   let key = null;
   if (hasCustomImplementation) key = cacheKey ?? `getNftAsset-${tokenId}`;
 
-  const { data: customNftData } = useSWR(key, () => getNftAsset(tokenId, apiEndpoint), {
-    refreshInterval: refreshInterval,
-    shouldRetryOnError: true,
-    retry: 3,
-  });
+  const { data: customNftData, isLoading: customNftLoading } = useSWR(
+    key,
+    () => getNftAsset(tokenId, apiEndpoint),
+    {
+      refreshInterval: refreshInterval,
+      shouldRetryOnError: true,
+      retry: 3,
+    }
+  );
 
   console.log({ customNftData });
 
-  const { data: nftMetadata } = useSWR(
+  const { data: nftMetadata, isLoading: nftMetadataLoading } = useSWR(
     !hasCustomImplementation ? `nftMetadata/${contractAddress}/${tokenId}` : null,
     (url: string) => {
       const [, contractAddress, tokenId] = url.split("/");
@@ -54,5 +58,6 @@ export const useNft = ({
     data: hasCustomImplementation
       ? formatImageReturn(customNftData)
       : formatImageReturn(getAlchemyImageSrc(nftMetadata?.[0])),
+    loading: hasCustomImplementation ? customNftLoading : nftMetadataLoading,
   };
 };

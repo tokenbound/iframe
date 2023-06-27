@@ -30,7 +30,7 @@ export default function Token({ params, searchParams }: TokenParams) {
   const [tokenInfoTooltip, setTokenInfoTooltip] = useState(false);
   const { tokenId, contractAddress } = params;
 
-  const { data: nftMetadata } = useNft({
+  const { data: nftMetadata, loading: nftMetadataLoading } = useNft({
     tokenId: parseInt(tokenId as string),
     contractAddress: params.contractAddress as `0x${string}`,
     hasCustomImplementation: HAS_CUSTOM_IMPLEMENTATION,
@@ -162,24 +162,30 @@ export default function Token({ params, searchParams }: TokenParams) {
             setTokenInfoTooltip={setTokenInfoTooltip}
           />
           <div className="relative w-full">
-            <div
-              className={`grid w-full grid-cols-1 grid-rows-1 transition ${
-                imagesLoaded ? "" : "blur-xl"
-              }`}
-            >
-              {!isNil(nftMetadata) ? (
-                nftMetadata.map((image, i) => (
-                  <img
-                    key={i}
-                    className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
-                    src={image}
-                    alt="Nft image"
-                  />
-                ))
-              ) : (
-                <></>
-              )}
-            </div>
+            {nftMetadataLoading ? (
+              <div className="w-screen h-screen flex items-center justify-center z-50 bg-white">
+                <h1>loading...</h1>
+              </div>
+            ) : (
+              <div
+                className={`grid w-full grid-cols-1 grid-rows-1 transition ${
+                  imagesLoaded ? "" : "blur-xl"
+                }`}
+              >
+                {!isNil(nftMetadata) ? (
+                  nftMetadata.map((image, i) => (
+                    <img
+                      key={i}
+                      className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
+                      src={image}
+                      alt="Nft image"
+                    />
+                  ))
+                ) : (
+                  <></>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
