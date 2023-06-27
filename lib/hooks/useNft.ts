@@ -42,8 +42,6 @@ export const useNft = ({
     }
   );
 
-  console.log({ customNftData });
-
   const { data: nftMetadata, isLoading: nftMetadataLoading } = useSWR(
     !hasCustomImplementation ? `nftMetadata/${contractAddress}/${tokenId}` : null,
     (url: string) => {
@@ -51,8 +49,6 @@ export const useNft = ({
       return alchemy.nft.getNftMetadataBatch([{ contractAddress, tokenId }]);
     }
   );
-
-  console.log({ nftMetadata });
 
   return {
     data: hasCustomImplementation
