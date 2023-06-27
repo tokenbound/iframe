@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { isNil } from "lodash";
 import { getAccount, getAccountStatus, getLensNfts, getNfts } from "@/lib/utils";
 import { rpcClient } from "@/lib/clients";
-import { Exclamation } from "@/components/icon";
+import { Exclamation, TbLogo } from "@/components/icon";
 import { Tooltip } from "@/components/ui";
 import { useGetApprovals, useNft } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
@@ -140,7 +140,7 @@ export default function Token({ params, searchParams }: TokenParams) {
 
   return (
     <div className="w-screen h-screen bg-white">
-      <div className="relative max-h-screen mx-auto bg-black max-w-screen aspect-square overflow-hidden">
+      <div className="relative max-h-screen mx-auto bg-white max-w-screen aspect-square overflow-hidden">
         <div className="relative w-full h-full">
           {/* if accountDeployed is true and isLocked is false */}
           {(!isLocked || approvalData.length) && accountIsDeployed && (
@@ -161,10 +161,10 @@ export default function Token({ params, searchParams }: TokenParams) {
             tokens={tokens}
             setTokenInfoTooltip={setTokenInfoTooltip}
           />
-          <div className="relative w-full">
+          <div className="relative w-full h-full max-w-[1080px] max-h-1080[px]">
             {nftMetadataLoading ? (
-              <div className="w-screen h-screen flex items-center justify-center z-50 bg-white">
-                <h1>loading...</h1>
+              <div className="h-20 w-20 absolute -translate-x-[50%] -translate-y-[60%] top-[60%] left-[50%] z-10 animate-bounce">
+                <TbLogo />
               </div>
             ) : (
               <div
