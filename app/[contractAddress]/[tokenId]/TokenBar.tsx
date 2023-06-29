@@ -51,7 +51,7 @@ export const TokenBar = ({
         onMouseLeave={() => setTokenBarHovered(false)}
         className="absolute z-[9] bottom-0 w-full h-6"
       ></div>
-      {true && (
+      {tokens && (
         <div
           onMouseEnter={() => setTokenBarHovered(true)}
           onMouseLeave={() => setTokenBarHovered(false)}

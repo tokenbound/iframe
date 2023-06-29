@@ -5,12 +5,11 @@ import useSWR from "swr";
 import { isNil } from "lodash";
 import { getAccount, getAccountStatus, getLensNfts, getNfts } from "@/lib/utils";
 import { rpcClient } from "@/lib/clients";
-import { Exclamation, TbLogo } from "@/components/icon";
-import { Tooltip } from "@/components/ui";
+import { TbLogo } from "@/components/icon";
 import { useGetApprovals, useNft } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
-import { TokenBar } from "./TokenBar";
 import { getAddress } from "viem";
+import { TokenDetail } from "./TokenDetail";
 import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
 
 interface TokenParams {
@@ -27,18 +26,22 @@ export default function Token({ params, searchParams }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
   const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
-  const [tokenInfoTooltip, setTokenInfoTooltip] = useState(false);
   const { tokenId, contractAddress } = params;
+  const [showTokenDetail, setShowTokenDetail] = useState(false);
 
-  const { data: nftMetadata, loading: nftMetadataLoading } = useNft({
+  const {
+    data: nftImages,
+    nftMetadata,
+    loading: nftMetadataLoading,
+  } = useNft({
     tokenId: parseInt(tokenId as string),
     contractAddress: params.contractAddress as `0x${string}`,
     hasCustomImplementation: HAS_CUSTOM_IMPLEMENTATION,
   });
 
   useEffect(() => {
-    if (!isNil(nftMetadata) && nftMetadata.length) {
-      const imagePromises = nftMetadata.map((src: string) => {
+    if (!isNil(nftImages) && nftImages.length) {
+      const imagePromises = nftImages.map((src: string) => {
         return new Promise((resolve, reject) => {
           const image = new Image();
           image.onload = resolve;
@@ -55,7 +58,7 @@ export default function Token({ params, searchParams }: TokenParams) {
           console.error("Error loading images:", error);
         });
     }
-  }, [nftMetadata]);
+  }, [nftImages]);
 
   // Fetch nft's TBA
   const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
@@ -139,31 +142,22 @@ export default function Token({ params, searchParams }: TokenParams) {
   }, [nfts, approvalData, lensNfts]);
 
   return (
-    <div className="w-screen h-screen bg-white">
+    <div className="w-screen h-screen bg-slate-100">
       <div className="relative max-h-screen mx-auto bg-white max-w-screen aspect-square overflow-hidden">
         <div className="relative w-full h-full">
-          {/* if accountDeployed is true and isLocked is false */}
-          {(!isLocked || approvalData.length) && accountIsDeployed && (
-            <div className="absolute top-0 right-0 z-10 w-16 h-16">
-              <Tooltip
-                lineOne="This token account is Unlocked or has Approvals."
-                lineTwo="Its contents may be removed while listed."
-                position="left"
-              >
-                <Exclamation />
-              </Tooltip>
-            </div>
+          {account && nftImages && nftMetadata && (
+            <TokenDetail
+              isOpen={showTokenDetail}
+              handleOpenClose={setShowTokenDetail}
+              approvalTokensCount={approvalData?.length}
+              account={account}
+              tokens={tokens}
+              title={nftMetadata.title}
+            />
           )}
-          <TokenBar
-            account={account}
-            isLocked={isLocked}
-            tokenInfoTooltip={tokenInfoTooltip}
-            tokens={tokens}
-            setTokenInfoTooltip={setTokenInfoTooltip}
-          />
           <div className="relative w-full h-full max-w-[1080px] max-h-1080[px]">
             {nftMetadataLoading ? (
-              <div className="h-20 w-20 absolute -translate-x-[50%] -translate-y-[60%] top-[60%] left-[50%] z-10 animate-bounce">
+              <div className="h-20 w-20 absolute -translate-x-[50%] -translate-y-[50%] top-[50%] left-[45%] z-10 animate-bounce">
                 <TbLogo />
               </div>
             ) : (
@@ -172,8 +166,8 @@ export default function Token({ params, searchParams }: TokenParams) {
                   imagesLoaded ? "" : "blur-xl"
                 }`}
               >
-                {!isNil(nftMetadata) ? (
-                  nftMetadata.map((image, i) => (
+                {!isNil(nftImages) ? (
+                  nftImages.map((image, i) => (
                     <img
                       key={i}
                       className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
