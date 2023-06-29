@@ -73,7 +73,7 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
       <TabPanel value={TABS.COLLECTABLES} currentTab={currentTab}>
         {tokens && tokens.length ? (
           <ul className="grid grid-cols-3 gap-2 overflow-y-auto">
-            {[...tokens, ...tokens].map((t, i) => (
+            {tokens.map((t, i) => (
               <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
                 <img
                   src={`${t.media[0]?.gateway}`}

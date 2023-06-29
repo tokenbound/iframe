@@ -16,9 +16,9 @@ interface Props {
 }
 
 const variants = {
-  open: { y: "50%", transition: { duration: 0.75 } },
-  closed: { y: "120%", transition: { duration: 0.75 } },
-  scroll: { y: "30%", transition: { duration: 0.75 } },
+  closed: { y: "100%", transition: { duration: 0.75 } },
+  open: { y: "50%", transition: { duration: 0.75 }, height: "90%" },
+  scroll: { y: "0", transition: { duration: 0.75 }, height: "80%" },
 } as Variants;
 
 export const TokenDetail = ({
@@ -47,7 +47,7 @@ export const TokenDetail = ({
     if (isOpen && !hasScrolled) setHasScrolled(true);
   };
 
-  const maxPanelHeight = mainHeight * 0.9;
+  const maxPanelHeight = mainHeight * 0.7;
   const height = `h-[${maxPanelHeight}px]`;
 
   console.log({ maxPanelHeight, mainHeight, height });
@@ -60,12 +60,13 @@ export const TokenDetail = ({
       />
       {isOpen && (
         <motion.div
-          className={`max-w-[1080px] z-10 absolute w-full ${height} bottom-0 overflow-y-auto`}
+          className={`absolute max-w-[1080px] z-10 w-full bottom-0 overflow-y-auto custom-scroll`}
           animate={currentAnimate}
           variants={variants}
           onScroll={handleScroll}
           onClick={handleScroll}
-          initial={{ y: "120%" }}
+          initial="closed"
+          // initial={{ y: "120%" }}
         >
           <Panel
             approvalTokensCount={approvalTokensCount}
