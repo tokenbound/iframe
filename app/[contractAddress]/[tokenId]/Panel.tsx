@@ -30,7 +30,7 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
     <div
       className={clsx(
         className,
-        "bg-white border-t-0 rounded-t-lg overflow-y-auto pt-5 px-5 space-y-3"
+        "bg-white border-t-0 rounded-t-lg overflow-y-auto pt-5 px-5 space-y-3 h-full"
       )}
     >
       <h1 className="text-base font-bold text-black uppercase">{title}</h1>
@@ -71,7 +71,8 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
         onTabChange={(tab) => setCurrentTab(tab)}
       />
       <TabPanel value={TABS.COLLECTABLES} currentTab={currentTab}>
-        {tokens && tokens.length ? (
+        {false ? (
+          // {tokens && tokens.length ? (
           <ul className="grid grid-cols-3 gap-2 overflow-y-auto">
             {tokens.map((t, i) => (
               <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
@@ -84,7 +85,9 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
             ))}
           </ul>
         ) : (
-          <></>
+          <div className={"h-full"}>
+            <p className="text-sm text-gray-500 text-center">No collectables found</p>
+          </div>
         )}
       </TabPanel>
       <TabPanel value={TABS.ASSETS} currentTab={currentTab}>

@@ -66,7 +66,6 @@ export const TokenDetail = ({
           onScroll={handleScroll}
           onClick={handleScroll}
           initial="closed"
-          // initial={{ y: "120%" }}
         >
           <Panel
             approvalTokensCount={approvalTokensCount}
