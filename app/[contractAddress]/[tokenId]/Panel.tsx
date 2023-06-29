@@ -87,7 +87,7 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
     <div
       className={clsx(
         className,
-        "bg-white border-t-0 rounded-t-lg overflow-y-auto pt-5 px-5 space-y-3 h-full"
+        "bg-white border-t-0 rounded-t-xl overflow-y-auto pt-5 px-5 space-y-3 h-full custom-scroll"
       )}
     >
       <h1 className="text-base font-bold text-black uppercase">{title}</h1>
@@ -129,7 +129,7 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
       />
       <TabPanel value={TABS.COLLECTABLES} currentTab={currentTab}>
         {tokens && tokens.length ? (
-          <ul className="grid grid-cols-3 gap-2 overflow-y-auto">
+          <ul className="grid grid-cols-3 gap-2 overflow-y-auto custom-scroll">
             {tokens.map((t, i) => (
               <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
                 <img

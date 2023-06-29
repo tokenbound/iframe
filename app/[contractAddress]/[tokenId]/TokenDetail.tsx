@@ -15,7 +15,6 @@ interface Props {
 
 const variants = {
   closed: { y: "100%", transition: { duration: 0.75 } },
-  // open: { y: "50%", transition: { duration: 0.75 }, height: "90%" },
   open: { y: "0", transition: { duration: 0.75 }, height: "80%" },
 } as Variants;
 
