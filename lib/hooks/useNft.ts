@@ -43,7 +43,7 @@ export const useNft = ({
   );
 
   const { data: nftMetadata, isLoading: nftMetadataLoading } = useSWR(
-    !hasCustomImplementation ? `nftMetadata/${contractAddress}/${tokenId}` : null,
+    `nftMetadata/${contractAddress}/${tokenId}`,
     (url: string) => {
       const [, contractAddress, tokenId] = url.split("/");
       return alchemy.nft.getNftMetadataBatch([{ contractAddress, tokenId }]);
@@ -54,6 +54,7 @@ export const useNft = ({
     data: hasCustomImplementation
       ? formatImageReturn(customNftData)
       : formatImageReturn(getAlchemyImageSrc(nftMetadata?.[0])),
+    nftMetadata: nftMetadata?.[0],
     loading: hasCustomImplementation ? customNftLoading : nftMetadataLoading,
   };
 };
