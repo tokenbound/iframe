@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Variants, motion } from "framer-motion";
 import { TokenboundLogo } from "@/components/icon";
 import { Panel } from "./Panel";
@@ -11,14 +10,13 @@ interface Props {
   approvalTokensCount?: number;
   account?: string;
   tokens: TbaOwnedNft[];
-  mainHeight: number;
   title: string;
 }
 
 const variants = {
   closed: { y: "100%", transition: { duration: 0.75 } },
-  open: { y: "50%", transition: { duration: 0.75 }, height: "90%" },
-  scroll: { y: "0", transition: { duration: 0.75 }, height: "80%" },
+  // open: { y: "50%", transition: { duration: 0.75 }, height: "90%" },
+  open: { y: "0", transition: { duration: 0.75 }, height: "80%" },
 } as Variants;
 
 export const TokenDetail = ({
@@ -28,29 +26,9 @@ export const TokenDetail = ({
   approvalTokensCount,
   account,
   tokens,
-  mainHeight,
   title,
 }: Props) => {
-  const [hasScrolled, setHasScrolled] = useState(false);
-
-  useEffect(() => {
-    if (!isOpen) {
-      setHasScrolled(false);
-    }
-  }, [isOpen]);
-
-  let currentAnimate = "closed";
-  if (isOpen) currentAnimate = "open";
-  if (isOpen && hasScrolled) currentAnimate = "scroll";
-
-  const handleScroll = () => {
-    if (isOpen && !hasScrolled) setHasScrolled(true);
-  };
-
-  const maxPanelHeight = mainHeight * 0.7;
-  const height = `h-[${maxPanelHeight}px]`;
-
-  console.log({ maxPanelHeight, mainHeight, height });
+  let currentAnimate = isOpen ? "open" : "closed";
 
   return (
     <div className={className}>
@@ -63,8 +41,6 @@ export const TokenDetail = ({
           className={`absolute max-w-[1080px] z-10 w-full bottom-0 overflow-y-auto custom-scroll`}
           animate={currentAnimate}
           variants={variants}
-          onScroll={handleScroll}
-          onClick={handleScroll}
           initial="closed"
         >
           <Panel

@@ -1,15 +1,13 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { isNil } from "lodash";
 import { getAccount, getAccountStatus, getLensNfts, getNfts } from "@/lib/utils";
 import { rpcClient } from "@/lib/clients";
-import { Exclamation, TbLogo } from "@/components/icon";
-import { Tooltip } from "@/components/ui";
+import { TbLogo } from "@/components/icon";
 import { useGetApprovals, useNft } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
-import { TokenBar } from "./TokenBar";
 import { getAddress } from "viem";
 import { TokenDetail } from "./TokenDetail";
 import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
@@ -28,22 +26,8 @@ export default function Token({ params, searchParams }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
   const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
-  const [tokenInfoTooltip, setTokenInfoTooltip] = useState(false);
   const { tokenId, contractAddress } = params;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
-  const mainDisplayRef = useRef<HTMLDivElement | null>(null);
-  const [mainDisplayHeight, setMainDisplayHeight] = useState(0);
-
-  useEffect(() => {
-    // Make sure the ref is assigned and the component is mounted
-    if (mainDisplayRef && mainDisplayRef.current) {
-      // Access and log the height of the element
-      const height = mainDisplayRef.current.offsetHeight;
-      setMainDisplayHeight(height);
-      console.log("Element height:", height);
-    }
-  }, [mainDisplayRef]);
-  // const { apiEndpoint } = searchParams;
 
   const {
     data: nftImages,
@@ -160,34 +144,14 @@ export default function Token({ params, searchParams }: TokenParams) {
   return (
     <div className="w-screen h-screen bg-slate-100">
       <div className="relative max-h-screen mx-auto bg-white max-w-screen aspect-square overflow-hidden">
-        <div className="relative w-full h-full" ref={mainDisplayRef}>
-          {/* if accountDeployed is true and isLocked is false */}
-          {(!isLocked || approvalData.length) && accountIsDeployed && (
-            <div className="absolute top-0 right-0 z-10 w-16 h-16">
-              <Tooltip
-                lineOne="This token account is Unlocked or has Approvals."
-                lineTwo="Its contents may be removed while listed."
-                position="left"
-              >
-                <Exclamation />
-              </Tooltip>
-            </div>
-          )}
-          {/* <TokenBar
-            account={account}
-            isLocked={isLocked}
-            tokenInfoTooltip={tokenInfoTooltip}
-            tokens={tokens}
-            setTokenInfoTooltip={setTokenInfoTooltip}
-          /> */}
+        <div className="relative w-full h-full">
           {account && nftImages && nftMetadata && (
             <TokenDetail
               isOpen={showTokenDetail}
               handleOpenClose={setShowTokenDetail}
-              approvalTokensCount={10}
+              approvalTokensCount={approvalData?.length}
               account={account}
               tokens={tokens}
-              mainHeight={mainDisplayHeight}
               title={nftMetadata.title}
             />
           )}
