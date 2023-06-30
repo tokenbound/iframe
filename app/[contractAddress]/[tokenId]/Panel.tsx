@@ -25,11 +25,10 @@ interface Props {
 }
 
 export const Panel = ({ className, approvalTokensCount, account, tokens, title }: Props) => {
-  const [addressHovered, setAddressHovered] = useState(false);
   const [copied, setCopied] = useState(false);
   const [currentTab, setCurrentTab] = useState(TABS.COLLECTABLES);
 
-  const displayedAddress = addressHovered ? account : shortenAddress(account || "");
+  const displayedAddress = account;
 
   const { data: ethBalance } = useSWR(account ? account : null, async (accountAddress) => {
     const balance = await alchemy.core.getBalance(accountAddress, "latest");
@@ -55,8 +54,6 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
               setTimeout(() => setCopied(false), 1000);
             });
           }}
-          onMouseEnter={() => setAddressHovered(true)}
-          onMouseLeave={() => setAddressHovered(false)}
         >
           {copied ? (
             <span>
@@ -108,7 +105,9 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
               <img src="/ethereum-logo.png" alt="ethereum logo" className="h-[24px] w-[24px]" />
               <div className="text-[#979797]">Ethereum</div>
             </div>
-            <div className="text-base text-[#979797]">{ethBalance}</div>
+            <div className="text-base text-[#979797]">
+              {ethBalance ? Number(ethBalance).toFixed(2) : "0.00"}
+            </div>
           </div>
           {tokenBalanceData?.map((tokenData, i) => (
             <div className="flex items-center justify-between" key={i}>

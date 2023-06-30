@@ -12,8 +12,6 @@ export function useGetTokenBalances(account: `0x${string}`) {
       return token.tokenBalance !== "0" || token.tokenBalance !== null;
     }) as { tokenBalance: string; contractAddress: string }[];
 
-    console.log(`Token balances of ${accountAddress} \n`);
-
     const tokens = [] as {
       balance: string;
       contractAddress: string;
@@ -30,14 +28,9 @@ export function useGetTokenBalances(account: `0x${string}`) {
       // Get metadata of token
       const metadata = await alchemy.core.getTokenMetadata(token.contractAddress);
 
-      console.log({ metadata });
-
       // Compute token balance in human-readable format
       balance = balance / Math.pow(10, metadata.decimals || 0);
       const balanceFormatted = balance.toFixed(2);
-
-      // Print name, balance, and symbol of token
-      console.log(`${metadata.name}: ${balanceFormatted} ${metadata.symbol}`);
 
       tokens.push({
         balance: balanceFormatted,
