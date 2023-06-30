@@ -9,40 +9,11 @@ import useSWR from "swr";
 import { alchemy } from "@/lib/clients";
 import { ethers } from "ethers";
 import Image from "next/image";
-
-const Erc20Card = ({ tokenData }: any) => {
-  console.log({ tokenData });
-
-  // const balance = ethers.utils.formatEther(tokenData.tokenBalance);
-  // console.log(balance);
-  if (Number(tokenData) > 0) {
-    return (
-      <div className="flex w-full justify-between text-lg font-bold tracking-wide">
-        <a
-          href={`https://etherscan.io/address/${tokenData}`}
-          target="_blank"
-          rel="nofollow noreferrer"
-          className="flex items-start space-x-4"
-        >
-          <div className="h-6 w-6">
-            {tokenData.metadata.logo != null ? (
-              <Image src={tokenData.metadata.logo} width={25} height={25} alt="token symbol" />
-            ) : (
-              <span className="text-2xl">💰</span>
-            )}
-          </div>
-
-          {/* <p>{tokenData.metadata.symbol}</p> */}
-        </a>
-        {/* <span>{balance}</span> */}
-      </div>
-    );
-  }
-};
+import { useGetTokenBalances } from "@/lib/hooks";
 
 export const TABS = {
   COLLECTABLES: "Collectables",
-  // ASSETS: "Assets",
+  ASSETS: "Assets",
 };
 
 interface Props {
@@ -60,28 +31,12 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
 
   const displayedAddress = addressHovered ? account : shortenAddress(account || "");
 
-  // const { data: ethBalance } = useSWR(account ?? null, async (accountAddress) => {
-  //   const balance = await alchemy.core.getBalance(accountAddress, "latest");
-  //   return ethers.utils.formatEther(balance);
-  // });
+  const { data: ethBalance } = useSWR(account ? account : null, async (accountAddress) => {
+    const balance = await alchemy.core.getBalance(accountAddress, "latest");
+    return ethers.utils.formatEther(balance);
+  });
 
-  // const { data: erc20Balances } = useSWR(account ?? null, async (accountAddress) => {
-  //   const tokens = await alchemy.core.getTokenBalances(accountAddress, undefined);
-
-  //   const metadataPromises = tokens.tokenBalances.map(async (token) => {
-  //     const metadata = await alchemy.core.getTokenMetadata(token.contractAddress);
-  //     return {
-  //       ...token,
-  //       metadata,
-  //     };
-  //   });
-
-  //   const tokenMetadata = await Promise.all(metadataPromises);
-
-  //   console.log({ tokenMetadata });
-
-  //   return tokenMetadata;
-  // });
+  const { data: tokenBalanceData } = useGetTokenBalances(account as `0x${string}`);
 
   return (
     <div
@@ -146,9 +101,30 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
           </div>
         )}
       </TabPanel>
-      {/* <TabPanel value={TABS.ASSETS} currentTab={currentTab}>
-        <Erc20Card tokenData={ethBalance} />
-      </TabPanel> */}
+      <TabPanel value={TABS.ASSETS} currentTab={currentTab}>
+        <div className="space-y-3 flex flex-col w-full">
+          <div className="flex justify-between items-center w-full ">
+            <div className="flex items-center space-x-2">
+              <img src="/ethereum-logo.png" alt="ethereum logo" className="h-[24px] w-[24px]" />
+              <div className="text-[#979797]">Ethereum</div>
+            </div>
+            <div className="text-base text-[#979797]">{ethBalance}</div>
+          </div>
+          {tokenBalanceData?.map((tokenData, i) => (
+            <div className="flex items-center justify-between" key={i}>
+              <div className="flex items-center space-x-2">
+                {tokenData.logo ? (
+                  <img src={tokenData.logo} alt="coin logo" className="h-[24px] w-[24px]" />
+                ) : (
+                  <div className="text-2xl">💰</div>
+                )}
+                <div className="text-base text-[#979797]">{tokenData.name || ""}</div>
+              </div>
+              <div className="text-base text-[#979797]">{tokenData.balance}</div>
+            </div>
+          ))}
+        </div>
+      </TabPanel>
     </div>
   );
 };
