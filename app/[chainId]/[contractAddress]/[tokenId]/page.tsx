@@ -102,7 +102,7 @@ export default function Token({ params, searchParams }: TokenParams) {
     if (account) {
       fetchNfts(account);
     }
-  }, [account, accountBytecode]);
+  }, [account, accountBytecode, chainId]);
 
   const [tokens, setTokens] = useState<TbaOwnedNft[]>([]);
   const allNfts = [...nfts, ...lensNfts];

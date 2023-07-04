@@ -1,6 +1,6 @@
 import { createPublicClient, http } from "viem";
 import { goerli } from "viem/chains";
-import getViemNetwork from "../utils/getviemNetwork";
+import getViemNetwork from "../utils/getViemNetwork";
 
 const providerEndpoint = process.env.NEXT_PUBLIC_PROVIDER_ENDPOINT || "";
 
