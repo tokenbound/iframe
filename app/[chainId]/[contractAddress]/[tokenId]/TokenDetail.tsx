@@ -11,6 +11,7 @@ interface Props {
   account?: string;
   tokens: TbaOwnedNft[];
   title: string;
+  chainId: number;
 }
 
 const variants = {
@@ -26,18 +27,19 @@ export const TokenDetail = ({
   account,
   tokens,
   title,
+  chainId,
 }: Props) => {
   let currentAnimate = isOpen ? "open" : "closed";
 
   return (
     <div className={className}>
       <TokenboundLogo
-        className="absolute top-4 left-4 z-10 opacity-[0.7] hover:opacity-[1]"
+        className="absolute left-4 top-4 z-10 opacity-[0.7] hover:opacity-[1]"
         onClick={() => handleOpenClose(!isOpen)}
       />
       {isOpen && (
         <motion.div
-          className={`absolute max-w-[1080px] z-10 w-full bottom-0 overflow-y-auto custom-scroll`}
+          className={`custom-scroll absolute bottom-0 z-10 w-full max-w-[1080px] overflow-y-auto`}
           animate={currentAnimate}
           variants={variants}
           initial="closed"
@@ -47,6 +49,7 @@ export const TokenDetail = ({
             account={account}
             tokens={tokens}
             title={title}
+            chainId={chainId}
           />
         </motion.div>
       )}
