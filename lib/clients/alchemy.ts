@@ -3,6 +3,7 @@ import getAlchemyNetwork from "../utils/getAlchemyNetwork";
 
 export const getAlchemy = (chainId: any) => {
   const network = getAlchemyNetwork(chainId)
+
   const config = {
     apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY,
     network

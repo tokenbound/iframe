@@ -91,7 +91,6 @@ export default function Token({ params, searchParams }: TokenParams) {
   useEffect(() => {
     async function fetchNfts(account: string) {
       const [data, lensData] = await Promise.all([getNfts(chainId, account), getLensNfts(account)]);
-
       if (data) {
         setNfts(data);
       }
@@ -106,7 +105,6 @@ export default function Token({ params, searchParams }: TokenParams) {
   }, [account, accountBytecode]);
 
   const [tokens, setTokens] = useState<TbaOwnedNft[]>([]);
-
   const allNfts = [...nfts, ...lensNfts];
 
   const { data: approvalData } = useGetApprovals(

@@ -50,7 +50,6 @@ export async function getAccount(tokenId: number, contractAddress: string, chain
       functionName: "account",
       args: [implementationAddress, chainId, contractAddress, tokenId, salt],
     })) as string;
-
     return { data: response };
   } catch (err) {
     console.error(err);
