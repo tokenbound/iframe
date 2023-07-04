@@ -42,7 +42,6 @@ interface GetAccount {
 
 export async function getAccount(tokenId: number, contractAddress: string): Promise<GetAccount> {
   try {
-    console.log("SWEETS rpcClient", publicClient)
     const response = (await publicClient.readContract({
       address: tokenboundAddress as `0x${string}`,
       abi: tokenboundAbi,

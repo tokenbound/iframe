@@ -63,7 +63,6 @@ export default function Token({ params, searchParams }: TokenParams) {
   // Fetch nft's TBA
   const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
     const result = await getAccount(Number(tokenId), contractAddress);
-    console.log("SWEETS getAccount result", result);
     return result.data;
   });
 
@@ -141,8 +140,6 @@ export default function Token({ params, searchParams }: TokenParams) {
       }
     }
   }, [nfts, approvalData, lensNfts]);
-
-  console.log("SWEETS account ", account);
 
   return (
     <div className="h-screen w-screen bg-slate-100">
