@@ -63,6 +63,7 @@ export default function Token({ params, searchParams }: TokenParams) {
   // Fetch nft's TBA
   const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
     const result = await getAccount(Number(tokenId), contractAddress);
+    console.log("SWEETS getAccount result", result);
     return result.data;
   });
 
@@ -141,10 +142,12 @@ export default function Token({ params, searchParams }: TokenParams) {
     }
   }, [nfts, approvalData, lensNfts]);
 
+  console.log("SWEETS account ", account);
+
   return (
-    <div className="w-screen h-screen bg-slate-100">
-      <div className="relative max-h-screen mx-auto bg-white max-w-screen aspect-square overflow-hidden">
-        <div className="relative w-full h-full">
+    <div className="h-screen w-screen bg-slate-100">
+      <div className="max-w-screen relative mx-auto aspect-square max-h-screen overflow-hidden bg-white">
+        <div className="relative h-full w-full">
           {account && nftImages && nftMetadata && (
             <TokenDetail
               isOpen={showTokenDetail}
@@ -155,9 +158,9 @@ export default function Token({ params, searchParams }: TokenParams) {
               title={nftMetadata.title}
             />
           )}
-          <div className="relative w-full h-full max-w-[1080px] max-h-1080[px]">
+          <div className="max-h-1080[px] relative h-full w-full max-w-[1080px]">
             {nftMetadataLoading ? (
-              <div className="h-20 w-20 absolute -translate-x-[50%] -translate-y-[50%] top-[50%] left-[45%] z-10 animate-bounce">
+              <div className="absolute left-[45%] top-[50%] z-10 h-20 w-20 -translate-x-[50%] -translate-y-[50%] animate-bounce">
                 <TbLogo />
               </div>
             ) : (

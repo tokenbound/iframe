@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
-import { rpcClient } from "@/lib/clients/viem";
+import { publicClient } from "@/lib/clients/viem";
 import { implementationAbi, tokenboundAbi } from "@/lib/abi";
 import { chainId, implementationAddress, salt, tokenboundAddress } from "@/lib/constants";
 
@@ -10,7 +10,7 @@ interface GetAccountStatus {
 
 export async function getAccountStatus(account: string): Promise<GetAccountStatus> {
   try {
-    const response = (await rpcClient.readContract({
+    const response = (await publicClient.readContract({
       address: account as `0x${string}`,
       abi: implementationAbi,
       functionName: "isLocked",
@@ -42,7 +42,8 @@ interface GetAccount {
 
 export async function getAccount(tokenId: number, contractAddress: string): Promise<GetAccount> {
   try {
-    const response = (await rpcClient.readContract({
+    console.log("SWEETS rpcClient", publicClient)
+    const response = (await publicClient.readContract({
       address: tokenboundAddress as `0x${string}`,
       abi: tokenboundAbi,
       functionName: "account",
