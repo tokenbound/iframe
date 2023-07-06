@@ -8,6 +8,7 @@ import useSWR from "swr";
 import { getAlchemy } from "@/lib/clients";
 import { ethers } from "ethers";
 import { useGetTokenBalances } from "@/lib/hooks";
+import Token from "./Token";
 
 export const TABS = {
   COLLECTABLES: "Collectables",
@@ -90,13 +91,7 @@ export const Panel = ({
         {tokens && tokens.length ? (
           <ul className="custom-scroll grid grid-cols-3 gap-2 overflow-y-auto">
             {tokens.map((t, i) => (
-              <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
-                <img
-                  src={`${t.media[0]?.gateway}`}
-                  alt="Nft image"
-                  className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
-                />
-              </li>
+              <Token token={t} key={`${t.contract.address}-${t.tokenId}-${i}`} />
             ))}
           </ul>
         ) : (
