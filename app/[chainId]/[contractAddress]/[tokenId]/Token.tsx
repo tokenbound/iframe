@@ -8,7 +8,6 @@ const Token = ({ token }: any) => {
   const [playing, setPlaying] = useState(false);
 
   const toggleAudio = async () => {
-    console.log("SWEETS CLICKED", songHash);
     if (!playing) {
       await audio.play();
       setPlaying(true);
