@@ -17,7 +17,7 @@ interface CustomImplementation {
 export const useNft = ({
   tokenId,
   apiEndpoint,
-  refreshInterval = 30000,
+  refreshInterval = 120000,
   cacheKey,
   contractAddress,
   hasCustomImplementation,
@@ -32,15 +32,17 @@ export const useNft = ({
   let key = null;
   if (hasCustomImplementation) key = cacheKey ?? `getNftAsset-${tokenId}`;
 
-  const { data: customNftData, isLoading: customNftLoading } = useSWR(
-    key,
-    () => getNftAsset(tokenId, apiEndpoint),
-    {
-      refreshInterval: refreshInterval,
-      shouldRetryOnError: true,
-      retry: 3,
-    }
-  );
+  const {
+    data: customNftData,
+    isLoading: customNftLoading,
+    error: customNftError,
+  } = useSWR(key, () => getNftAsset(tokenId, apiEndpoint), {
+    refreshInterval: refreshInterval,
+    shouldRetryOnError: false,
+    retry: 0,
+  });
+
+  if (customNftError) console.log("CUSTOM NFT DATA FETCH ERROR: ", customNftError);
 
   const { data: nftMetadata, isLoading: nftMetadataLoading } = useSWR(
     `nftMetadata/${contractAddress}/${tokenId}`,
@@ -51,9 +53,10 @@ export const useNft = ({
   );
 
   return {
-    data: hasCustomImplementation
-      ? formatImageReturn(customNftData)
-      : formatImageReturn(getAlchemyImageSrc(nftMetadata?.[0])),
+    data:
+      hasCustomImplementation && !customNftError
+        ? formatImageReturn(customNftData)
+        : formatImageReturn(getAlchemyImageSrc(nftMetadata?.[0])),
     nftMetadata: nftMetadata?.[0],
     loading: hasCustomImplementation ? customNftLoading : nftMetadataLoading,
   };
