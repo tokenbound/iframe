@@ -2,7 +2,7 @@
 import clsx from "clsx";
 import { useState } from "react";
 import { Check, Exclamation } from "@/components/icon";
-import { Tabs, TabPanel } from "@/components/ui";
+import { Tabs, TabPanel, MediaViewer } from "@/components/ui";
 import { TbaOwnedNft } from "@/lib/types";
 import useSWR from "swr";
 import { alchemy } from "@/lib/clients";
@@ -42,6 +42,9 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
         "bg-white border-t-0 rounded-t-xl overflow-y-auto pt-5 px-5 space-y-3 h-full custom-scroll"
       )}
     >
+      <div className="w-full flex items-center justify-center mb-4">
+        <div className="bg-[#E4E4E4] h-[2.5px] w-[34px]"></div>
+      </div>
       <h1 className="text-base font-bold text-black uppercase">{title}</h1>
       {account && (
         <span
@@ -80,15 +83,19 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
       <TabPanel value={TABS.COLLECTIBLES} currentTab={currentTab}>
         {tokens && tokens.length ? (
           <ul className="grid grid-cols-3 gap-2 overflow-y-auto custom-scroll">
-            {tokens.map((t, i) => (
-              <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
-                <img
-                  src={`${t.media[0]?.gateway}`}
-                  alt="Nft image"
-                  className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
-                />
-              </li>
-            ))}
+            {tokens.map((t, i) => {
+              let media = t?.media[0]?.gateway || t?.media[0]?.raw;
+              const isVideo = t?.media[0]?.format === "mp4";
+              if (isVideo) {
+                media = t?.media[0]?.raw;
+              }
+
+              return (
+                <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
+                  <MediaViewer url={media} isVideo={isVideo} />
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <div className={"h-full"}>
@@ -99,9 +106,9 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
       <TabPanel value={TABS.ASSETS} currentTab={currentTab}>
         <div className="space-y-3 flex flex-col w-full">
           <div className="flex justify-between items-center w-full ">
-            <div className="flex items-center space-x-2">
-              <img src="/ethereum-logo.png" alt="ethereum logo" className="h-[24px] w-[24px]" />
-              <div className="text-[#979797]">Ethereum</div>
+            <div className="flex items-center space-x-4">
+              <img src="/ethereum-logo.png" alt="ethereum logo" className="h-[30px] w-[30px]" />
+              <div className="text-base text-black font-medium">Ethereum</div>
             </div>
             <div className="text-base text-[#979797]">
               {ethBalance ? Number(ethBalance).toFixed(2) : "0.00"}
@@ -109,13 +116,13 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
           </div>
           {tokenBalanceData?.map((tokenData, i) => (
             <div className="flex items-center justify-between" key={i}>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-4">
                 {tokenData.logo ? (
-                  <img src={tokenData.logo} alt="coin logo" className="h-[24px] w-[24px]" />
+                  <img src={tokenData.logo} alt="coin logo" className="h-[30px] w-[30px]" />
                 ) : (
-                  <div className="text-2xl">💰</div>
+                  <div className="text-3xl">💰</div>
                 )}
-                <div className="text-base text-[#979797]">{tokenData.name || ""}</div>
+                <div className="text-base text-black font-medium">{tokenData.name || ""}</div>
               </div>
               <div className="text-base text-[#979797]">{tokenData.balance}</div>
             </div>

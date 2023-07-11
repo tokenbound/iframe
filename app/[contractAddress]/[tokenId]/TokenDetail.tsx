@@ -15,7 +15,7 @@ interface Props {
 
 const variants = {
   closed: { y: "100%", transition: { duration: 0.75 } },
-  open: { y: "0", transition: { duration: 0.75 }, height: "80%" },
+  open: { y: "0", transition: { duration: 0.75 }, height: "85%" },
 } as Variants;
 
 const iconVariant = {
