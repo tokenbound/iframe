@@ -42,7 +42,7 @@ export const useNft = ({
     retry: 0,
   });
 
-  console.log({ customNftError });
+  if (customNftError) console.log("CUSTOM NFT DATA FETCH ERROR: ", customNftError);
 
   const { data: nftMetadata, isLoading: nftMetadataLoading } = useSWR(
     `nftMetadata/${contractAddress}/${tokenId}`,
