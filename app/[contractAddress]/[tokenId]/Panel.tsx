@@ -3,16 +3,14 @@ import clsx from "clsx";
 import { useState } from "react";
 import { Check, Exclamation } from "@/components/icon";
 import { Tabs, TabPanel } from "@/components/ui";
-import { shortenAddress } from "@/lib/utils";
 import { TbaOwnedNft } from "@/lib/types";
 import useSWR from "swr";
 import { alchemy } from "@/lib/clients";
 import { ethers } from "ethers";
-import Image from "next/image";
 import { useGetTokenBalances } from "@/lib/hooks";
 
 export const TABS = {
-  COLLECTABLES: "Collectables",
+  COLLECTIBLES: "Collectibles",
   ASSETS: "Assets",
 };
 
@@ -26,7 +24,7 @@ interface Props {
 
 export const Panel = ({ className, approvalTokensCount, account, tokens, title }: Props) => {
   const [copied, setCopied] = useState(false);
-  const [currentTab, setCurrentTab] = useState(TABS.COLLECTABLES);
+  const [currentTab, setCurrentTab] = useState(TABS.COLLECTIBLES);
 
   const displayedAddress = account;
 
@@ -79,7 +77,7 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
         currentTab={currentTab}
         onTabChange={(tab) => setCurrentTab(tab)}
       />
-      <TabPanel value={TABS.COLLECTABLES} currentTab={currentTab}>
+      <TabPanel value={TABS.COLLECTIBLES} currentTab={currentTab}>
         {tokens && tokens.length ? (
           <ul className="grid grid-cols-3 gap-2 overflow-y-auto custom-scroll">
             {tokens.map((t, i) => (

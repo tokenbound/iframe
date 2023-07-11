@@ -18,6 +18,19 @@ const variants = {
   open: { y: "0", transition: { duration: 0.75 }, height: "80%" },
 } as Variants;
 
+const iconVariant = {
+  hover: {
+    opacity: 1,
+    boxShadow: "0px 1px 14px 0px rgba(0, 0, 0, 0.12)",
+    transition: { duration: 0.3, ease: "easeInOut" },
+  },
+  unHovered: {
+    opacity: 0.3,
+    boxShadow: "none",
+    transition: { duration: 0.3, ease: "easeInOut" },
+  },
+};
+
 export const TokenDetail = ({
   className,
   isOpen,
@@ -31,10 +44,14 @@ export const TokenDetail = ({
 
   return (
     <div className={className}>
-      <TokenboundLogo
-        className="absolute top-4 left-4 z-10 opacity-[0.7] hover:opacity-[1]"
-        onClick={() => handleOpenClose(!isOpen)}
-      />
+      <motion.div
+        className="absolute top-4 left-4 z-10 rounded-full"
+        whileHover="hover"
+        variants={iconVariant}
+        initial="unHovered"
+      >
+        <TokenboundLogo onClick={() => handleOpenClose(!isOpen)} />
+      </motion.div>
       {isOpen && (
         <motion.div
           className={`absolute max-w-[1080px] z-10 w-full bottom-0 overflow-y-auto custom-scroll`}
