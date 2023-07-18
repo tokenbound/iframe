@@ -2,7 +2,7 @@
 import clsx from "clsx";
 import { useState } from "react";
 import { Check, Exclamation } from "@/components/icon";
-import { Tabs, TabPanel, MediaViewer } from "@/components/ui";
+import { Tabs, TabPanel } from "@/components/ui";
 import { TbaOwnedNft } from "@/lib/types";
 import useSWR from "swr";
 import { getAlchemy } from "@/lib/clients";
@@ -10,7 +10,7 @@ import { ethers } from "ethers";
 import { useGetTokenBalances } from "@/lib/hooks";
 
 export const TABS = {
-  COLLECTIBLES: "Collectibles",
+  COLLECTABLES: "Collectables",
   ASSETS: "Assets",
 };
 
@@ -32,7 +32,7 @@ export const Panel = ({
   chainId,
 }: Props) => {
   const [copied, setCopied] = useState(false);
-  const [currentTab, setCurrentTab] = useState(TABS.COLLECTIBLES);
+  const [currentTab, setCurrentTab] = useState(TABS.COLLECTABLES);
 
   const displayedAddress = account;
 
@@ -51,9 +51,6 @@ export const Panel = ({
         "custom-scroll h-full space-y-3 overflow-y-auto rounded-t-xl border-t-0 bg-white px-5 pt-5"
       )}
     >
-      <div className="mb-4 flex w-full items-center justify-center">
-        <div className="h-[2.5px] w-[34px] bg-[#E4E4E4]"></div>
-      </div>
       <h1 className="text-base font-bold uppercase text-black">{title}</h1>
       {account && (
         <span
@@ -89,22 +86,18 @@ export const Panel = ({
         currentTab={currentTab}
         onTabChange={(tab) => setCurrentTab(tab)}
       />
-      <TabPanel value={TABS.COLLECTIBLES} currentTab={currentTab}>
+      <TabPanel value={TABS.COLLECTABLES} currentTab={currentTab}>
         {tokens && tokens.length ? (
           <ul className="custom-scroll grid grid-cols-3 gap-2 overflow-y-auto">
-            {tokens.map((t, i) => {
-              let media = t?.media[0]?.gateway || t?.media[0]?.raw;
-              const isVideo = t?.media[0]?.format === "mp4";
-              if (isVideo) {
-                media = t?.media[0]?.raw;
-              }
-
-              return (
-                <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
-                  <MediaViewer url={media} isVideo={isVideo} />
-                </li>
-              );
-            })}
+            {tokens.map((t, i) => (
+              <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
+                <img
+                  src={`${t.media[0]?.gateway}`}
+                  alt="Nft image"
+                  className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
+                />
+              </li>
+            ))}
           </ul>
         ) : (
           <div className={"h-full"}>
@@ -115,9 +108,9 @@ export const Panel = ({
       <TabPanel value={TABS.ASSETS} currentTab={currentTab}>
         <div className="flex w-full flex-col space-y-3">
           <div className="flex w-full items-center justify-between ">
-            <div className="flex items-center space-x-4">
-              <img src="/ethereum-logo.png" alt="ethereum logo" className="h-[30px] w-[30px]" />
-              <div className="text-base font-medium text-black">Ethereum</div>
+            <div className="flex items-center space-x-2">
+              <img src="/ethereum-logo.png" alt="ethereum logo" className="h-[24px] w-[24px]" />
+              <div className="text-[#979797]">Ethereum</div>
             </div>
             <div className="text-base text-[#979797]">
               {ethBalance ? Number(ethBalance).toFixed(2) : "0.00"}
@@ -125,13 +118,13 @@ export const Panel = ({
           </div>
           {tokenBalanceData?.map((tokenData, i) => (
             <div className="flex items-center justify-between" key={i}>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
                 {tokenData.logo ? (
-                  <img src={tokenData.logo} alt="coin logo" className="h-[30px] w-[30px]" />
+                  <img src={tokenData.logo} alt="coin logo" className="h-[24px] w-[24px]" />
                 ) : (
-                  <div className="text-3xl">💰</div>
+                  <div className="text-2xl">💰</div>
                 )}
-                <div className="text-base font-medium text-black">{tokenData.name || ""}</div>
+                <div className="text-base text-[#979797]">{tokenData.name || ""}</div>
               </div>
               <div className="text-base text-[#979797]">{tokenData.balance}</div>
             </div>
