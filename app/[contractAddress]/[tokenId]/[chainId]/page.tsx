@@ -90,7 +90,10 @@ export default function Token({ params, searchParams }: TokenParams) {
   // fetch nfts inside TBA
   useEffect(() => {
     async function fetchNfts(account: string) {
-      const [data, lensData] = await Promise.all([getNfts(chainId, account), getLensNfts(account)]);
+      const [data, lensData] = await Promise.all([
+        getNfts(chainIdNumber, account),
+        getLensNfts(account),
+      ]);
       if (data) {
         setNfts(data);
       }
@@ -102,7 +105,7 @@ export default function Token({ params, searchParams }: TokenParams) {
     if (account) {
       fetchNfts(account);
     }
-  }, [account, accountBytecode, chainId]);
+  }, [account, accountBytecode, chainIdNumber]);
 
   const [tokens, setTokens] = useState<TbaOwnedNft[]>([]);
   const allNfts = [...nfts, ...lensNfts];

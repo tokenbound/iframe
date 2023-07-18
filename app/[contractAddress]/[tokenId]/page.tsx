@@ -22,6 +22,8 @@ interface TokenParams {
   };
 }
 
+const CHAIN_ID = 1;
+
 export default function Token({ params, searchParams }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
@@ -37,6 +39,7 @@ export default function Token({ params, searchParams }: TokenParams) {
     tokenId: parseInt(tokenId as string),
     contractAddress: params.contractAddress as `0x${string}`,
     hasCustomImplementation: HAS_CUSTOM_IMPLEMENTATION,
+    chainId: CHAIN_ID,
   });
 
   useEffect(() => {
@@ -62,7 +65,7 @@ export default function Token({ params, searchParams }: TokenParams) {
 
   // Fetch nft's TBA
   const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
-    const result = await getAccount(Number(tokenId), contractAddress);
+    const result = await getAccount(Number(tokenId), contractAddress, CHAIN_ID);
     return result.data;
   });
 
@@ -79,7 +82,7 @@ export default function Token({ params, searchParams }: TokenParams) {
       return false;
     }
 
-    const { data, error } = await getAccountStatus(account!);
+    const { data, error } = await getAccountStatus(CHAIN_ID, account!);
 
     return data ?? false;
   });
@@ -87,7 +90,10 @@ export default function Token({ params, searchParams }: TokenParams) {
   // fetch nfts inside TBA
   useEffect(() => {
     async function fetchNfts(account: string) {
-      const [data, lensData] = await Promise.all([getNfts(account), getLensNfts(account)]);
+      const [data, lensData] = await Promise.all([
+        getNfts(CHAIN_ID, account),
+        getLensNfts(account),
+      ]);
 
       if (data) {
         setNfts(data);

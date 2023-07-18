@@ -22,6 +22,8 @@ interface Props {
   title: string;
 }
 
+const CHAIN_ID = 1;
+
 export const Panel = ({ className, approvalTokensCount, account, tokens, title }: Props) => {
   const [copied, setCopied] = useState(false);
   const [currentTab, setCurrentTab] = useState(TABS.COLLECTIBLES);
@@ -33,7 +35,7 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
     return ethers.utils.formatEther(balance);
   });
 
-  const { data: tokenBalanceData } = useGetTokenBalances(account as `0x${string}`);
+  const { data: tokenBalanceData } = useGetTokenBalances(account as `0x${string}`, CHAIN_ID);
 
   return (
     <div

@@ -1,19 +1,19 @@
 import { Alchemy, Network } from "alchemy-sdk";
 import getAlchemyNetwork from "../utils/getAlchemyNetwork";
 
-export const getAlchemy = (chainId: any) => {
-  const network = getAlchemyNetwork(chainId)
+export const getAlchemy = (chainId: number) => {
+  const network = getAlchemyNetwork(chainId);
 
   const config = {
     apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY,
-    network
+    network,
   };
   const alchemy = new Alchemy(config);
-  return alchemy
-}
+  return alchemy;
+};
 
 export const alchemy = getAlchemy(
-  process.env.NEXT_PUBLIC_CHAIN_ID || "1"
+  process.env.NEXT_PUBLIC_CHAIN_ID ? Number(process.env.NEXT_PUBLIC_CHAIN_ID) : 1
 );
 
 const configLens = {

@@ -3,9 +3,9 @@ import * as Sentry from "@sentry/nextjs";
 import { MAX_TOKEN_ID, nftUrl } from "@/lib/constants";
 import { alchemyLens, getAlchemy } from "@/lib/clients";
 
-export async function getNfts(chainId: string, account: string) {
+export async function getNfts(chainId: number, account: string) {
   try {
-    const alchemy = getAlchemy(chainId)
+    const alchemy = getAlchemy(chainId);
     const response = await alchemy.nft.getNftsForOwner(account, {
       orderBy: NftOrdering.TRANSFERTIME,
     });
