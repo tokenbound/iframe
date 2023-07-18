@@ -8,6 +8,15 @@
   "commitConvention": "angular",
   "contributors": [
     {
+      "login": "huynhr",
+      "name": "Raymond Huynh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11905306?v=4",
+      "profile": "https://github.com/huynhr",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "DruzyDowns",
       "name": "Druzy Downs",
       "avatar_url": "https://avatars.githubusercontent.com/u/33797136?v=4",

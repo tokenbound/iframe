@@ -6,6 +6,12 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
 1. Fork the repo
 2. Fill in environment variables in `.env.local` file
 3. Sign up for the Alchemy and n.xyz accounts and fill in the relevant variables in your `.env.local` file.
@@ -85,6 +91,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tbody>
     <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/huynhr"><img src="https://avatars.githubusercontent.com/u/11905306?v=4?s=100" width="100px;" alt="Raymond Huynh"/><br /><sub><b>Raymond Huynh</b></sub></a><br /><a href="https://github.com/tokenbound/iframe/commits?author=huynhr" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/DruzyDowns"><img src="https://avatars.githubusercontent.com/u/33797136?v=4?s=100" width="100px;" alt="Druzy Downs"/><br /><sub><b>Druzy Downs</b></sub></a><br /><a href="https://github.com/tokenbound/iframe/commits?author=DruzyDowns" title="Code">💻</a></td>
     </tr>
   </tbody>
