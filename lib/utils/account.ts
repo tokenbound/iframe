@@ -1,16 +1,20 @@
 import * as Sentry from "@sentry/nextjs";
-import { rpcClient } from "@/lib/clients/viem";
+import { getPublicClient } from "@/lib/clients/viem";
 import { implementationAbi, tokenboundAbi } from "@/lib/abi";
-import { chainId, implementationAddress, salt, tokenboundAddress } from "@/lib/constants";
+import { implementationAddress, salt, tokenboundAddress } from "@/lib/constants";
 
 interface GetAccountStatus {
   data?: boolean;
   error?: string;
 }
 
-export async function getAccountStatus(account: string): Promise<GetAccountStatus> {
+export async function getAccountStatus(
+  chainId: number,
+  account: string
+): Promise<GetAccountStatus> {
   try {
-    const response = (await rpcClient.readContract({
+    const publicClient = getPublicClient(chainId);
+    const response = (await publicClient.readContract({
       address: account as `0x${string}`,
       abi: implementationAbi,
       functionName: "isLocked",
@@ -40,15 +44,19 @@ interface GetAccount {
   error?: string;
 }
 
-export async function getAccount(tokenId: number, contractAddress: string): Promise<GetAccount> {
+export async function getAccount(
+  tokenId: number,
+  contractAddress: string,
+  chainId: number
+): Promise<GetAccount> {
   try {
-    const response = (await rpcClient.readContract({
+    const publicClient = getPublicClient(chainId);
+    const response = (await publicClient.readContract({
       address: tokenboundAddress as `0x${string}`,
       abi: tokenboundAbi,
       functionName: "account",
-      args: [implementationAddress, chainId, contractAddress, tokenId, salt],
+      args: [implementationAddress, String(chainId), contractAddress, tokenId, salt],
     })) as string;
-
     return { data: response };
   } catch (err) {
     console.error(err);

@@ -1,4 +1,4 @@
-import { alchemy } from "@/lib/clients";
+import { getAlchemy } from "@/lib/clients";
 import useSWR from "swr";
 import { getAlchemyImageSrc, getNftAsset } from "@/lib/utils";
 
@@ -21,6 +21,7 @@ export const useNft = ({
   cacheKey,
   contractAddress,
   hasCustomImplementation,
+  chainId
 }: {
   tokenId: number;
   apiEndpoint?: string;
@@ -28,6 +29,7 @@ export const useNft = ({
   cacheKey?: string;
   contractAddress: `0x${string}`;
   hasCustomImplementation: boolean;
+  chainId: number
 }) => {
   let key = null;
   if (hasCustomImplementation) key = cacheKey ?? `getNftAsset-${tokenId}`;
@@ -48,6 +50,7 @@ export const useNft = ({
     `nftMetadata/${contractAddress}/${tokenId}`,
     (url: string) => {
       const [, contractAddress, tokenId] = url.split("/");
+      const alchemy = getAlchemy(chainId)
       return alchemy.nft.getNftMetadataBatch([{ contractAddress, tokenId }]);
     }
   );
