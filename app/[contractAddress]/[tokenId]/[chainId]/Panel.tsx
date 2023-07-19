@@ -59,10 +59,24 @@ export const Panel = ({
         <span
           className="inline-block rounded-2xl bg-[#F6F8FA] px-4 py-2 text-xs font-bold text-[#666D74] hover:cursor-pointer"
           onClick={() => {
-            navigator.clipboard.writeText(account).then(() => {
+            const textarea = document.createElement("textarea");
+            textarea.textContent = account;
+            textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in MS Edge.
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            try {
+              document.execCommand("copy"); // Security exception may be thrown by some browsers.
               setCopied(true);
               setTimeout(() => setCopied(false), 1000);
-            });
+
+              return;
+            } catch (ex) {
+              console.warn("Copy to clipboard failed.", ex);
+              return false;
+            } finally {
+              document.body.removeChild(textarea);
+            }
           }}
         >
           {copied ? (

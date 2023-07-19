@@ -27,7 +27,6 @@ const CHAIN_ID = 1;
 export const Panel = ({ className, approvalTokensCount, account, tokens, title }: Props) => {
   const [copied, setCopied] = useState(false);
   const [currentTab, setCurrentTab] = useState(TABS.COLLECTIBLES);
-
   const displayedAddress = account;
 
   const { data: ethBalance } = useSWR(account ? account : null, async (accountAddress) => {
@@ -52,10 +51,24 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
         <span
           className="py-2 px-4 bg-[#F6F8FA] rounded-2xl text-xs font-bold text-[#666D74] inline-block hover:cursor-pointer"
           onClick={() => {
-            navigator.clipboard.writeText(account).then(() => {
+            const textarea = document.createElement("textarea");
+            textarea.textContent = account;
+            textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in MS Edge.
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            try {
+              document.execCommand("copy"); // Security exception may be thrown by some browsers.
               setCopied(true);
               setTimeout(() => setCopied(false), 1000);
-            });
+
+              return;
+            } catch (ex) {
+              console.warn("Copy to clipboard failed.", ex);
+              return false;
+            } finally {
+              document.body.removeChild(textarea);
+            }
           }}
         >
           {copied ? (
