@@ -6,6 +6,7 @@ const getViemNetwork = (chainId: number) => {
     if (chainId === 420) return optimism
     if (chainId === 5) return goerli
     if (chainId === 80001) return polygonMumbai
+    if (chainId === 11155111) return sepolia
 }
 
 export default getViemNetwork
