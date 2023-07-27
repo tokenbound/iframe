@@ -6,6 +6,7 @@ const getAlchemyNetwork = (chainId: number) => {
     if (chainId == 420) return Network.OPT_MAINNET
     if (chainId == 5) return Network.ETH_GOERLI
     if (chainId == 80001) return Network.MATIC_MUMBAI
+    if (chainId == 11155111) return Network.ETH_SEPOLIA
 }
 
 export default getAlchemyNetwork
