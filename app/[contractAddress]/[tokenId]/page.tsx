@@ -144,7 +144,7 @@ export default function Token({ params, searchParams }: TokenParams) {
             <TokenDetail
               isOpen={showTokenDetail}
               handleOpenClose={setShowTokenDetail}
-              approvalTokensCount={approvalData?.length}
+              approvalTokensCount={approvalData?.filter((item) => item.hasApprovals).length}
               account={account}
               tokens={tokens}
               title={nftMetadata.title}
