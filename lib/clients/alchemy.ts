@@ -1,14 +1,20 @@
 import { Alchemy, Network } from "alchemy-sdk";
+import getAlchemyNetwork from "../utils/getAlchemyNetwork";
 
-const config = {
-  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY,
-  network:
-    process.env.NEXT_PUBLIC_CHAIN_ID === "1"
-      ? Network.ETH_MAINNET
-      : Network.ETH_GOERLI,
+export const getAlchemy = (chainId: number) => {
+  const network = getAlchemyNetwork(chainId);
+
+  const config = {
+    apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY,
+    network,
+  };
+  const alchemy = new Alchemy(config);
+  return alchemy;
 };
 
-export const alchemy = new Alchemy(config);
+export const alchemy = getAlchemy(
+  process.env.NEXT_PUBLIC_CHAIN_ID ? Number(process.env.NEXT_PUBLIC_CHAIN_ID) : 1
+);
 
 const configLens = {
   apiKey: process.env.NEXT_PUBLIC_ALCHEMY_KEY_POLYGON,

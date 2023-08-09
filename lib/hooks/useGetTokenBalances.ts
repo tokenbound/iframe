@@ -1,10 +1,11 @@
 import useSWR from "swr";
-import { alchemy } from "@/lib/clients";
+import { getAlchemy } from "@/lib/clients";
 
-export function useGetTokenBalances(account: `0x${string}`) {
+export function useGetTokenBalances(account: `0x${string}`, chainId: number) {
   return useSWR(account ? `getTokenBalance-${account}` : null, async (accountRaw) => {
     // Get token balances
     const accountAddress = accountRaw.split("-")[1];
+    const alchemy = getAlchemy(chainId)
     const balances = await alchemy.core.getTokenBalances(accountAddress);
 
     // Remove tokens with zero balance

@@ -1,0 +1,53 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "huynhr",
+      "name": "Raymond Huynh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11905306?v=4",
+      "profile": "https://github.com/huynhr",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "DruzyDowns",
+      "name": "Druzy Downs",
+      "avatar_url": "https://avatars.githubusercontent.com/u/33797136?v=4",
+      "profile": "https://github.com/DruzyDowns",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "SweetmanTech",
+      "name": "SweetmanTech.eth",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23249402?v=4",
+      "profile": "https://github.com/SweetmanTech",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "gandarufu",
+      "name": "gandarufu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30931613?v=4",
+      "profile": "https://github.com/gandarufu",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "iframe",
+  "projectOwner": "tokenbound"
+}
