@@ -26,7 +26,7 @@ const iconVariant = {
     transition: { duration: 0.3, ease: "easeInOut" },
   },
   unHovered: {
-    opacity: 0.3,
+    opacity: 0.7,
     boxShadow: "none",
     transition: { duration: 0.3, ease: "easeInOut" },
   },
