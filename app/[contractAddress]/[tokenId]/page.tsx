@@ -112,32 +112,21 @@ export default function Token({ params, searchParams }: TokenParams) {
 
   const allNfts = [...nfts, ...lensNfts];
 
-  const { data: approvalData } = useGetApprovals(
-    allNfts.map((nft) => nft.contract.address),
-    account
-  );
+  const { data: approvalData } = useGetApprovals(allNfts, account);
 
   useEffect(() => {
     if (nfts !== undefined && nfts.length) {
       nfts.map((token) => {
-        const foundApproval = approvalData?.find((item: any) => {
-          const contract = item?.value?.contract;
-          const tokenIds = item?.approvedTokenIds;
-          const approvalForAll = item.nftApprovalForAll;
-
-          if (getAddress(contract) === getAddress(token.contract.address) && approvalForAll) {
-            return true;
-          }
-
-          if (
-            getAddress(contract) === getAddress(token.contract.address) &&
-            tokenIds &&
-            tokenIds.includes(String(token.tokenId))
-          ) {
+        const foundApproval = approvalData?.find((item) => {
+          const contract = item.contract.address;
+          const tokenId = item.tokenId;
+          const hasApprovals = item.hasApprovals;
+          const matchedAddress = getAddress(contract) === getAddress(token.contract.address);
+          const matchedTokenId = String(tokenId) && String(token.tokenId);
+          if (matchedAddress && matchedTokenId && hasApprovals) {
             return true;
           }
         });
-
         token.hasApprovals = foundApproval?.hasApprovals || false;
       });
       setTokens(nfts);
