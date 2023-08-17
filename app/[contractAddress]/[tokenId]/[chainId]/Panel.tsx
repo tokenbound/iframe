@@ -9,6 +9,7 @@ import { getAlchemy } from "@/lib/clients";
 import { ethers } from "ethers";
 import { useGetTokenBalances } from "@/lib/hooks";
 import { getEtherscanLink, shortenAddress } from "@/lib/utils";
+import { chainIdToOpenseaAssetUrl } from "@/lib/constants";
 
 export const TABS = {
   COLLECTIBLES: "Collectibles",
@@ -119,9 +120,13 @@ export const Panel = ({
                 media = t?.media[0]?.raw;
               }
 
+              const openseaUrl = `${chainIdToOpenseaAssetUrl[chainId]}/${t.contract.address}/${t.tokenId}`;
+
               return (
                 <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
-                  <MediaViewer url={media} isVideo={isVideo} />
+                  <a href={openseaUrl} target="_blank" className="cursor-pointer">
+                    <MediaViewer url={media} isVideo={isVideo} />
+                  </a>
                 </li>
               );
             })}
