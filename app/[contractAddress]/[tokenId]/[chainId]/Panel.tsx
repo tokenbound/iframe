@@ -2,12 +2,13 @@
 import clsx from "clsx";
 import { useState } from "react";
 import { Check, Exclamation } from "@/components/icon";
-import { Tabs, TabPanel, MediaViewer } from "@/components/ui";
+import { Tabs, TabPanel, MediaViewer, ExternalLink } from "@/components/ui";
 import { TbaOwnedNft } from "@/lib/types";
 import useSWR from "swr";
 import { getAlchemy } from "@/lib/clients";
 import { ethers } from "ethers";
 import { useGetTokenBalances } from "@/lib/hooks";
+import { getEtherscanLink, shortenAddress } from "@/lib/utils";
 
 export const TABS = {
   COLLECTIBLES: "Collectibles",
@@ -43,6 +44,7 @@ export const Panel = ({
   });
 
   const { data: tokenBalanceData } = useGetTokenBalances(account as `0x${string}`, chainId);
+  const etherscanLink = getEtherscanLink({ chainId, address: account });
 
   return (
     <div
@@ -55,38 +57,42 @@ export const Panel = ({
         <div className="h-[2.5px] w-[34px] bg-[#E4E4E4]"></div>
       </div>
       <h1 className="text-base font-bold uppercase text-black">{title}</h1>
-      {account && (
-        <span
-          className="inline-block rounded-2xl bg-[#F6F8FA] px-4 py-2 text-xs font-bold text-[#666D74] hover:cursor-pointer"
-          onClick={() => {
-            const textarea = document.createElement("textarea");
-            textarea.textContent = account;
-            textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in MS Edge.
-            document.body.appendChild(textarea);
-            textarea.select();
 
-            try {
-              document.execCommand("copy"); // Security exception may be thrown by some browsers.
-              setCopied(true);
-              setTimeout(() => setCopied(false), 1000);
+      {account && displayedAddress && (
+        <div className="flex items-center justify-start space-x-2">
+          <span
+            className="inline-block rounded-2xl bg-[#F6F8FA] px-4 py-2 text-xs font-bold text-[#666D74] hover:cursor-pointer"
+            onClick={() => {
+              const textarea = document.createElement("textarea");
+              textarea.textContent = account;
+              textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in MS Edge.
+              document.body.appendChild(textarea);
+              textarea.select();
 
-              return;
-            } catch (ex) {
-              console.warn("Copy to clipboard failed.", ex);
-              return false;
-            } finally {
-              document.body.removeChild(textarea);
-            }
-          }}
-        >
-          {copied ? (
-            <span>
-              <Check />
-            </span>
-          ) : (
-            displayedAddress
-          )}
-        </span>
+              try {
+                document.execCommand("copy"); // Security exception may be thrown by some browsers.
+                setCopied(true);
+                setTimeout(() => setCopied(false), 1000);
+
+                return;
+              } catch (ex) {
+                console.warn("Copy to clipboard failed.", ex);
+                return false;
+              } finally {
+                document.body.removeChild(textarea);
+              }
+            }}
+          >
+            {copied ? (
+              <span>
+                <Check />
+              </span>
+            ) : (
+              shortenAddress(displayedAddress)
+            )}
+          </span>
+          <ExternalLink className="h-[20px] w-[20px]" link={etherscanLink} />
+        </div>
       )}
       {approvalTokensCount ? (
         <div className="flex items-start space-x-2 rounded-lg border-0 bg-tb-warning-secondary p-2">
