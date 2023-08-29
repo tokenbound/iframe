@@ -1,3 +1,5 @@
+"use client";
+
 import { Variants, motion } from "framer-motion";
 import { TokenboundLogo } from "@/components/icon";
 import { Panel } from "./Panel";

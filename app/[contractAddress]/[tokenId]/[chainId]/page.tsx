@@ -1,6 +1,6 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { isNil } from "lodash";
 import { getAccount, getAccountStatus, getLensNfts, getNfts } from "@/lib/utils";
@@ -10,7 +10,12 @@ import { useGetApprovals, useNft } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
 import { getAddress } from "viem";
 import { TokenDetail } from "./TokenDetail";
-import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
+import {
+  HAS_CUSTOM_IMPLEMENTATION,
+  implementationAddress,
+  tokenboundAddress,
+} from "@/lib/constants";
+import { useTokenboundClient } from "@/lib/hooks/useTokenboundClient";
 
 interface TokenParams {
   params: {
@@ -64,10 +69,23 @@ export default function Token({ params, searchParams }: TokenParams) {
   }, [nftImages]);
 
   // Fetch nft's TBA
-  const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
-    const result = await getAccount(Number(tokenId), contractAddress, chainIdNumber);
-    return result.data;
-  });
+  // const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
+  //   const result = await getAccount(Number(tokenId), contractAddress, chainIdNumber);
+  //   return result.data;
+  // });
+  const { tokenboundClient } = useTokenboundClient({ chainId: chainIdNumber });
+  const account = useMemo(
+    () =>
+      tokenboundClient
+        ? tokenboundClient.getAccount({
+            tokenContract: tokenboundAddress as `0x${string}`,
+            tokenId,
+            //@ts-ignore
+            implementationAddress,
+          })
+        : null,
+    [tokenboundClient, tokenId, tokenboundAddress, implementationAddress, chainIdNumber]
+  );
 
   // Get nft's TBA account bytecode to check if account is deployed or not
   const { data: accountBytecode } = useSWR(
@@ -133,6 +151,8 @@ export default function Token({ params, searchParams }: TokenParams) {
       }
     }
   }, [nfts, approvalData, lensNfts]);
+
+  console.log({ account, nftImages, nftMetadata });
 
   return (
     <div className="h-screen w-screen bg-slate-100">

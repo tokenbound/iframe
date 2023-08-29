@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
 import clsx from "clsx";
 import { useState } from "react";

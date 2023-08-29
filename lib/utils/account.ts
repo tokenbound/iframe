@@ -51,12 +51,16 @@ export async function getAccount(
 ): Promise<GetAccount> {
   try {
     const publicClient = getPublicClient(chainId);
+
+    console.log({ tokenId, contractAddress, chainId });
     const response = (await publicClient.readContract({
       address: tokenboundAddress as `0x${string}`,
       abi: tokenboundAbi,
       functionName: "account",
       args: [implementationAddress, String(chainId), contractAddress, tokenId, salt],
     })) as string;
+
+    console.log({ response });
     return { data: response };
   } catch (err) {
     console.error(err);
