@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ExternalLinkIcon } from "lucide-react";
+import { ExternalLink as ExternalLinkIcon } from "lucide-react";
 
 interface Props
   extends React.DetailedHTMLProps<
@@ -19,7 +19,7 @@ export function ExternalLink({ link, className, ...rest }: Props) {
       className={clsx("cursor-pointer", className)}
       {...rest}
     >
-      <ExternalLinkIcon height={"20px"} width={"20px"} />
+      <ExternalLinkIcon height={"20px"} width={"20px"} color="#A1A1AA" />
     </a>
   );
 }
