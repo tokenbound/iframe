@@ -1,5 +1,5 @@
 import { Variants, motion } from "framer-motion";
-import { TokenboundLogo } from "@/components/icon";
+import { GalverseLogo, TokenboundLogo } from "@/components/icon";
 import { Panel } from "./Panel";
 import { TbaOwnedNft } from "@/lib/types";
 
@@ -12,6 +12,7 @@ interface Props {
   tokens: TbaOwnedNft[];
   title: string;
   chainId: number;
+  logo?: string;
 }
 
 const variants = {
@@ -32,6 +33,15 @@ const iconVariant = {
   },
 };
 
+type LogoType = {
+  [logo: string]: any;
+};
+
+const Logo: LogoType = {
+  DEFAULT: TokenboundLogo,
+  GALVERSE: GalverseLogo,
+};
+
 export const TokenDetail = ({
   className,
   isOpen,
@@ -41,18 +51,21 @@ export const TokenDetail = ({
   tokens,
   title,
   chainId,
+  logo,
 }: Props) => {
   let currentAnimate = isOpen ? "open" : "closed";
+
+  const CustomLogo = logo ? Logo[logo.toUpperCase()] : Logo["DEFAULT"];
 
   return (
     <div className={className}>
       <motion.div
-        className="absolute left-4 top-4 z-10 rounded-full"
+        className="absolute left-4 top-4 z-10 rounded-full cursor-pointer"
         whileHover="hover"
         variants={iconVariant}
         initial="unHovered"
       >
-        <TokenboundLogo onClick={() => handleOpenClose(!isOpen)} />
+        <CustomLogo onClick={() => handleOpenClose(!isOpen)} />
       </motion.div>
       {isOpen && (
         <motion.div

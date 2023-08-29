@@ -20,6 +20,7 @@ interface TokenParams {
   };
   searchParams: {
     disableloading: string;
+    logo?: string;
   };
 }
 
@@ -28,7 +29,7 @@ export default function Token({ params, searchParams }: TokenParams) {
   const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
   const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
   const { tokenId, contractAddress, chainId } = params;
-  const { disableloading } = searchParams;
+  const { disableloading, logo } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
   const chainIdNumber = parseInt(chainId);
 
@@ -150,6 +151,7 @@ export default function Token({ params, searchParams }: TokenParams) {
               tokens={tokens}
               title={nftMetadata.title}
               chainId={chainIdNumber}
+              logo={logo}
             />
           )}
           <div className="max-h-1080[px] relative h-full w-full max-w-[1080px]">
