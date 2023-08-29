@@ -10,6 +10,8 @@ interface Props
   className?: string;
 }
 
+const zinc400 = "#A1A1AA";
+
 export function ExternalLink({ link, className, ...rest }: Props) {
   return (
     <a
@@ -19,7 +21,7 @@ export function ExternalLink({ link, className, ...rest }: Props) {
       className={clsx("cursor-pointer", className)}
       {...rest}
     >
-      <ExternalLinkIcon height={"20px"} width={"20px"} color="#A1A1AA" />
+      <ExternalLinkIcon height={"20px"} width={"20px"} color={zinc400} />
     </a>
   );
 }
