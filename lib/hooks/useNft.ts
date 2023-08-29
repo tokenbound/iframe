@@ -2,7 +2,14 @@ import { getAlchemy } from "@/lib/clients";
 import useSWR from "swr";
 import { getAlchemyImageSrc, getNftAsset } from "@/lib/utils";
 
-function formatImageReturn(imageData?: string | string[]): string[] {
+interface FormatImageReturnParams {
+  imageData?: string | string[];
+  loading: boolean;
+}
+
+function formatImageReturn({ imageData, loading }: FormatImageReturnParams): string[] | null {
+  if (loading) return null;
+
   if (!imageData) {
     return ["/no-img.jpg"];
   }
@@ -21,7 +28,7 @@ export const useNft = ({
   cacheKey,
   contractAddress,
   hasCustomImplementation,
-  chainId
+  chainId,
 }: {
   tokenId: number;
   apiEndpoint?: string;
@@ -29,7 +36,7 @@ export const useNft = ({
   cacheKey?: string;
   contractAddress: `0x${string}`;
   hasCustomImplementation: boolean;
-  chainId: number
+  chainId: number;
 }) => {
   let key = null;
   if (hasCustomImplementation) key = cacheKey ?? `getNftAsset-${tokenId}`;
@@ -50,17 +57,19 @@ export const useNft = ({
     `nftMetadata/${contractAddress}/${tokenId}`,
     (url: string) => {
       const [, contractAddress, tokenId] = url.split("/");
-      const alchemy = getAlchemy(chainId)
+      const alchemy = getAlchemy(chainId);
       return alchemy.nft.getNftMetadataBatch([{ contractAddress, tokenId }]);
     }
   );
 
+  const loading = hasCustomImplementation ? customNftLoading : nftMetadataLoading;
+
   return {
     data:
       hasCustomImplementation && !customNftError
-        ? formatImageReturn(customNftData)
-        : formatImageReturn(getAlchemyImageSrc(nftMetadata?.[0])),
+        ? formatImageReturn({ imageData: customNftData, loading })
+        : formatImageReturn({ imageData: getAlchemyImageSrc(nftMetadata?.[0]), loading }),
     nftMetadata: nftMetadata?.[0],
-    loading: hasCustomImplementation ? customNftLoading : nftMetadataLoading,
+    loading,
   };
 };
