@@ -19,7 +19,8 @@ interface TokenParams {
     chainId: string;
   };
   searchParams: {
-    apiEndpoint: string;
+    disableloading: string;
+    logo?: string;
   };
 }
 
@@ -28,6 +29,7 @@ export default function Token({ params, searchParams }: TokenParams) {
   const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
   const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
   const { tokenId, contractAddress, chainId } = params;
+  const { disableloading, logo } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
   const chainIdNumber = parseInt(chainId);
 
@@ -61,7 +63,7 @@ export default function Token({ params, searchParams }: TokenParams) {
           console.error("Error loading images:", error);
         });
     }
-  }, [nftImages]);
+  }, [nftImages, nftMetadataLoading]);
 
   // Fetch nft's TBA
   const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
@@ -134,6 +136,8 @@ export default function Token({ params, searchParams }: TokenParams) {
     }
   }, [nfts, approvalData, lensNfts]);
 
+  const showLoading = disableloading !== "true" && nftMetadataLoading;
+
   return (
     <div className="h-screen w-screen bg-slate-100">
       <div className="max-w-screen relative mx-auto aspect-square max-h-screen overflow-hidden bg-white">
@@ -147,16 +151,17 @@ export default function Token({ params, searchParams }: TokenParams) {
               tokens={tokens}
               title={nftMetadata.title}
               chainId={chainIdNumber}
+              logo={logo}
             />
           )}
           <div className="max-h-1080[px] relative h-full w-full max-w-[1080px]">
-            {nftMetadataLoading ? (
+            {showLoading ? (
               <div className="absolute left-[45%] top-[50%] z-10 h-20 w-20 -translate-x-[50%] -translate-y-[50%] animate-bounce">
                 <TbLogo />
               </div>
             ) : (
               <div
-                className={`grid w-full grid-cols-1 grid-rows-1 transition ${
+                className={`bg-white h-full w-full grid grid-cols-1 grid-rows-1 transition ${
                   imagesLoaded ? "" : "blur-xl"
                 }`}
               >
