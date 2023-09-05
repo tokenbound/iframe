@@ -67,7 +67,7 @@ export const TokenDetail = ({
           width={46}
           height={46}
           onClick={() => handleOpenClose(false)}
-          className="absolute left-4 top-4 z-10 p-2 rounded-full bg-black/60 cursor-pointer hover:bg-black transition-all duration-200 max-[440px]:h-[36px] max-[440px]:w-[36px]"
+          className="absolute left-4 top-4 z-10 p-2 rounded-full bg-black/60 cursor-pointer hover:bg-black transition-all duration-200 max-[440px]:h-[40px] max-[440px]:w-[40px]"
         />
       ) : (
         <motion.div
