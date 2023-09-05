@@ -198,11 +198,11 @@ export const Panel = ({
               <img
                 src="/ethereum-logo.png"
                 alt="ethereum logo"
-                className="h-[40px] w-[40px] max-[440px]:h-[28px] max-[440px]:w-[28px]"
+                className="h-[28px] w-[28px] max-[440px]:h-[28px] max-[440px]:w-[28px]"
               />
               <div className="text-xl max-[440px]:text-lg font-medium text-white">Ethereum</div>
             </div>
-            <div className="text-xl max-[440px]:text-lg font-bold text-white">
+            <div className="text-xl max-[440px]:text-lg font-medium text-white">
               {ethBalance ? Number(ethBalance).toFixed(2) : "0.00"}
             </div>
           </div>
@@ -216,7 +216,7 @@ export const Panel = ({
                   <img
                     src={tokenData.logo}
                     alt="coin logo"
-                    className="h-[40px] w-[40px] max-[440px]:h-[28px] max-[440px]:w-[28px]"
+                    className="h-[28px] w-[28px] max-[440px]:h-[28px] max-[440px]:w-[28px]"
                   />
                 ) : (
                   <div className="text-3xl">💰</div>
@@ -225,7 +225,7 @@ export const Panel = ({
                   {tokenData.name || ""}
                 </div>
               </div>
-              <div className="text-xl max-[440px]:text-lg font-bold text-white">
+              <div className="text-xl max-[440px]:text-lg font-medium text-white">
                 {tokenData.balance}
               </div>
             </div>
