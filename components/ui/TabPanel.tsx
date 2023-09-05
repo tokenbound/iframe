@@ -10,7 +10,7 @@ export const TabPanel = ({ value, currentTab, ...props }: Props) => {
   return (
     <>
       {value === currentTab ? (
-        <div className={clsx(props.className, "py-4")} {...props}>
+        <div className={clsx(props.className, "py-2")} {...props}>
           {props.children}
         </div>
       ) : null}

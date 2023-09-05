@@ -14,7 +14,13 @@ export const MediaViewer = ({ url, isVideo = false }: Props) => {
     }
 
     return (
-      <video className="aspect-square rounded-xl object-cover" muted autoPlay={true} loop={true}>
+      <video
+        className="aspect-square rounded-xl object-cover"
+        muted
+        autoPlay={true}
+        playsInline
+        loop={true}
+      >
         <source src={videoUrl} type="video/mp4" />
       </video>
     );

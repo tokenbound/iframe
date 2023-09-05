@@ -17,9 +17,16 @@ module.exports = {
         "tb-warning-primary": "#FF8A00",
         "tb-warning-secondary": "rgba(255, 138, 0, 0.1)",
         "tb-text-gray": "#666D74",
+        "black-bg": "#101010",
+        "gray-text": "#AFAFAF",
       },
       transitionProperty: {
         width: "width",
+      },
+
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        secondary: ["Space Mono", "monospace"],
       },
     },
   },

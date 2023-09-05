@@ -152,6 +152,7 @@ export default function Token({ params, searchParams }: TokenParams) {
               title={nftMetadata.title}
               chainId={chainIdNumber}
               logo={logo}
+              tokenId={tokenId}
             />
           )}
           <div className="max-h-1080[px] relative h-full w-full max-w-[1080px]">
@@ -169,7 +170,7 @@ export default function Token({ params, searchParams }: TokenParams) {
                   nftImages.map((image, i) => (
                     <img
                       key={i}
-                      className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
+                      className="col-span-1 w-full col-start-1 row-span-1 row-start-1 translate-x-0"
                       src={image}
                       alt="Nft image"
                     />
