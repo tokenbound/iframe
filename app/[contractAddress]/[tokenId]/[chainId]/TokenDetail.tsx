@@ -82,7 +82,7 @@ export const TokenDetail = ({
 
       {isOpen && (
         <motion.div
-          className={`custom-scroll absolute bottom-0 z-10 w-full max-w-[1080px] overflow-y-auto h-[85%] max-[440px]:h-[82%]`}
+          className={`custom-scroll absolute bottom-0 z-10 w-full max-w-[1080px] overflow-y-auto h-[85%] max-[440px]:h-[36px]`}
           animate={currentAnimate}
           variants={variants}
           initial="closed"
