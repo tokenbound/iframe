@@ -2,7 +2,7 @@ import { OwnedNft } from "alchemy-sdk";
 import { erc721Abi } from "@/lib/abi";
 import { getPublicClient } from "@/lib/clients";
 import useSWR from "swr";
-import { graphApiKey } from "@/lib/constants";
+import { chainIdToRpcUrl, graphApiKey } from "@/lib/constants";
 import request from "graphql-request";
 
 export const useGetApprovals = (ownedNfts: OwnedNft[], owner?: string, chainID = 1) => {
@@ -40,7 +40,8 @@ export async function getApproved(
   chainId: number
 ): Promise<GetApproved> {
   try {
-    const publicClient = getPublicClient(chainId);
+    const providerUrl = chainIdToRpcUrl[chainId];
+    const publicClient = getPublicClient(chainId, providerUrl);
     const response = (await publicClient.readContract({
       address: account as `0x${string}`,
       abi: erc721Abi,
