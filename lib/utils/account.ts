@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { getPublicClient } from "@/lib/clients/viem";
 import { implementationAbi, tokenboundAbi } from "@/lib/abi";
-import { implementationAddress, salt, tokenboundAddress } from "@/lib/constants";
+import { chainIdToRpcUrl, implementationAddress, salt, tokenboundAddress } from "@/lib/constants";
 
 interface GetAccountStatus {
   data?: boolean;
@@ -13,7 +13,8 @@ export async function getAccountStatus(
   account: string
 ): Promise<GetAccountStatus> {
   try {
-    const publicClient = getPublicClient(chainId);
+    const providerUrl = chainIdToRpcUrl[chainId];
+    const publicClient = getPublicClient(chainId, providerUrl);
     const response = (await publicClient.readContract({
       address: account as `0x${string}`,
       abi: implementationAbi,
@@ -50,7 +51,8 @@ export async function getAccount(
   chainId: number
 ): Promise<GetAccount> {
   try {
-    const publicClient = getPublicClient(chainId);
+    const providerUrl = chainIdToRpcUrl[chainId];
+    const publicClient = getPublicClient(chainId, providerUrl);
     const response = (await publicClient.readContract({
       address: tokenboundAddress as `0x${string}`,
       abi: tokenboundAbi,

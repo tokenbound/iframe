@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { isNil } from "lodash";
+import { TokenboundClient } from "@tokenbound/sdk";
 import { getAccount, getAccountStatus, getLensNfts, getNfts } from "@/lib/utils";
-import { rpcClient } from "@/lib/clients";
 import { TbLogo } from "@/components/icon";
 import { useGetApprovals, useNft } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
 import { getAddress } from "viem";
 import { TokenDetail } from "./TokenDetail";
-import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
+import { HAS_CUSTOM_IMPLEMENTATION, alchemyApiKey } from "@/lib/constants";
 
 interface TokenParams {
   params: {
@@ -32,6 +32,7 @@ export default function Token({ params, searchParams }: TokenParams) {
   const { disableloading, logo } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
   const chainIdNumber = parseInt(chainId);
+  const tokenboundClient = new TokenboundClient({ chainId: chainIdNumber });
 
   const {
     data: nftImages,
@@ -72,12 +73,10 @@ export default function Token({ params, searchParams }: TokenParams) {
   });
 
   // Get nft's TBA account bytecode to check if account is deployed or not
-  const { data: accountBytecode } = useSWR(
+  const { data: accountIsDeployed } = useSWR(
     account ? `/account/${account}/bytecode` : null,
-    async () => rpcClient.getBytecode({ address: account as `0x${string}` })
+    async () => tokenboundClient.checkAccountDeployment({ accountAddress: account as `0x{string}` })
   );
-
-  const accountIsDeployed = accountBytecode && accountBytecode?.length > 2;
 
   const { data: isLocked } = useSWR(account ? `/account/${account}/locked` : null, async () => {
     if (!accountIsDeployed) {
@@ -107,7 +106,7 @@ export default function Token({ params, searchParams }: TokenParams) {
     if (account) {
       fetchNfts(account);
     }
-  }, [account, accountBytecode, chainIdNumber]);
+  }, [account, accountIsDeployed, chainIdNumber]);
 
   const [tokens, setTokens] = useState<TbaOwnedNft[]>([]);
   const allNfts = [...nfts, ...lensNfts];
