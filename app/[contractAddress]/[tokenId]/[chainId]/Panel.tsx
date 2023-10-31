@@ -133,7 +133,7 @@ export const Panel = ({
           </ul>
         ) : (
           <div className={"h-full"}>
-            <p className="text-center text-sm text-gray-500">No collectables found</p>
+            <p className="text-center text-sm text-gray-500">No collectibles found</p>
           </div>
         )}
       </TabPanel>
