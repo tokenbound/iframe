@@ -26,8 +26,8 @@ interface TokenParams {
 
 export default function Token({ params, searchParams }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
-  const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
+  // const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
+  // const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
   const { tokenId, contractAddress, chainId } = params;
   const { disableloading, logo } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
@@ -81,9 +81,15 @@ export default function Token({ params, searchParams }: TokenParams) {
   }, [nftImages, nftMetadataLoading]);
 
   // Fetch nft's TBA
-  const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
-    const result = await getAccount(Number(tokenId), contractAddress, chainIdNumber);
-    return result.data;
+  // const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
+  //   const result = await getAccount(Number(tokenId), contractAddress, chainIdNumber);
+  //   return result.data;
+  // });
+  const { account, nfts, handleAccountChange, tba, tbaV2 } = useTBADetails({
+    tokenboundClient,
+    tokenId,
+    tokenContract: contractAddress as `0x${string}`,
+    chainId: chainIdNumber,
   });
 
   // Get nft's TBA account bytecode to check if account is deployed or not
@@ -104,31 +110,31 @@ export default function Token({ params, searchParams }: TokenParams) {
   });
 
   // fetch nfts inside TBA
-  useEffect(() => {
-    // we need to abstract this out to a function
-    // fetch both nfts for v3 and v2
-    async function fetchNfts(account: string) {
-      const [data, lensData] = await Promise.all([
-        getNfts(chainIdNumber, account),
-        getLensNfts(account),
-      ]);
-      if (data) {
-        setNfts(data);
-      }
-      if (lensData) {
-        setLensNfts(lensData);
-      }
-    }
+  // useEffect(() => {
+  //   // we need to abstract this out to a function
+  //   // fetch both nfts for v3 and v2
+  //   async function fetchNfts(account: string) {
+  //     const [data, lensData] = await Promise.all([
+  //       getNfts(chainIdNumber, account),
+  //       getLensNfts(account),
+  //     ]);
+  //     if (data) {
+  //       setNfts(data);
+  //     }
+  //     if (lensData) {
+  //       setLensNfts(lensData);
+  //     }
+  //   }
 
-    if (account) {
-      fetchNfts(account);
-    }
-  }, [account, accountIsDeployed, chainIdNumber]);
+  //   if (account) {
+  //     fetchNfts(account);
+  //   }
+  // }, [account, accountIsDeployed, chainIdNumber]);
 
   const [tokens, setTokens] = useState<TbaOwnedNft[]>([]);
-  const allNfts = [...nfts, ...lensNfts];
+  // const allNfts = [...nfts, ...lensNfts];
 
-  const { data: approvalData } = useGetApprovals(allNfts, account, chainIdNumber);
+  const { data: approvalData } = useGetApprovals(nfts, account, chainIdNumber);
 
   useEffect(() => {
     if (nfts !== undefined && nfts.length) {
@@ -146,20 +152,13 @@ export default function Token({ params, searchParams }: TokenParams) {
         token.hasApprovals = foundApproval?.hasApprovals || false;
       });
       setTokens(nfts);
-      if (lensNfts) {
-        setTokens([...nfts, ...lensNfts]);
-      }
+      // if (lensNfts) {
+      //   setTokens([...nfts, ...lensNfts]);
+      // }
     }
-  }, [nfts, approvalData, lensNfts]);
+  }, [nfts, approvalData]);
 
   const showLoading = disableloading !== "true" && nftMetadataLoading;
-
-  const { account: newAccount, nfts: newNfts } = useTBADetails({
-    tokenboundClient,
-    tokenId,
-    tokenContract: contractAddress as `0x${string}`,
-    chainId: chainIdNumber,
-  });
 
   /**
    * add token approval checker call to useTBADetail
@@ -180,6 +179,8 @@ export default function Token({ params, searchParams }: TokenParams) {
               title={nftMetadata.title}
               chainId={chainIdNumber}
               logo={logo}
+              accounts={[tba, tbaV2 as string]}
+              handleAccountChange={handleAccountChange}
             />
           )}
           <div className="max-h-1080[px] relative h-full w-full max-w-[1080px]">

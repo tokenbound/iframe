@@ -1,8 +1,8 @@
 import { getAccount, getLensNfts, getNfts } from "@/lib/utils";
 import { TokenboundClient } from "@tokenbound/sdk";
-import { OwnedNft } from "alchemy-sdk";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
+import { TbaOwnedNft } from "../types";
 
 type TBADetailsParams = {
   tokenboundClient: TokenboundClient;
@@ -18,7 +18,11 @@ export const useTBADetails = ({
   chainId,
 }: TBADetailsParams) => {
   const [account, setAccount] = useState("");
-  const [nfts, setNfts] = useState<OwnedNft[]>([]);
+  const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
+
+  const handleAccountChange = (account: string) => {
+    setAccount(account);
+  };
 
   const { data: tbaV2 } = useSWR(`tbaV2-${tokenId}-${tokenContract}`, () =>
     getAccount(Number(tokenId), tokenContract, chainId)
@@ -72,10 +76,19 @@ export const useTBADetails = ({
     }
   }, [isTbaDeployed, tbaV2NFTs, tbaNFTs, tba, tbaV2]);
 
+  useEffect(() => {
+    if (account === tba) {
+      setNfts(tbaNFTs || []);
+    } else {
+      setNfts(tbaV2NFTs || []);
+    }
+  }, [account, tba, tbaV2, tbaNFTs, tbaV2NFTs]);
+
   return {
     tba,
-    tbaV2,
+    tbaV2: tbaV2?.data,
     account,
     nfts,
+    handleAccountChange,
   };
 };
