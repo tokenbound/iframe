@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { isNil } from "lodash";
-import { TokenboundClient } from "@tokenbound/sdk";
+import { TokenboundClient, TBVersion } from "@tokenbound/sdk";
 import { getAccount, getAccountStatus, getLensNfts, getNfts } from "@/lib/utils";
 import { TbLogo } from "@/components/icon";
-import { useGetApprovals, useNft } from "@/lib/hooks";
+import { useGetApprovals, useNft, useTBADetails } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
 import { getAddress } from "viem";
 import { TokenDetail } from "./TokenDetail";
@@ -32,7 +32,21 @@ export default function Token({ params, searchParams }: TokenParams) {
   const { disableloading, logo } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
   const chainIdNumber = parseInt(chainId);
+
+  const tokenboundClientV2 = new TokenboundClient({
+    chainId: chainIdNumber,
+    version: TBVersion.V2,
+  });
+
   const tokenboundClient = new TokenboundClient({ chainId: chainIdNumber });
+
+  /**
+   * A few things happening here
+   *
+   * 1. we need to fetch nfts for both v3 and v2
+   * 2. display if there are no assets in v3 display v2
+   * 3. depending on the active tab fetch the nft approvals
+   */
 
   const {
     data: nftImages,
@@ -75,7 +89,8 @@ export default function Token({ params, searchParams }: TokenParams) {
   // Get nft's TBA account bytecode to check if account is deployed or not
   const { data: accountIsDeployed } = useSWR(
     account ? `/account/${account}/bytecode` : null,
-    async () => tokenboundClient.checkAccountDeployment({ accountAddress: account as `0x{string}` })
+    async () =>
+      tokenboundClientV2.checkAccountDeployment({ accountAddress: account as `0x{string}` })
   );
 
   const { data: isLocked } = useSWR(account ? `/account/${account}/locked` : null, async () => {
@@ -90,6 +105,8 @@ export default function Token({ params, searchParams }: TokenParams) {
 
   // fetch nfts inside TBA
   useEffect(() => {
+    // we need to abstract this out to a function
+    // fetch both nfts for v3 and v2
     async function fetchNfts(account: string) {
       const [data, lensData] = await Promise.all([
         getNfts(chainIdNumber, account),
@@ -136,6 +153,16 @@ export default function Token({ params, searchParams }: TokenParams) {
   }, [nfts, approvalData, lensNfts]);
 
   const showLoading = disableloading !== "true" && nftMetadataLoading;
+
+  const { account: newAccount, nfts: newNfts } = useTBADetails({
+    tokenboundClientV2,
+    tokenboundClient,
+    tokenId,
+    tokenContract: contractAddress as `0x${string}`,
+    chainId: chainIdNumber,
+  });
+
+  console.log({ newAccount, newNfts });
 
   return (
     <div className="h-screen w-screen bg-slate-100">
