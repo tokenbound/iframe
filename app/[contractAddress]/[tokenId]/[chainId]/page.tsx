@@ -155,14 +155,16 @@ export default function Token({ params, searchParams }: TokenParams) {
   const showLoading = disableloading !== "true" && nftMetadataLoading;
 
   const { account: newAccount, nfts: newNfts } = useTBADetails({
-    tokenboundClientV2,
     tokenboundClient,
     tokenId,
     tokenContract: contractAddress as `0x${string}`,
     chainId: chainIdNumber,
   });
 
-  console.log({ newAccount, newNfts });
+  /**
+   * add token approval checker call to useTBADetail
+   * add a toggle component to switch between v2 and v3
+   */
 
   return (
     <div className="h-screen w-screen bg-slate-100">

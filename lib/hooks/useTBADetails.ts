@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 type TBADetailsParams = {
-  tokenboundClientV2: TokenboundClient;
   tokenboundClient: TokenboundClient;
   tokenId: string;
   tokenContract: `0x${string}`;
@@ -13,7 +12,6 @@ type TBADetailsParams = {
 };
 
 export const useTBADetails = ({
-  tokenboundClientV2,
   tokenboundClient,
   tokenId,
   tokenContract,
@@ -22,26 +20,16 @@ export const useTBADetails = ({
   const [account, setAccount] = useState("");
   const [nfts, setNfts] = useState<OwnedNft[]>([]);
 
-  // const tbaV2 = tokenboundClientV2.getAccount({ tokenId, tokenContract });
   const { data: tbaV2 } = useSWR(`tbaV2-${tokenId}-${tokenContract}`, () =>
     getAccount(Number(tokenId), tokenContract, chainId)
   );
 
   const tba = tokenboundClient.getAccount({ tokenId, tokenContract });
 
-  // const { data: isTbaV2Deployed } = useSWR(tbaV2 ? `tbaV2-${tokenId}-${tokenContract}` : null, () =>
-  //   tokenboundClientV2.checkAccountDeployment({ accountAddress: tbaV2 })
-  // );
-
   const { data: isTbaDeployed } = useSWR(`tba-${tokenId}-${tokenContract}`, () =>
     tokenboundClient.checkAccountDeployment({ accountAddress: tba })
   );
 
-  // const {
-  //   data: tbaV2NFTs,
-  //   isLoading,
-  //   error,
-  // } = useSWR(`tbaV2NFTs-${tbaV2?.data}}`, () => getNfts(chainId, tbaV2?.data as `0x${string}`));
   const {
     data: tbaV2NFTs,
     isLoading,
@@ -61,8 +49,6 @@ export const useTBADetails = ({
 
     return [];
   });
-
-  console.log({ tbaV2NFTs });
 
   const { data: tbaNFTs } = useSWR(`tbaNFTs-${tba}`, async () => {
     const [nfts, lensNFT] = await Promise.all([getNfts(chainId, tba), getLensNfts(tba)]);
@@ -87,6 +73,8 @@ export const useTBADetails = ({
   }, [isTbaDeployed, tbaV2NFTs, tbaNFTs, tba, tbaV2]);
 
   return {
+    tba,
+    tbaV2,
     account,
     nfts,
   };
