@@ -22,6 +22,12 @@ export const useTBADetails = ({
 
   const handleAccountChange = (account: string) => {
     setAccount(account);
+
+    if (account === tba) {
+      setNfts(tbaNFTs || []);
+    } else {
+      setNfts(tbaV2NFTs || []);
+    }
   };
 
   const { data: tbaV2 } = useSWR(`tbaV2-${tokenId}-${tokenContract}`, () =>
@@ -46,8 +52,6 @@ export const useTBADetails = ({
         getLensNfts(tbaV2.data as `0x${string}`),
       ]);
 
-      console.log("nfts: ", nfts);
-
       return [...nfts, ...lensNFT];
     }
 
@@ -67,22 +71,14 @@ export const useTBADetails = ({
       setNfts(tbaNFTs);
       // If there are no nfts in v3 but there are in v2 show those
     } else if (tbaV2NFTs?.length && !tbaNFTs?.length) {
-      setAccount(tbaV2 as `0x${string}`);
+      setAccount(tbaV2?.data as `0x${string}`);
       setNfts(tbaV2NFTs);
       // Default to v3
     } else {
       setAccount(tba);
       setNfts(tbaNFTs || []);
     }
-  }, [isTbaDeployed, tbaV2NFTs, tbaNFTs, tba, tbaV2]);
-
-  useEffect(() => {
-    if (account === tba) {
-      setNfts(tbaNFTs || []);
-    } else {
-      setNfts(tbaV2NFTs || []);
-    }
-  }, [account, tba, tbaV2, tbaNFTs, tbaV2NFTs]);
+  }, [isTbaDeployed, tbaV2NFTs, tbaNFTs, tba, tbaV2?.data]);
 
   return {
     tba,

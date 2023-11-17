@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { isNil } from "lodash";
-import { TokenboundClient, TBVersion } from "@tokenbound/sdk";
-import { getAccount, getAccountStatus, getLensNfts, getNfts } from "@/lib/utils";
+import { TokenboundClient } from "@tokenbound/sdk";
+import { getAccountStatus } from "@/lib/utils";
 import { TbLogo } from "@/components/icon";
 import { useGetApprovals, useNft, useTBADetails } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
 import { getAddress } from "viem";
 import { TokenDetail } from "./TokenDetail";
-import { HAS_CUSTOM_IMPLEMENTATION, alchemyApiKey } from "@/lib/constants";
+import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
 
 interface TokenParams {
   params: {
@@ -26,27 +26,12 @@ interface TokenParams {
 
 export default function Token({ params, searchParams }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  // const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
-  // const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
   const { tokenId, contractAddress, chainId } = params;
   const { disableloading, logo } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
   const chainIdNumber = parseInt(chainId);
 
-  const tokenboundClientV2 = new TokenboundClient({
-    chainId: chainIdNumber,
-    version: TBVersion.V2,
-  });
-
   const tokenboundClient = new TokenboundClient({ chainId: chainIdNumber });
-
-  /**
-   * A few things happening here
-   *
-   * 1. we need to fetch nfts for both v3 and v2
-   * 2. display if there are no assets in v3 display v2
-   * 3. depending on the active tab fetch the nft approvals
-   */
 
   const {
     data: nftImages,
@@ -81,10 +66,6 @@ export default function Token({ params, searchParams }: TokenParams) {
   }, [nftImages, nftMetadataLoading]);
 
   // Fetch nft's TBA
-  // const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
-  //   const result = await getAccount(Number(tokenId), contractAddress, chainIdNumber);
-  //   return result.data;
-  // });
   const { account, nfts, handleAccountChange, tba, tbaV2 } = useTBADetails({
     tokenboundClient,
     tokenId,
@@ -95,8 +76,7 @@ export default function Token({ params, searchParams }: TokenParams) {
   // Get nft's TBA account bytecode to check if account is deployed or not
   const { data: accountIsDeployed } = useSWR(
     account ? `/account/${account}/bytecode` : null,
-    async () =>
-      tokenboundClientV2.checkAccountDeployment({ accountAddress: account as `0x{string}` })
+    async () => tokenboundClient.checkAccountDeployment({ accountAddress: account as `0x{string}` })
   );
 
   const { data: isLocked } = useSWR(account ? `/account/${account}/locked` : null, async () => {
@@ -109,35 +89,12 @@ export default function Token({ params, searchParams }: TokenParams) {
     return data ?? false;
   });
 
-  // fetch nfts inside TBA
-  // useEffect(() => {
-  //   // we need to abstract this out to a function
-  //   // fetch both nfts for v3 and v2
-  //   async function fetchNfts(account: string) {
-  //     const [data, lensData] = await Promise.all([
-  //       getNfts(chainIdNumber, account),
-  //       getLensNfts(account),
-  //     ]);
-  //     if (data) {
-  //       setNfts(data);
-  //     }
-  //     if (lensData) {
-  //       setLensNfts(lensData);
-  //     }
-  //   }
-
-  //   if (account) {
-  //     fetchNfts(account);
-  //   }
-  // }, [account, accountIsDeployed, chainIdNumber]);
-
   const [tokens, setTokens] = useState<TbaOwnedNft[]>([]);
-  // const allNfts = [...nfts, ...lensNfts];
 
   const { data: approvalData } = useGetApprovals(nfts, account, chainIdNumber);
 
   useEffect(() => {
-    if (nfts !== undefined && nfts.length) {
+    if (nfts !== undefined) {
       nfts.map((token) => {
         const foundApproval = approvalData?.find((item) => {
           const contract = item.contract.address;
@@ -152,18 +109,10 @@ export default function Token({ params, searchParams }: TokenParams) {
         token.hasApprovals = foundApproval?.hasApprovals || false;
       });
       setTokens(nfts);
-      // if (lensNfts) {
-      //   setTokens([...nfts, ...lensNfts]);
-      // }
     }
-  }, [nfts, approvalData]);
+  }, [nfts, approvalData, account]);
 
   const showLoading = disableloading !== "true" && nftMetadataLoading;
-
-  /**
-   * add token approval checker call to useTBADetail
-   * add a toggle component to switch between v2 and v3
-   */
 
   return (
     <div className="h-screen w-screen bg-slate-100">
