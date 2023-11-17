@@ -1,8 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 import clsx from "clsx";
 import { useState } from "react";
-import { Check, Exclamation } from "@/components/icon";
-import { Tabs, TabPanel, MediaViewer, ExternalLink } from "@/components/ui";
+import { Check } from "@/components/icon";
+import {
+  Tabs,
+  TabPanel,
+  MediaViewer,
+  ExternalLink,
+  DropdownMenu,
+  Disclaimer,
+} from "@/components/ui";
 import { TbaOwnedNft } from "@/lib/types";
 import useSWR from "swr";
 import { getAlchemy } from "@/lib/clients";
@@ -16,10 +23,55 @@ export const TABS = {
   ASSETS: "Assets",
 };
 
+interface CopyAddressProps {
+  account: string;
+  displayedAddress: string;
+}
+
+const CopyAddress = ({ account, displayedAddress }: CopyAddressProps) => {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <div
+      className="inline-block rounded-2xl bg-[#F6F8FA] px-4 py-2 text-xs font-bold text-[#666D74] hover:cursor-pointer"
+      onClick={() => {
+        const textarea = document.createElement("textarea");
+        textarea.textContent = account;
+        textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in MS Edge.
+        document.body.appendChild(textarea);
+        textarea.select();
+
+        try {
+          document.execCommand("copy"); // Security exception may be thrown by some browsers.
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1000);
+
+          return;
+        } catch (ex) {
+          console.warn("Copy to clipboard failed.", ex);
+          return false;
+        } finally {
+          document.body.removeChild(textarea);
+        }
+      }}
+    >
+      {copied ? (
+        <span>
+          <Check />
+        </span>
+      ) : (
+        shortenAddress(displayedAddress)
+      )}
+    </div>
+  );
+};
+
 interface Props {
   className?: string;
   approvalTokensCount?: number;
   account?: string;
+  accounts?: string[];
+  handleAccountChange?: (account: string) => void;
   tokens: TbaOwnedNft[];
   title: string;
   chainId: number;
@@ -29,6 +81,8 @@ export const Panel = ({
   className,
   approvalTokensCount,
   account,
+  accounts,
+  handleAccountChange,
   tokens,
   title,
   chainId,
@@ -58,53 +112,26 @@ export const Panel = ({
         <div className="h-[2.5px] w-[34px] bg-[#E4E4E4]"></div>
       </div>
       <h1 className="text-base font-bold uppercase text-black">{title}</h1>
-
       {account && displayedAddress && (
         <div className="flex items-center justify-start space-x-2">
-          <span
-            className="inline-block rounded-2xl bg-[#F6F8FA] px-4 py-2 text-xs font-bold text-[#666D74] hover:cursor-pointer"
-            onClick={() => {
-              const textarea = document.createElement("textarea");
-              textarea.textContent = account;
-              textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in MS Edge.
-              document.body.appendChild(textarea);
-              textarea.select();
-
-              try {
-                document.execCommand("copy"); // Security exception may be thrown by some browsers.
-                setCopied(true);
-                setTimeout(() => setCopied(false), 1000);
-
-                return;
-              } catch (ex) {
-                console.warn("Copy to clipboard failed.", ex);
-                return false;
-              } finally {
-                document.body.removeChild(textarea);
-              }
-            }}
+          <DropdownMenu
+            options={accounts}
+            currentOption={account}
+            setCurrentOption={handleAccountChange}
           >
-            {copied ? (
-              <span>
-                <Check />
-              </span>
-            ) : (
-              shortenAddress(displayedAddress)
-            )}
-          </span>
+            <CopyAddress account={account} displayedAddress={displayedAddress} />
+          </DropdownMenu>
           <ExternalLink className="h-[20px] w-[20px]" link={etherscanLink} />
         </div>
       )}
       {approvalTokensCount ? (
-        <div className="flex items-start space-x-2 rounded-lg border-0 bg-tb-warning-secondary p-2">
-          <div className="h-5 min-h-[20px] w-5 min-w-[20px]">
-            <Exclamation />
-          </div>
-          <p className="text-xs text-tb-warning-primary">
-            {`There are existing approvals on (${approvalTokensCount}) tokens owned by this account. Check approval status on tokenbound.org before purchasing.`}
-          </p>
-        </div>
+        <Disclaimer
+          message={`There are existing approvals on (${approvalTokensCount}) tokens owned by this account. Check approval status on tokenbound.org before purchasing.`}
+        />
       ) : null}
+      {typeof account === "string" && accounts && account === accounts[1] && (
+        <Disclaimer message="Migrate your assets to V3 account for latest features." />
+      )}
       <Tabs
         tabs={Object.values(TABS)}
         currentTab={currentTab}

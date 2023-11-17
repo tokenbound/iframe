@@ -9,6 +9,8 @@ interface Props {
   handleOpenClose: (arg0: boolean) => void;
   approvalTokensCount?: number;
   account?: string;
+  accounts?: string[];
+  handleAccountChange: (arg0: string) => void;
   tokens: TbaOwnedNft[];
   title: string;
   chainId: number;
@@ -48,6 +50,8 @@ export const TokenDetail = ({
   handleOpenClose,
   approvalTokensCount,
   account,
+  accounts,
+  handleAccountChange,
   tokens,
   title,
   chainId,
@@ -80,6 +84,8 @@ export const TokenDetail = ({
             tokens={tokens}
             title={title}
             chainId={chainId}
+            accounts={accounts}
+            handleAccountChange={handleAccountChange}
           />
         </motion.div>
       )}

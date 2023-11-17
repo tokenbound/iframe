@@ -17,6 +17,8 @@ module.exports = {
         "tb-warning-primary": "#FF8A00",
         "tb-warning-secondary": "rgba(255, 138, 0, 0.1)",
         "tb-text-gray": "#666D74",
+        purple: "#644CF7",
+        "purple-fade": "rgba(100, 76, 247, 0.10)",
       },
       transitionProperty: {
         width: "width",
