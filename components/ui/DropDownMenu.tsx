@@ -60,24 +60,36 @@ export const DropdownMenu = ({
         )}
       </div>
       {isOpen && (
-        <div className="origin-top-left absolute right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+        <div className="origin-top-left absolute right-0 mt-2 w-[140px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
           <div
             className="py-1"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="options-menu"
           >
-            {options?.map((option) => (
+            {options?.map((option, index) => (
               <button
                 key={option}
                 type="button"
-                className={`block px-4 py-2 text-sm hover:bg-gray-100 ${
-                  currentOption === option ? "text-gray-900 font-medium " : "text-gray-400"
+                className={`w-full block px-4 py-2 text-sm hover:bg-gray-100 ${
+                  currentOption === option ? "text-gray-900 font-bold" : "text-gray-400"
                 }`}
                 role="menuitem"
                 onClick={() => handleOptionClick(option)}
               >
-                {shortenAddress(option)}
+                <div className="flex items-center justify-between ">
+                  <span>{shortenAddress(option)}</span>
+                  <span
+                    className={clsx(
+                      currentOption === option
+                        ? "bg-purple-fade text-purple"
+                        : "bg-gray-100 text-gray-500",
+                      `p-1 rounded-sm font-bold w-fit`
+                    )}
+                  >
+                    {index === 0 ? "V3" : "V2"}
+                  </span>
+                </div>
               </button>
             ))}
           </div>

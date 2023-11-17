@@ -1,8 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 import clsx from "clsx";
 import { useState } from "react";
-import { Check, Exclamation } from "@/components/icon";
-import { Tabs, TabPanel, MediaViewer, ExternalLink, DropdownMenu } from "@/components/ui";
+import { Check } from "@/components/icon";
+import {
+  Tabs,
+  TabPanel,
+  MediaViewer,
+  ExternalLink,
+  DropdownMenu,
+  Disclaimer,
+} from "@/components/ui";
 import { TbaOwnedNft } from "@/lib/types";
 import useSWR from "swr";
 import { getAlchemy } from "@/lib/clients";
@@ -118,15 +125,13 @@ export const Panel = ({
         </div>
       )}
       {approvalTokensCount ? (
-        <div className="flex items-start space-x-2 rounded-lg border-0 bg-tb-warning-secondary p-2">
-          <div className="h-5 min-h-[20px] w-5 min-w-[20px]">
-            <Exclamation />
-          </div>
-          <p className="text-xs text-tb-warning-primary">
-            {`There are existing approvals on (${approvalTokensCount}) tokens owned by this account. Check approval status on tokenbound.org before purchasing.`}
-          </p>
-        </div>
+        <Disclaimer
+          message={`There are existing approvals on (${approvalTokensCount}) tokens owned by this account. Check approval status on tokenbound.org before purchasing.`}
+        />
       ) : null}
+      {typeof account === "string" && accounts && account === accounts[1] && (
+        <Disclaimer message="Migrate your assets to V3 account for latest features." />
+      )}
       <Tabs
         tabs={Object.values(TABS)}
         currentTab={currentTab}
