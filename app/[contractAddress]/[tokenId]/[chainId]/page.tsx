@@ -1,12 +1,13 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
+import { TokenboundClient } from "@tokenbound/sdk";
 import useSWR from "swr";
 import { isNil } from "lodash";
 import { getAccount, getAccountStatus, getLensNfts, getNfts } from "@/lib/utils";
 import { rpcClient } from "@/lib/clients";
 import { TbLogo } from "@/components/icon";
-import { useGetApprovals, useNft } from "@/lib/hooks";
+import { useGetApprovals, useNft, useTBADetails } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
 import { getAddress } from "viem";
 import { TokenDetail } from "./TokenDetail";
@@ -26,12 +27,12 @@ interface TokenParams {
 
 export default function Token({ params, searchParams }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
   const [lensNfts, setLensNfts] = useState<TbaOwnedNft[]>([]);
   const { tokenId, contractAddress, chainId } = params;
   const { disableloading, logo } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
   const chainIdNumber = parseInt(chainId);
+  const tokenboundClient = new TokenboundClient({ chainId: chainIdNumber });
 
   const {
     data: nftImages,
@@ -66,18 +67,18 @@ export default function Token({ params, searchParams }: TokenParams) {
   }, [nftImages, nftMetadataLoading]);
 
   // Fetch nft's TBA
-  const { data: account } = useSWR(tokenId ? `/account/${tokenId}` : null, async () => {
-    const result = await getAccount(Number(tokenId), contractAddress, chainIdNumber);
-    return result.data;
+  const { account, nfts, handleAccountChange, tba, tbaV2 } = useTBADetails({
+    tokenboundClient,
+    tokenId,
+    tokenContract: contractAddress as `0x${string}`,
+    chainId: chainIdNumber,
   });
 
   // Get nft's TBA account bytecode to check if account is deployed or not
-  const { data: accountBytecode } = useSWR(
+  const { data: accountIsDeployed } = useSWR(
     account ? `/account/${account}/bytecode` : null,
-    async () => rpcClient.getBytecode({ address: account as `0x${string}` })
+    async () => tokenboundClient.checkAccountDeployment({ accountAddress: account as `0x{string}` })
   );
-
-  const accountIsDeployed = accountBytecode && accountBytecode?.length > 2;
 
   const { data: isLocked } = useSWR(account ? `/account/${account}/locked` : null, async () => {
     if (!accountIsDeployed) {
@@ -89,33 +90,13 @@ export default function Token({ params, searchParams }: TokenParams) {
     return data ?? false;
   });
 
-  // fetch nfts inside TBA
-  useEffect(() => {
-    async function fetchNfts(account: string) {
-      const [data, lensData] = await Promise.all([
-        getNfts(chainIdNumber, account),
-        getLensNfts(account),
-      ]);
-      if (data) {
-        setNfts(data);
-      }
-      if (lensData) {
-        setLensNfts(lensData);
-      }
-    }
-
-    if (account) {
-      fetchNfts(account);
-    }
-  }, [account, accountBytecode, chainIdNumber]);
-
   const [tokens, setTokens] = useState<TbaOwnedNft[]>([]);
   const allNfts = [...nfts, ...lensNfts];
 
-  const { data: approvalData } = useGetApprovals(allNfts, account, chainIdNumber);
+  const { data: approvalData } = useGetApprovals(nfts, account, chainIdNumber);
 
   useEffect(() => {
-    if (nfts !== undefined && nfts.length) {
+    if (nfts !== undefined) {
       nfts.map((token) => {
         const foundApproval = approvalData?.find((item) => {
           const contract = item.contract.address;
@@ -134,7 +115,7 @@ export default function Token({ params, searchParams }: TokenParams) {
         setTokens([...nfts, ...lensNfts]);
       }
     }
-  }, [nfts, approvalData, lensNfts]);
+  }, [nfts, approvalData, account, lensNfts]);
 
   const showLoading = disableloading !== "true" && nftMetadataLoading;
 
@@ -153,6 +134,8 @@ export default function Token({ params, searchParams }: TokenParams) {
               chainId={chainIdNumber}
               logo={logo}
               tokenId={tokenId}
+              accounts={[tba, tbaV2 as string]}
+              handleAccountChange={handleAccountChange}
             />
           )}
           <div className="max-h-1080[px] relative h-full w-full max-w-[1080px]">

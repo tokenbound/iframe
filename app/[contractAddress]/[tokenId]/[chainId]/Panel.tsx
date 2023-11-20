@@ -2,7 +2,7 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { Check, Exclamation, GalverseLogo } from "@/components/icon";
-import { Tabs, TabPanel, MediaViewer, ExternalLink } from "@/components/ui";
+import { Tabs, TabPanel, MediaViewer, ExternalLink, DropdownMenu, Disclaimer } from "@/components/ui";
 import { TbaOwnedNft } from "@/lib/types";
 import useSWR from "swr";
 import { getAlchemy } from "@/lib/clients";
@@ -20,10 +20,51 @@ export const TABS = {
   UPGRADES: "Upgrades",
 };
 
+interface CopyAddressProps {
+  account: string;
+  displayedAddress: string;
+}
+const CopyAddress = ({ account, displayedAddress }: CopyAddressProps) => {
+  const [copied, setCopied] = useState(false);
+  return (
+    <div
+      className="inline-block rounded-2xl bg-[#F6F8FA] px-4 py-2 text-xs font-bold text-[#666D74] hover:cursor-pointer"
+      onClick={() => {
+        const textarea = document.createElement("textarea");
+        textarea.textContent = account;
+        textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in MS Edge.
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand("copy"); // Security exception may be thrown by some browsers.
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1000);
+          return;
+        } catch (ex) {
+          console.warn("Copy to clipboard failed.", ex);
+          return false;
+        } finally {
+          document.body.removeChild(textarea);
+        }
+      }}
+    >
+      {copied ? (
+        <span>
+          <Check />
+        </span>
+      ) : (
+        shortenAddress(displayedAddress)
+      )}
+    </div>
+  );
+};
+
 interface Props {
   className?: string;
   approvalTokensCount?: number;
   account?: string;
+  accounts?: string[];
+  handleAccountChange?: (account: string) => void;
   tokens: TbaOwnedNft[];
   title: string;
   chainId: number;
@@ -34,6 +75,8 @@ export const Panel = ({
   className,
   approvalTokensCount,
   account,
+  accounts,
+  handleAccountChange,
   tokens,
   title,
   chainId,
@@ -82,11 +125,9 @@ export const Panel = ({
       )}
     >
       <div className=" mb-6 h-[5px] w-[50px] rounded-full bg-white/80 mx-auto" />
-
       <h1 className="text-lg max-[440px]:text-base max-[385px]:text-sm uppercase text-gray-text/80 font-semibold">
         {title}
       </h1>
-
       <div className="flex items-center justify-between !-mt-1 !mb-4">
         <div className="flex ">
           <Image
@@ -100,7 +141,6 @@ export const Panel = ({
             Inventory
           </h2>
         </div>
-
         {account && displayedAddress && (
           <div className="flex items-center justify-start space-x-2">
             <span
@@ -111,7 +151,6 @@ export const Panel = ({
                 textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in MS Edge.
                 document.body.appendChild(textarea);
                 textarea.select();
-
                 try {
                   document.execCommand("copy"); // Security exception may be thrown by some browsers.
                   setCopied(true);
@@ -133,31 +172,32 @@ export const Panel = ({
           </div>
         )}
       </div>
-
-      {/* Double Border Dots */}
-      <Image
-        src="/double-border-dot.svg"
-        alt="logo"
-        width={1000}
-        height={40}
-        className="!w-full !my-3"
-      />
-
-      {approvalTokensCount ? (
-        <div className="flex items-start space-x-2 rounded-lg border-0 bg-tb-warning-secondary p-2">
-          <div className="h-5 min-h-[20px] w-5 min-w-[20px]">
-            <Exclamation />
-          </div>
-          <p className="text-xs text-tb-warning-primary">
-            {`There are existing approvals on (${approvalTokensCount}) tokens owned by this account. Check approval status on tokenbound.org before purchasing.`}
-          </p>
+      <h1 className="text-base font-bold uppercase text-black">{title}</h1>
+      {account && displayedAddress && (
+        <div className="flex items-center justify-start space-x-2">
+          <DropdownMenu
+            options={accounts}
+            currentOption={account}
+            setCurrentOption={handleAccountChange}
+          >
+            <CopyAddress account={account} displayedAddress={displayedAddress} />
+          </DropdownMenu>
+          <ExternalLink className="h-[20px] w-[20px]" link={etherscanLink} />
         </div>
+      )}
+      {approvalTokensCount ? (
+        <Disclaimer
+          message={`There are existing approvals on (${approvalTokensCount}) tokens owned by this account. Check approval status on tokenbound.org before purchasing.`}
+        />
       ) : null}
-
+      {typeof account === "string" && accounts && account === accounts[1] && (
+        <Disclaimer message="Migrate your assets to V3 account for latest features." />
+      )}
       <Tabs
         tabs={Object.values(TABS)}
         currentTab={currentTab}
         onTabChange={(tab) => setCurrentTab(tab)}
+
       />
 
       <TabPanel value={TABS.COLLECTIBLES} currentTab={currentTab}>

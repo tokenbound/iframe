@@ -10,6 +10,8 @@ interface Props {
   handleOpenClose: (arg0: boolean) => void;
   approvalTokensCount?: number;
   account?: string;
+  accounts?: string[];
+  handleAccountChange: (arg0: string) => void;
   tokens: TbaOwnedNft[];
   title: string;
   chainId: number;
@@ -19,7 +21,7 @@ interface Props {
 
 const variants = {
   closed: { y: "100%", transition: { duration: 0.75 } },
-  open: { y: "0", transition: { duration: 0.75 } },
+  open: { y: "0", transition: { duration: 0.75 }, height: "85%" },
 } as Variants;
 
 const iconVariant = {
@@ -48,6 +50,8 @@ export const TokenDetail = ({
   handleOpenClose,
   approvalTokensCount,
   account,
+  accounts,
+  handleAccountChange,
   tokens,
   title,
   chainId,
@@ -93,8 +97,10 @@ export const TokenDetail = ({
             tokens={tokens}
             title={title}
             chainId={chainId}
-            tokenId={tokenId}
-          />
+            accounts={accounts}
+            handleAccountChange={handleAccountChange}
+            tokenId={""}
+            />
         </motion.div>
       )}
     </div>
