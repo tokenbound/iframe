@@ -143,6 +143,12 @@ export const Panel = ({
         </div>
         {account && displayedAddress && (
           <div className="flex items-center justify-start space-x-2">
+            <DropdownMenu
+            options={accounts}
+            className="dropdownButton"
+            setCurrentOption={handleAccountChange}
+          >
+          </DropdownMenu>
             <span
               className="inline-block rounded-full bg-[#202020] hover:bg-[#2B2B2B] px-5 py-2 max-[440px]:px-[16px] max-[385px]:px-[12px] max-[440px]:py-[6px] max-[385px]:py-[3px] font-secondary text-base max-[440px]:text-[14px] max-[385px]:text-[12px] font-bold uppercase text-gray-text/80 hover:text-gray-text hover:cursor-pointer transition-all duration-200"
               onClick={() => {
@@ -172,18 +178,12 @@ export const Panel = ({
           </div>
         )}
       </div>
-      <h1 className="text-base font-bold uppercase text-black">{title}</h1>
+      
       {account && displayedAddress && (
-        <div className="flex items-center justify-start space-x-2">
-          <DropdownMenu
-            options={accounts}
-            currentOption={account}
-            setCurrentOption={handleAccountChange}
-          >
-            <CopyAddress account={account} displayedAddress={displayedAddress} />
-          </DropdownMenu>
-          <ExternalLink className="h-[20px] w-[20px]" link={etherscanLink} />
-        </div>
+        <div className="dividerContainer">
+        <div className="dottedDivider"></div>
+        <div className="dottedDivider"></div>
+      </div>
       )}
       {approvalTokensCount ? (
         <Disclaimer

@@ -18,6 +18,8 @@ module.exports = {
         "tb-warning-secondary": "rgba(255, 138, 0, 0.1)",
         "tb-text-gray": "#666D74",
         "black-bg": "#101010",
+        "gv-purple": "#644CF7",
+        "panel-gray": "#202020",
         "gray-text": "#AFAFAF",
       },
       transitionProperty: {

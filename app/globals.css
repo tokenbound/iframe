@@ -47,3 +47,66 @@ body {
 .custom-scroll {
   scrollbar-width: none;
 }
+
+.chevron  {
+  transform: scale(1.5);
+  transform-origin: center;
+}
+
+.dropdownButton {
+background: #202020;
+color: #989898;
+opacity: 1;
+border-radius: 60%;
+}
+
+.gridBG 
+{background: #101010;
+
+  box-shadow: 0px 0px 0px 0px #0000001A;
+
+  box-shadow: 0px -8px 18px 0px #0000001A;
+  
+  box-shadow: 0px -33px 33px 0px #00000017;
+  
+  box-shadow: 0px -74px 44px 0px #0000000D;
+  
+  box-shadow: 0px -131px 52px 0px #00000003;
+  
+  box-shadow: 0px -205px 57px 0px #00000000;
+  width: 600px;
+  height: 518px;
+  top: 92px;
+  border-radius: 32px, 32px, 0px, 0px}
+
+  .opendrop {
+    font-family: "Space Mono";
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    align-items: center;
+    text-align: left;
+    width: 133px;
+    height: 24px;
+    border-radius: 4px;
+  }
+  
+  .dividerContainer {
+    display: flex;
+    flex-direction: column; /* Stacks children vertically */
+    gap: 4px; /* Space between dividers, adjust as needed */
+  }
+  
+  .dottedDivider {
+    flex-grow: 1; /* Allows the divider to grow and fill the container */
+    height: 2px; /* Adjust the height to fit your design */
+    background-image: repeating-linear-gradient(
+      to right,
+      #D9D9D9, #D9D9D9 2px, /* size of dots */
+      transparent 2px, transparent 6px /* spacing between dots */
+    );
+    opacity: 0.24;
+  }
+  
+
