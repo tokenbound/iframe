@@ -75,8 +75,7 @@ export async function getNftAsset(
     }
 
     const data = await response.json();
-    return data;
-    // return data.image.replace("ipfs://", "https://ipfs.io/ipfs/");
+    return data.image.replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/");
   } else {
     throw new Error(`TokenId must be between 0 and ${MAX_TOKEN_ID}`);
   }

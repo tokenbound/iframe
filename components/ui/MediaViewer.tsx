@@ -10,7 +10,7 @@ export const MediaViewer = ({ url, isVideo = false }: Props) => {
     let videoUrl = url;
     const ipfs = url.includes("ipfs");
     if (ipfs) {
-      videoUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
+      videoUrl = url.replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/");
     }
 
     return (
