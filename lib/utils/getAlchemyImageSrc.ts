@@ -13,5 +13,5 @@ export function getAlchemyImageSrc(token?: Nft | OwnedNft) {
     token.contract?.openSea?.imageUrl ||
     "/no-img.jpg";
 
-  return src;
+  return src.replace("ipfs.io", "cloudflare-ipfs.com");
 }
