@@ -20,11 +20,19 @@ interface Props {
   account?: string;
   tokens: TbaOwnedNft[];
   title: string;
+  chainId: number;
 }
 
 const CHAIN_ID = 1;
 
-export const Panel = ({ className, approvalTokensCount, account, tokens, title }: Props) => {
+export const Panel = ({
+  className,
+  approvalTokensCount,
+  account,
+  tokens,
+  title,
+  chainId,
+}: Props) => {
   const [copied, setCopied] = useState(false);
   const [currentTab, setCurrentTab] = useState(TABS.COLLECTIBLES);
   const displayedAddress = account;
@@ -99,15 +107,9 @@ export const Panel = ({ className, approvalTokensCount, account, tokens, title }
         {tokens && tokens.length ? (
           <ul className="grid grid-cols-3 gap-2 overflow-y-auto custom-scroll">
             {tokens.map((t, i) => {
-              let media = t?.media[0]?.gateway || t?.media[0]?.raw;
-              const isVideo = t?.media[0]?.format === "mp4";
-              if (isVideo) {
-                media = t?.media[0]?.raw;
-              }
-
               return (
                 <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
-                  <MediaViewer url={media} isVideo={isVideo} />
+                  <MediaViewer token={t} chainId={chainId} />
                 </li>
               );
             })}
