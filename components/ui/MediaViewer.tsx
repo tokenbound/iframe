@@ -1,32 +1,62 @@
-/* eslint-disable @next/next/no-img-element */
+import { useMedia } from "@/lib/hooks";
+import { Nft, OwnedNft } from "alchemy-sdk";
+import clsx from "clsx";
 
+/* eslint-disable @next/next/no-img-element */
 interface Props {
-  url: string;
-  isVideo: boolean;
+  token: Nft | OwnedNft;
+  chainId: number;
 }
 
-export const MediaViewer = ({ url, isVideo = false }: Props) => {
-  if (isVideo) {
-    let videoUrl = url;
-    const ipfs = url.includes("ipfs");
-    if (ipfs) {
-      videoUrl = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-    }
+export const MediaViewer = ({ token, chainId }: Props) => {
+  const { mediaUrl, isVideo } = useMedia({ token, chainId });
+  const borderRadius = "rounded-2xl";
 
+  if (isVideo) {
     return (
-      <video className="aspect-square rounded-xl object-cover" muted autoPlay={true} loop={true}>
-        <source src={videoUrl} type="video/mp4" />
-      </video>
+      <>
+        {mediaUrl ? (
+          <video
+            className="aspect-square rounded-xl object-cover"
+            muted
+            autoPlay={true}
+            loop={true}
+          >
+            <source src={mediaUrl} type="video/mp4" />
+          </video>
+        ) : (
+          <NoMedia className={borderRadius} />
+        )}
+      </>
     );
   }
 
   return (
-    <img
-      className="aspect-square rounded-xl object-cover"
-      src={url}
-      alt="token image"
-      width={1080}
-      height={1080}
-    />
+    <>
+      {mediaUrl ? (
+        <img
+          className="aspect-square rounded-xl object-cover"
+          src={mediaUrl}
+          alt="token image"
+          width={1080}
+          height={1080}
+        />
+      ) : (
+        <NoMedia className={borderRadius} />
+      )}
+    </>
   );
 };
+
+function NoMedia({ className }: { className?: string }) {
+  return (
+    <div
+      className={clsx(
+        "relative flex items-center justify-center bg-gray-200 aspect-square",
+        className
+      )}
+    >
+      no media
+    </div>
+  );
+}

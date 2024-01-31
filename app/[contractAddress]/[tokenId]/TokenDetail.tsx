@@ -64,6 +64,7 @@ export const TokenDetail = ({
             account={account}
             tokens={tokens}
             title={title}
+            chainId={1}
           />
         </motion.div>
       )}
