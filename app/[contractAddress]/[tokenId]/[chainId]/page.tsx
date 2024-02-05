@@ -11,6 +11,8 @@ import { TbaOwnedNft } from "@/lib/types";
 import { getAddress } from "viem";
 import { TokenDetail } from "./TokenDetail";
 import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
+import CanvasDraw from "react-canvas-draw";
+import { data as savedCanvasData } from "@/lib/utils/mockCanvasData";
 
 interface TokenParams {
   params: {
@@ -114,11 +116,12 @@ export default function Token({ params, searchParams }: TokenParams) {
 
   const showLoading = disableloading !== "true" && nftMetadataLoading;
 
+
   return (
     <div className="h-screen w-screen bg-slate-100">
       <div className="max-w-screen relative mx-auto aspect-square max-h-screen overflow-hidden bg-white">
         <div className="relative h-full w-full">
-          {account && nftImages && nftMetadata && (
+          {/* {account && nftImages && nftMetadata && (
             <TokenDetail
               isOpen={showTokenDetail}
               handleOpenClose={setShowTokenDetail}
@@ -131,11 +134,11 @@ export default function Token({ params, searchParams }: TokenParams) {
               accounts={[tba, tbaV2 as string]}
               handleAccountChange={handleAccountChange}
             />
-          )}
+          )} */}
           <div className="max-h-1080[px] relative h-full w-full max-w-[1080px]">
             {showLoading ? (
               <div className="absolute left-[45%] top-[50%] z-10 h-20 w-20 -translate-x-[50%] -translate-y-[50%] animate-bounce">
-                <TbLogo />
+                loading...
               </div>
             ) : (
               <div
@@ -145,12 +148,32 @@ export default function Token({ params, searchParams }: TokenParams) {
               >
                 {!isNil(nftImages) ? (
                   nftImages.map((image, i) => (
-                    <img
-                      key={i}
-                      className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0 w-full h-full object-cover"
-                      src={image}
-                      alt="Nft image"
-                    />
+                    // <img
+                    //   key={i}
+                    //   className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0 w-full h-full object-cover"
+                    //   src={image}
+                    //   alt="Nft image"
+                    // />
+                    <CanvasDraw
+                    key={i}
+                    ref={(canvasDraw) => {
+                      if (canvasDraw && savedCanvasData) {
+                        return canvasDraw.loadSaveData(JSON.stringify(savedCanvasData));
+                      }
+                    }}
+                    brushColor={"white"}
+                    brushRadius={5}
+                    lazyRadius={5}
+                    disabled
+                    hideGrid
+                    style={{
+                      backgroundImage: `-webkit-linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.6)), url(${image})`,
+                      backgroundSize: `cover`,
+                      borderRadius: `8px`,
+                      width: "100%",
+                      height: "100%"
+                    }}
+                  />
                   ))
                 ) : (
                   <></>

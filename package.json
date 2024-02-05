@@ -25,6 +25,7 @@
     "lucide-react": "^0.268.0",
     "next": "13.4.5",
     "react": "18.2.0",
+    "react-canvas-draw": "^1.2.1",
     "react-dom": "18.2.0",
     "react-polymorphic-types": "^2.0.0",
     "request": "^2.88.2",
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.195",
+    "@types/react-canvas-draw": "^1.2.3",
     "autoprefixer": "10.4.14",
     "encoding": "^0.1.13",
     "postcss": "8.4.24",
