@@ -20,6 +20,7 @@
     "eslint-config-next": "13.4.5",
     "ethers": "5.7.0",
     "framer-motion": "^10.12.16",
+    "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.268.0",
