@@ -61,7 +61,6 @@ export const useNft = ({
       return alchemy.nft.getNftMetadataBatch([{ contractAddress, tokenId }]);
     }
   );
-
   const loading = hasCustomImplementation ? customNftLoading : nftMetadataLoading;
 
   return {

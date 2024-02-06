@@ -1,7 +1,7 @@
 import { Variants, motion } from "framer-motion";
-import { GalverseLogo, TokenboundLogo } from "@/components/icon";
 import { Panel } from "./Panel";
 import { TbaOwnedNft } from "@/lib/types";
+import { SignedLogo } from "@/components/icon/SignedLogo";
 
 interface Props {
   className?: string;
@@ -40,8 +40,7 @@ type LogoType = {
 };
 
 const Logo: LogoType = {
-  DEFAULT: TokenboundLogo,
-  GALVERSE: GalverseLogo,
+  DEFAULT: SignedLogo,
 };
 
 export const TokenDetail = ({
@@ -64,7 +63,7 @@ export const TokenDetail = ({
   return (
     <div className={className}>
       <motion.div
-        className="absolute left-4 top-4 z-10 rounded-full cursor-pointer"
+        className="absolute left-4 top-4 z-10 rounded-full cursor-pointer bg-black"
         whileHover="hover"
         variants={iconVariant}
         initial="unHovered"

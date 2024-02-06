@@ -51,7 +51,8 @@ export async function getApproved(
 
     return { data: response !== "0x0000000000000000000000000000000000000000" };
   } catch (error) {
-    console.error(error);
+    // console.error(error);
+    console.log(`Failed to get approval for token id: ${tokenId}, ${account}.`);
     return {
       error: `Failed to get approval for token id: ${tokenId}, ${account}.`,
     };

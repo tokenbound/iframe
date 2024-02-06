@@ -8,7 +8,6 @@ interface MediaArgs {
 }
 
 export function useMedia({ token, chainId }: MediaArgs) {
-  const dynamicCacheKey = `${chainId}/nftMedia/${token.contract.address}/${token.tokenId}`;
   const media: Media | undefined = token.media.length > 0 ? token.media[0] : undefined;
   const isBase64: boolean =
     !media && !!token.tokenUri?.raw?.startsWith("data:application/json;base64");
@@ -19,16 +18,6 @@ export function useMedia({ token, chainId }: MediaArgs) {
     token.tokenUri?.gateway?.replace("ipfs://", "https://ipfs.io/ipfs/") ??
     token.tokenUri?.raw?.replace("ipfs://", "https://ipfs.io/ipfs/") ??
     "";
-
-  // const { data: rawNftData } = useSWR(
-  //   token ? `${dynamicCacheKey}/raw` : null,
-  //   async () => {
-  //     if (!isIPFSOnly) return undefined
-  //     if (ipfsURL) {
-  //       return await fetch(ipfsURL).then((res) => res.json())
-  //     }
-  //   }
-  // )
 
   const mediaUrl = useMemo(() => {
     if (isVideo || isIPFSOnly) {
@@ -42,7 +31,10 @@ export function useMedia({ token, chainId }: MediaArgs) {
       return base64Image;
     }
 
+    const rawImage = token.rawMetadata?.image;
+
     return (
+      rawImage ??
       media?.gateway ??
       media?.thumbnail ??
       media?.raw ??
@@ -60,14 +52,9 @@ export function useMedia({ token, chainId }: MediaArgs) {
     token.tokenUri?.gateway,
     media?.thumbnail,
     token.tokenUri?.raw,
+    token.rawMetadata
   ]);
 
-  // TODO: Expose granular sizes?
-  // const media ={
-  //   thumbnail: mediaUrl,
-  //   small: mediaUrl,
-  //   small: mediaUrl,
-  // }
 
   return {
     // TODO: mimeType?

@@ -1,7 +1,9 @@
-import { NftOrdering } from "alchemy-sdk";
+import { NftOrdering, OwnedNft } from "alchemy-sdk";
 import * as Sentry from "@sentry/nextjs";
 import { MAX_TOKEN_ID, nftUrl } from "@/lib/constants";
 import { alchemyLens, getAlchemy } from "@/lib/clients";
+import { BINDER_CAMPAIGNS } from "./constants";
+import getBinderRevealedMetadata from "./getBinderRevealedMetadata";
 
 export async function getNfts(chainId: number, account: string) {
   try {
@@ -12,8 +14,16 @@ export async function getNfts(chainId: number, account: string) {
     if (!response.ownedNfts) {
       return [];
     }
-
-    return response.ownedNfts.reverse();
+    const toReturn = response.ownedNfts.filter((nft) => BINDER_CAMPAIGNS.includes(nft.contract.address));
+    const nfts: OwnedNft[] = [];
+    for (let i = 0; i < toReturn.length; i++) {
+      const rawMetadata = await getBinderRevealedMetadata(toReturn[i].contract.address as `0x${string}`, toReturn[i].tokenId)
+      nfts.push({
+        ...toReturn[i],
+        rawMetadata
+      })
+    }
+    return nfts;
   } catch (err) {
     console.error(err);
     Sentry.captureMessage(`getNfts error`, {
