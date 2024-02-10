@@ -57,13 +57,12 @@ export const TokenDetail = ({
   logo,
 }: Props) => {
   let currentAnimate = isOpen ? "open" : "closed";
-
   const CustomLogo = logo ? Logo[logo.toUpperCase()] : Logo["DEFAULT"];
 
   return (
     <div className={className}>
       <motion.div
-        className="absolute left-4 top-4 z-10 rounded-full cursor-pointer bg-black"
+        className="absolute left-4 top-4 z-10 rounded-full cursor-pointer"
         whileHover="hover"
         variants={iconVariant}
         initial="unHovered"

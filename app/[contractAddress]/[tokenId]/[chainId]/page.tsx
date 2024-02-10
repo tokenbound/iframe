@@ -12,6 +12,7 @@ import { getAddress } from "viem";
 import { TokenDetail } from "./TokenDetail";
 import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
 import CanvasDraw from "react-canvas-draw";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TokenParams {
   params: {
@@ -111,13 +112,13 @@ export default function Token({ params, searchParams }: TokenParams) {
       setTokens(nfts);
     }
   }, [nfts, approvalData, account]);
-
   const showLoading = disableloading !== "true" && nftMetadataLoading;
+  if (showLoading) {
+    return <Skeleton className="w-full h-full bg-slate-400" />
+  }
   return (
-    <div className="h-screen w-screen bg-slate-100">
-      <div className="max-w-screen relative mx-auto aspect-square max-h-screen overflow-hidden bg-white">
-        <div className="relative h-full w-full">
-          {account && nftImages && nftMetadata && (
+    <>
+          {/* {account && nftImages && nftMetadata && (
             <TokenDetail
               isOpen={showTokenDetail}
               handleOpenClose={setShowTokenDetail}
@@ -130,13 +131,7 @@ export default function Token({ params, searchParams }: TokenParams) {
               accounts={[tba, tbaV2 as string]}
               handleAccountChange={handleAccountChange}
             />
-          )}
-          <div className="max-h-1080[px] relative h-full w-full max-w-[1080px]">
-            {showLoading ? (
-              <div className="absolute left-[45%] top-[50%] z-10 h-20 w-20 -translate-x-[50%] -translate-y-[50%] animate-bounce">
-                loading...
-              </div>
-            ) : (
+          )} */}
               <div
                 className={`bg-white h-full w-full grid grid-cols-1 grid-rows-1 transition ${
                   imagesLoaded ? "" : "blur-xl"
@@ -155,10 +150,6 @@ export default function Token({ params, searchParams }: TokenParams) {
                   <></>
                 )}
               </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+          </>
   );
 }
