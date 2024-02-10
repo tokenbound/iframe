@@ -68,7 +68,9 @@ export const TokenDetail = ({
         variants={iconVariant}
         initial="unHovered"
       >
-        <CustomLogo onClick={() => handleOpenClose(!isOpen)} />
+        <div onClick={() => handleOpenClose(!isOpen)}>
+          <CustomLogo />
+        </div>
       </motion.div>
       {isOpen && (
         <motion.div
