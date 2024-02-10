@@ -1,16 +1,14 @@
 /**
+ *
  * Array of all binder campaigns
  * if the nfts method sees one of these
  * as children
  * it will query the contract
  * directly for the most recent metadata
  *
- * given the current way of doing things
- * the iframe should be forked for each artist and
- * this array should contain only their campaign addresses
  */
 export const BINDER_CAMPAIGNS = [
-  // "0x501c80d49a4ae7298dc64828a1ccb8be4ddef012",
+  "0x501c80d49a4ae7298dc64828a1ccb8be4ddef012",
   "0xCF08c597f8557764DF0762aDE92A46139a275fD2"
 ].map(address => address.toLowerCase());
 

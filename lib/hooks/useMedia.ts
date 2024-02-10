@@ -19,6 +19,9 @@ export function useMedia({ token, chainId }: MediaArgs) {
     token.tokenUri?.raw?.replace("ipfs://", "https://ipfs.io/ipfs/") ??
     "";
 
+  // @ts-ignore
+  const canvasData = token.rawMetadata["image_canvas_data"];
+
   const mediaUrl = useMemo(() => {
     if (isVideo || isIPFSOnly) {
       return ipfsURL;
@@ -61,5 +64,6 @@ export function useMedia({ token, chainId }: MediaArgs) {
     rawMedia: media,
     mediaUrl,
     isVideo,
+    canvasData
   };
 }
