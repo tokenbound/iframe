@@ -118,38 +118,38 @@ export default function Token({ params, searchParams }: TokenParams) {
   }
   return (
     <>
-          {/* {account && nftImages && nftMetadata && (
-            <TokenDetail
-              isOpen={showTokenDetail}
-              handleOpenClose={setShowTokenDetail}
-              approvalTokensCount={approvalData?.filter((item) => item.hasApprovals).length}
-              account={account}
-              tokens={tokens}
-              title={nftMetadata.title}
-              chainId={chainIdNumber}
-              logo={logo}
-              accounts={[tba, tbaV2 as string]}
-              handleAccountChange={handleAccountChange}
-            />
-          )} */}
-              <div
-                className={`bg-white h-full w-full grid grid-cols-1 grid-rows-1 transition ${
-                  imagesLoaded ? "" : "blur-xl"
-                }`}
-              >
-                {!isNil(nftImages) ? (
-                  nftImages.map((image, i) => (
-                    <img
-                    key={i}
-                    className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
-                    src={image}
-                    alt="Nft image"
-                  />
-                  ))
-                ) : (
-                  <></>
-                )}
-              </div>
-          </>
+      {account && nftImages && nftMetadata && (
+        <TokenDetail
+          isOpen={showTokenDetail}
+          handleOpenClose={setShowTokenDetail}
+          approvalTokensCount={approvalData?.filter((item) => item.hasApprovals).length}
+          account={account}
+          tokens={tokens}
+          title={nftMetadata.title}
+          chainId={chainIdNumber}
+          logo={logo}
+          accounts={[tba, tbaV2 as string]}
+          handleAccountChange={handleAccountChange}
+        />
+      )}
+      <div
+        className={`bg-white h-full w-full grid grid-cols-1 grid-rows-1 transition ${
+          imagesLoaded ? "" : "blur-xl"
+        }`}
+      >
+        {!isNil(nftImages) ? (
+          nftImages.map((image, i) => (
+            <img
+            key={i}
+            className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
+            src={image}
+            alt="Nft image"
+          />
+          ))
+        ) : (
+          <></>
+        )}
+      </div>
+    </>
   );
 }

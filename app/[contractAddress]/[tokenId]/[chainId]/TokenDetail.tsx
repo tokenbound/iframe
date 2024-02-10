@@ -2,6 +2,11 @@ import { Variants, motion } from "framer-motion";
 import { Panel } from "./Panel";
 import { TbaOwnedNft } from "@/lib/types";
 import { SignedLogo } from "@/components/icon/SignedLogo";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 
 interface Props {
   className?: string;
@@ -56,28 +61,14 @@ export const TokenDetail = ({
   chainId,
   logo,
 }: Props) => {
-  let currentAnimate = isOpen ? "open" : "closed";
   const CustomLogo = logo ? Logo[logo.toUpperCase()] : Logo["DEFAULT"];
-
   return (
-    <div className={className}>
-      <motion.div
-        className="absolute left-4 top-4 z-10 rounded-full cursor-pointer"
-        whileHover="hover"
-        variants={iconVariant}
-        initial="unHovered"
-      >
-        <div onClick={() => handleOpenClose(!isOpen)}>
-          <CustomLogo />
+    <div className={`${className} max-w-[1080px]`}>
+      <Drawer shouldScaleBackground={true}>
+        <div className="absolute left-4 top-4 z-10 rounded-full cursor-pointer">
+          <DrawerTrigger><CustomLogo /></DrawerTrigger>
         </div>
-      </motion.div>
-      {isOpen && (
-        <motion.div
-          className={`custom-scroll absolute bottom-0 z-10 w-full max-w-[1080px] overflow-y-auto`}
-          animate={currentAnimate}
-          variants={variants}
-          initial="closed"
-        >
+        <DrawerContent className="w-full mx-auto">
           <Panel
             approvalTokensCount={approvalTokensCount}
             account={account}
@@ -87,8 +78,8 @@ export const TokenDetail = ({
             accounts={accounts}
             handleAccountChange={handleAccountChange}
           />
-        </motion.div>
-      )}
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };
