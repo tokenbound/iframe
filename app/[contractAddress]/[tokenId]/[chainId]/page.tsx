@@ -143,7 +143,7 @@ export default function Token({ params, searchParams }: TokenParams) {
           }
           `}
         >
-          <div className={`absolute -inset-2.5 ${gradient} blur-lg opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-1000 animate-tilt`}></div>
+          <div className={`absolute -inset-1.5 ${gradient} blur-md opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-1000 animate-tilt`}></div>
           {!isNil(nftImages) ? (
             nftImages.map((image, i) => (
               <img
