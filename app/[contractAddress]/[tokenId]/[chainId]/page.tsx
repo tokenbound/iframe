@@ -9,10 +9,11 @@ import { TbLogo } from "@/components/icon";
 import { useGetApprovals, useNft, useTBADetails } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
 import { getAddress } from "viem";
-import { TokenDetail } from "./TokenDetail";
+import { DisplayTokensButton, TokenDetail } from "./TokenDetail";
 import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
 import CanvasDraw from "react-canvas-draw";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSpring, a } from "@react-spring/web";
 
 interface TokenParams {
   params: {
@@ -32,7 +33,6 @@ export default function Token({ params, searchParams }: TokenParams) {
   const { disableloading, logo } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
   const chainIdNumber = parseInt(chainId);
-
   const tokenboundClient = new TokenboundClient({ chainId: chainIdNumber });
 
   const {
@@ -113,50 +113,84 @@ export default function Token({ params, searchParams }: TokenParams) {
     }
   }, [nfts, approvalData, account]);
   const showLoading = disableloading !== "true" && nftMetadataLoading;
+
+  const hasChildren = !!(account && nftImages && nftMetadata);
+  const gradient = `bg-gradient-to-r from-green-500 to-green-700`
+
+  const [flipped, set] = useState<boolean>(false)
+  const { transform, opacity } = useSpring({
+    opacity: flipped ? 1 : 0,
+    transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
+    config: { mass: 5, tension: 500, friction: 80 },
+  })
+
+
   if (showLoading) {
     return <Skeleton className="w-full h-full bg-slate-400" />
   }
-  const hasChildren = !!(account && nftImages && nftMetadata);
-  const gradient = `bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-700`
   return (
     <>
       {hasChildren && (
-        <TokenDetail
-          isOpen={showTokenDetail}
-          handleOpenClose={setShowTokenDetail}
-          approvalTokensCount={approvalData?.filter((item) => item.hasApprovals).length}
-          account={account}
-          tokens={tokens}
-          title={nftMetadata.title}
-          chainId={chainIdNumber}
-          logo={logo}
-          accounts={[tba, tbaV2 as string]}
-          handleAccountChange={handleAccountChange}
-        />
+        <div className="absolute right-0 bottom-0 z-10 rounded-full cursor-pointer p-3" onClick={() => set(state => !state)}>
+          <DisplayTokensButton />
+        </div>
+        // <TokenDetail
+        //   isOpen={showTokenDetail}
+        //   handleOpenClose={setShowTokenDetail}
+        //   approvalTokensCount={approvalData?.filter((item) => item.hasApprovals).length}
+        //   account={account}
+        //   tokens={tokens}
+        //   title={nftMetadata.title}
+        //   chainId={chainIdNumber}
+        //   logo={logo}
+        //   accounts={[tba, tbaV2 as string]}
+        //   handleAccountChange={handleAccountChange}
+        // />
       )}
       <div className={
-        `${hasChildren ?  `p-6` : `p-0`} bg-black`
+        `${hasChildren ?  `p-4` : `p-0`} bg-black`
       }>
-        <div
-          className={`relative group h-full w-full grid grid-cols-1 grid-rows-1 transition ${
-            imagesLoaded ? "" : "blur-xl"
-          }
-          `}
+        <a.div
+          className={`
+          cursor-pointer will-change-auto
+        `}
+        style={{ opacity: opacity.to(o => 1 - o), transform }}
         >
-          <div className={`absolute -inset-1.5 ${gradient} blur-md opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-1000 animate-tilt`}></div>
-          {!isNil(nftImages) ? (
-            nftImages.map((image, i) => (
-              <img
-              key={i}
-              className={`col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0 ${hasChildren ? "rounded-lg" : "rounded-none"} bg-slate-200`}
-              src={image}
-              alt="Nft image"
-            />
-            ))
-          ) : (
-            <></>
-          )}
-        </div>
+          <div
+            className={`relative group h-full w-full grid grid-cols-1 grid-rows-1 transition ${
+              imagesLoaded ? "" : "blur-xl"
+            }
+            `}
+          >
+            <div className={`absolute -inset-1.5 ${gradient} blur-md opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-1000 animate-tilt`}></div>
+            {!isNil(nftImages) ? (
+              nftImages.map((image, i) => (
+                <img
+                key={i}
+                className={`col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0 ${hasChildren ? "rounded-lg" : "rounded-none"} bg-slate-200`}
+                src={image}
+                alt="Nft image"
+              />
+              ))
+            ) : (
+              <></>
+            )}
+          </div>
+        </a.div>
+        <a.div
+          className={`
+          absolute top-0 left-0 p-4 w-full h-full will-change-auto
+          `}
+          style={{
+            opacity,
+            transform,
+            rotateX: '180deg',
+          }}
+        >
+          <div className="bg-green-400 w-full h-full rounded-lg">
+
+          </div>
+        </a.div>
       </div>
     </>
   );
