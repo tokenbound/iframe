@@ -117,7 +117,7 @@ export default function Token({ params, searchParams }: TokenParams) {
   const hasChildren = !!(account && nftImages && nftMetadata);
   const gradient = `bg-gradient-to-r from-blue-400 to-emerald-400`
 
-  const [flipped, set] = useState<boolean>(true)
+  const [flipped, set] = useState<boolean>(false)
   const { transform, opacity } = useSpring({
     opacity: flipped ? 1 : 0,
     transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
