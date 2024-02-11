@@ -5,11 +5,19 @@ import { useSpring, config, useSpringRef, useTransition, useChain, animated } fr
 import { useState } from 'react';
 import data from './data';
 
+/**
+ * example: http://localhost:3000/testiframe?contractAddress=0x038a6ee56c17ade0fcfcbfe8d27b448c309baf91&tokenId=1&parentChainId=11155111
+ */
+
 export default function TestIframe() {
   const searchParams = useSearchParams();
   const test = searchParams.get("test");
-  const prod = "https://iframe-ten-tau.vercel.app/0x59293a46d552e56130647f648bcfe255ad3abbcc/17/1"
-  const local = "http://localhost:3000/0x59293a46d552e56130647f648bcfe255ad3abbcc/17/1"
+  const parentChainId = searchParams.get("parentChainId");
+  const contractAddress = searchParams.get("contractAddress");
+  const tokenId = searchParams.get("tokenId");
+
+  const prod = `https://iframe-ten-tau.vercel.app/${contractAddress}/${tokenId}/${parentChainId}`
+  const local = `http://localhost:3000/${contractAddress}/${tokenId}/${parentChainId}`
 
   const toTest = test && String(test).toLowerCase() === "prod" ? prod : local;
 

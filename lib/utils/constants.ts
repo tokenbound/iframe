@@ -10,7 +10,8 @@
  */
 export const BINDER_CAMPAIGNS = [
   "0x501c80d49a4ae7298dc64828a1ccb8be4ddef012",
-  "0xCF08c597f8557764DF0762aDE92A46139a275fD2"
+  "0xCF08c597f8557764DF0762aDE92A46139a275fD2",
+  "0x13d4831ca9e1a66cf6da41cd31558d0d6a5aa1dd"
 ].map(address => address.toLowerCase());
 
 export const BINDER_DROP_ABI = [
