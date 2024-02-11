@@ -116,8 +116,16 @@ export default function Token({ params, searchParams }: TokenParams) {
   }, [nfts, approvalData, account]);
   const showLoading = disableloading !== "true" && nftMetadataLoading;
 
-  const hasChildren = !!(account && nftImages && nftMetadata);
+  /**
+   * @todo
+   * this should ideally be hasSignedNFT
+   * and should check for binder signed NFTs and
+   * then display "special edition" badge
+   */
+  const hasChildren = Boolean(tokens.length > 0);
 
+  console.log({hasChildren})
+  console.log({account, nftImages, nftMetadata})
 
   const [flipped, set] = useState<boolean>(false)
   const { transform, opacity } = useSpring({
@@ -157,7 +165,7 @@ export default function Token({ params, searchParams }: TokenParams) {
               nftImages.map((image, i) => (
                 <img
                 key={i}
-                className={`col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0 ${hasChildren ? "rounded-lg" : "rounded-none"} bg-slate-200`}
+                className={`col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0 w-full h-full ${hasChildren ? "rounded-lg" : "rounded-none"} bg-slate-200`}
                 src={image}
                 alt="Nft image"
               />
