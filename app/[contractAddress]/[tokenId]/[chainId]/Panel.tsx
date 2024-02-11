@@ -24,7 +24,7 @@ import { Key, Terminal } from "lucide-react";
 import { Badge } from "@/components/ui/badge"
 import { AddressDisplay } from "@/components/AddressDisplay";
 import { useSpring, config, useSpringRef, useTransition, useChain, animated } from "@react-spring/web"
-import { GRADIENT } from "./page";
+import { GRADIENT } from "@/lib/utils/constants";
 
 export const TABS = {
   COLLECTIBLES: "Collectibles",
