@@ -1,4 +1,4 @@
-import { PanelProps } from "@/app/[contractAddress]/[tokenId]/[chainId]/Panel";
+
 import { useMedia } from "@/lib/hooks";
 import { Nft, OwnedNft } from "alchemy-sdk";
 import clsx from "clsx";
