@@ -31,7 +31,7 @@ export const DropdownMenu = ({
   return (
     <div className={clsx(className, `relative inline-block text-left`)} {...rest}>
       <div className="flex space-x-2 items-center justify-start">
-        {children || <div>{currentOption}</div>}
+        {/* {children || <div>{currentOption}</div>} */}
         {options?.length > 1 && (
           <div>
             <button
@@ -42,6 +42,7 @@ export const DropdownMenu = ({
               aria-expanded="true"
               onClick={() => setIsOpen(!isOpen)}
             >
+              {shortenAddress(currentOption)}
               <svg
                 className="h-5 w-5"
                 xmlns="http://www.w3.org/2000/svg"

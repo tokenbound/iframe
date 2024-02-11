@@ -9,11 +9,11 @@ import { TbLogo } from "@/components/icon";
 import { useGetApprovals, useNft, useTBADetails } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
 import { getAddress } from "viem";
-import { DisplayTokensButton, TokenDetail } from "./TokenDetail";
+import { DisplayTokensButton } from "./TokenDetail";
 import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
-import CanvasDraw from "react-canvas-draw";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSpring, a } from "@react-spring/web";
+import { Panel } from "./Panel";
 
 interface TokenParams {
   params: {
@@ -115,9 +115,9 @@ export default function Token({ params, searchParams }: TokenParams) {
   const showLoading = disableloading !== "true" && nftMetadataLoading;
 
   const hasChildren = !!(account && nftImages && nftMetadata);
-  const gradient = `bg-gradient-to-r from-green-500 to-green-700`
+  const gradient = `bg-gradient-to-r from-blue-400 to-emerald-400`
 
-  const [flipped, set] = useState<boolean>(false)
+  const [flipped, set] = useState<boolean>(true)
   const { transform, opacity } = useSpring({
     opacity: flipped ? 1 : 0,
     transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
@@ -134,18 +134,6 @@ export default function Token({ params, searchParams }: TokenParams) {
         <div className="absolute right-0 bottom-0 z-10 rounded-full cursor-pointer p-3" onClick={() => set(state => !state)}>
           <DisplayTokensButton />
         </div>
-        // <TokenDetail
-        //   isOpen={showTokenDetail}
-        //   handleOpenClose={setShowTokenDetail}
-        //   approvalTokensCount={approvalData?.filter((item) => item.hasApprovals).length}
-        //   account={account}
-        //   tokens={tokens}
-        //   title={nftMetadata.title}
-        //   chainId={chainIdNumber}
-        //   logo={logo}
-        //   accounts={[tba, tbaV2 as string]}
-        //   handleAccountChange={handleAccountChange}
-        // />
       )}
       <div className={
         `${hasChildren ?  `p-4` : `p-0`} bg-black`
@@ -179,7 +167,7 @@ export default function Token({ params, searchParams }: TokenParams) {
         </a.div>
         <a.div
           className={`
-          absolute top-0 left-0 p-4 w-full h-full will-change-auto
+            absolute top-0 left-0 p-4 w-full h-full will-change-auto
           `}
           style={{
             opacity,
@@ -187,8 +175,20 @@ export default function Token({ params, searchParams }: TokenParams) {
             rotateX: '180deg',
           }}
         >
-          <div className="bg-green-400 w-full h-full rounded-lg">
-
+          <div className={`w-full h-full rounded-lg`}>
+            <Panel
+              approvalTokensCount={approvalData?.filter((item) => item.hasApprovals).length}
+              account={account}
+              tokens={tokens}
+              title={nftMetadata?.title ?? ""}
+              chainId={chainIdNumber}
+              accounts={[tba, tbaV2 as string]}
+              handleAccountChange={handleAccountChange}
+              parent={{
+                contractAddress: nftMetadata?.contract.address,
+                tokenId: nftMetadata?.tokenId
+              }}
+            />
           </div>
         </a.div>
       </div>

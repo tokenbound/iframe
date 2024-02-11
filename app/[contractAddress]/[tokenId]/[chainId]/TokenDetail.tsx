@@ -5,6 +5,9 @@ import {
   DrawerContent,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { useSpring, a } from "@react-spring/web"
+import { useState } from 'react';
+import { DisplayTokensButton } from "@/components/DisplayTokensButton";
 
 interface Props {
   className?: string;
@@ -20,13 +23,7 @@ interface Props {
   logo?: string;
 }
 
-export const DisplayTokensButton = () => {
-  return (
-    <div className="py-2 px-4 uppercase text-[0.5rem] font-bold rounded-3xl border-2 text-slate-100 flex flex-col items-center bg-yellow-800 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-20 border-slate-200 hover:scale-105 transition duration-300">
-      artist signature edition
-    </div>
-  );
-};
+
 
 export const TokenDetail = ({
   className,
@@ -41,24 +38,44 @@ export const TokenDetail = ({
   chainId,
   logo,
 }: Props) => {
+  const [flipped, set] = useState(false)
+
+  const { transform, opacity } = useSpring({
+    opacity: flipped ? 1 : 0,
+    transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
+    config: { mass: 5, tension: 500, friction: 80 },
+  })
+
   return (
     <div className={`${className} max-w-[1080px]`}>
-      <Drawer shouldScaleBackground={false}>
-        <div className="absolute right-0 bottom-0 z-10 rounded-full cursor-pointer p-3">
-          <DrawerTrigger><DisplayTokensButton /></DrawerTrigger>
+        <div className="absolute right-0 bottom-0 z-10 rounded-full cursor-pointer p-3" onClick={() => set(state => !state)}>
+          <DisplayTokensButton />
         </div>
-        <DrawerContent className="w-full mx-auto">
-          <Panel
-            approvalTokensCount={approvalTokensCount}
-            account={account}
-            tokens={tokens}
-            title={title}
-            chainId={chainId}
-            accounts={accounts}
-            handleAccountChange={handleAccountChange}
-          />
-        </DrawerContent>
-      </Drawer>
+        {/* <Panel
+          approvalTokensCount={approvalTokensCount}
+          account={account}
+          tokens={tokens}
+          title={title}
+          chainId={chainId}
+          accounts={accounts}
+          handleAccountChange={handleAccountChange}
+        /> */}
+        <a.div
+          className={`
+           absolute w-[500px] h-[500px] cursor-pointer will-change-auto bg-blue-300
+          `}
+          style={{ opacity: opacity.to(o => 1 - o), transform }}
+        ></a.div>
+        <a.div
+          className={`
+          absolute w-[500px] h-[500px] cursor-pointer will-change-auto bg-red-500
+          `}
+          style={{
+            opacity,
+            transform,
+            rotateX: '180deg',
+          }}
+        />
     </div>
   );
 };

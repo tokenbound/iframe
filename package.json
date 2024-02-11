@@ -30,6 +30,7 @@
     "react": "18.2.0",
     "react-canvas-draw": "^1.2.1",
     "react-dom": "18.2.0",
+    "react-icons": "^5.0.1",
     "react-polymorphic-types": "^2.0.0",
     "request": "^2.88.2",
     "swr": "^2.1.5",
