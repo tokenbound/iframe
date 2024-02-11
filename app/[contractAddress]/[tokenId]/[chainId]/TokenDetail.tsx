@@ -64,7 +64,7 @@ export const TokenDetail = ({
   const CustomLogo = logo ? Logo[logo.toUpperCase()] : Logo["DEFAULT"];
   return (
     <div className={`${className} max-w-[1080px]`}>
-      <Drawer shouldScaleBackground={true}>
+      <Drawer shouldScaleBackground={false}>
         <div className="absolute left-4 top-4 z-10 rounded-full cursor-pointer">
           <DrawerTrigger><CustomLogo /></DrawerTrigger>
         </div>

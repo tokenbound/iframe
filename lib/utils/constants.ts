@@ -1,5 +1,6 @@
 /**
  *
+ * @dev
  * Array of all binder campaigns
  * if the nfts method sees one of these
  * as children
