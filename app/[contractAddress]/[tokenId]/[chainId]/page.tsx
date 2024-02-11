@@ -26,13 +26,14 @@ interface TokenParams {
   searchParams: {
     disableloading: string;
     logo?: string;
+    childNetwork?: string;
   };
 }
 
 export default function Token({ params, searchParams }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const { tokenId, contractAddress, chainId } = params;
-  const { disableloading, logo } = searchParams;
+  const { disableloading, logo, childNetwork } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
   const chainIdNumber = parseInt(chainId);
   const tokenboundClient = new TokenboundClient({ chainId: chainIdNumber });
@@ -73,7 +74,7 @@ export default function Token({ params, searchParams }: TokenParams) {
     tokenboundClient,
     tokenId,
     tokenContract: contractAddress as `0x${string}`,
-    chainId: 11155111,
+    chainId: parseInt(childNetwork ?? "11155111"),
   });
 
   // Get nft's TBA account bytecode to check if account is deployed or not
