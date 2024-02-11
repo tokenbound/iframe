@@ -13,8 +13,6 @@ export const BINDER_CAMPAIGNS = [
   "0xCF08c597f8557764DF0762aDE92A46139a275fD2"
 ].map(address => address.toLowerCase());
 
-export const GRADIENT = `bg-gradient-to-r from-blue-400 to-emerald-400`
-
 export const BINDER_DROP_ABI = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
   { inputs: [], name: "CallerNotAdmin", type: "error" },

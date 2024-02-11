@@ -1,35 +1,36 @@
 /* eslint-disable @next/next/no-img-element */
 import clsx from "clsx";
-import { useState } from "react";
-import { Check } from "@/components/icon";
-import { BiCopy } from "react-icons/bi";
-import { FaCheck } from "react-icons/fa6";
+// import { useState } from "react";
+// import { Check } from "@/components/icon";
+// import { BiCopy } from "react-icons/bi";
+// import { FaCheck } from "react-icons/fa6";
 import {
-  Tabs,
-  TabPanel,
+  // Tabs,
+  // TabPanel,
   MediaViewer,
-  ExternalLink,
-  DropdownMenu,
+  // ExternalLink,
+  // DropdownMenu,
   Disclaimer,
 } from "@/components/ui";
 import { TbaOwnedNft } from "@/lib/types";
-import useSWR from "swr";
-import { getAlchemy } from "@/lib/clients";
-import { ethers } from "ethers";
-import { useGetTokenBalances } from "@/lib/hooks";
-import { getEtherscanLink, shortenAddress } from "@/lib/utils";
+// import useSWR from "swr";
+// import { getAlchemy } from "@/lib/clients";
+// import { ethers } from "ethers";
+// import { useGetTokenBalances } from "@/lib/hooks";
+// import { getEtherscanLink, shortenAddress } from "@/lib/utils";
 import { chainIdToOpenseaAssetUrl } from "@/lib/constants";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Key, Terminal } from "lucide-react";
-import { Badge } from "@/components/ui/badge"
-import { AddressDisplay } from "@/components/AddressDisplay";
-import { useSpring, config, useSpringRef, useTransition, useChain, animated } from "@react-spring/web"
-import { GRADIENT } from "@/lib/utils/constants";
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+// import { Key, Terminal } from "lucide-react";
+// import { Badge } from "@/components/ui/badge"
+// import { AddressDisplay } from "@/components/AddressDisplay";
+// import { useSpring, config, useSpringRef, useTransition, useChain, animated } from "@react-spring/web"
 
-export const TABS = {
-  COLLECTIBLES: "Collectibles",
-  ASSETS: "Assets",
-};
+// export const TABS = {
+//   COLLECTIBLES: "Collectibles",
+//   ASSETS: "Assets",
+// };
+
+const GRADIENT = `bg-gradient-to-r from-blue-400 to-emerald-400`
 
 interface Props {
   className?: string;
@@ -57,34 +58,30 @@ export const Panel = ({
   chainId,
   parent
 }: Props) => {
-  const [copied, setCopied] = useState(false);
-  const [currentTab, setCurrentTab] = useState(TABS.COLLECTIBLES);
+  // const [copied, setCopied] = useState(false);
+  // const [currentTab, setCurrentTab] = useState(TABS.COLLECTIBLES);
+  // const displayedAddress = account;
+  // const { data: ethBalance } = useSWR(account ? account : null, async (accountAddress) => {
+  //   const alchemy = getAlchemy(chainId);
+  //   const balance = await alchemy.core.getBalance(accountAddress, "latest");
+  //   return ethers.utils.formatEther(balance);
+  // });
+  // const { data: tokenBalanceData } = useGetTokenBalances(account as `0x${string}`, chainId);
+  // const etherscanLink = getEtherscanLink({ chainId, address: account });
 
-  const displayedAddress = account;
+  // const [open, set] = useState(false);
+  // const springApi = useSpringRef();
+  // const { size, ...rest } = useSpring({
+  //   ref: springApi,
+  //   config: config.stiff,
+  //   from: { size: "20%", background: "hotpink" },
+  //   to: {
+  //     size: open ? "100%" : "20%",
+  //     background: open ? "white" : "hotpink",
+  //   },
+  // });
 
-  const { data: ethBalance } = useSWR(account ? account : null, async (accountAddress) => {
-    const alchemy = getAlchemy(chainId);
-    const balance = await alchemy.core.getBalance(accountAddress, "latest");
-    return ethers.utils.formatEther(balance);
-  });
-
-  const { data: tokenBalanceData } = useGetTokenBalances(account as `0x${string}`, chainId);
-  const etherscanLink = getEtherscanLink({ chainId, address: account });
-
-  const [open, set] = useState(false);
-
-  const springApi = useSpringRef();
-  const { size, ...rest } = useSpring({
-    ref: springApi,
-    config: config.stiff,
-    from: { size: "20%", background: "hotpink" },
-    to: {
-      size: open ? "100%" : "20%",
-      background: open ? "white" : "hotpink",
-    },
-  });
-
-  const transApi = useSpringRef();
+  // const transApi = useSpringRef();
   // const transition = useTransition(open ? data : [], {
   //   ref: transApi,
   //   trail: 400 / data.length,
@@ -94,10 +91,10 @@ export const Panel = ({
   // });
 
   // This will orchestrate the two animations above, comment the last arg and it creates a sequence
-  useChain(open ? [springApi, transApi] : [transApi, springApi], [
-    0,
-    // open ? 0.1 : 0.6,
-  ]);
+  // useChain(open ? [springApi, transApi] : [transApi, springApi], [
+  //   0,
+  //   // open ? 0.1 : 0.6,
+  // ]);
 
   return (
 

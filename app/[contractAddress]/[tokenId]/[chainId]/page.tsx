@@ -14,7 +14,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSpring, a } from "@react-spring/web";
 import { Panel } from "./Panel";
 import { DisplayTokensButton } from "@/components/DisplayTokensButton";
-import { GRADIENT } from "@/lib/utils/constants";
+
+const GRADIENT = `bg-gradient-to-r from-blue-400 to-emerald-400`
+
 interface TokenParams {
   params: {
     tokenId: string;
