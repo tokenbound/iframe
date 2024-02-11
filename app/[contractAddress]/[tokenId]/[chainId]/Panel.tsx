@@ -132,18 +132,16 @@ export const Panel = ({
               const balance = t.balance;
               return (
                 <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
-                  <a href={openseaUrl} target="_blank" className="cursor-pointer">
-                    <div className="relative h-[450px] w-[450px]">
-                      <MediaViewer token={t} chainId={chainId} />
-                      {is1155 && (
-                        <div className="absolute top-4 left-4 text-white rounded-lg py-1 px-2 bg-[#000] bg-opacity-10 backdrop-blur-sm">
-                          <div className="text-xl md:text-2xl font-sans font-semibold">
-                            x{balance}
-                          </div>
+                  <div className="relative h-[450px] w-[450px]">
+                    <MediaViewer token={t} chainId={chainId} />
+                    {is1155 && (
+                      <div className="absolute top-4 left-4 text-white rounded-lg py-1 px-2 bg-[#000] bg-opacity-10 backdrop-blur-sm">
+                        <div className="text-xl md:text-2xl font-sans font-semibold">
+                          x{balance}
                         </div>
-                      )}
-                    </div>
-                  </a>
+                      </div>
+                    )}
+                  </div>
                 </li>
               );
             })}

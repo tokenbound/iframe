@@ -12,7 +12,7 @@ export function useMedia({ token, chainId }: MediaArgs) {
   const isBase64: boolean =
     !media && !!token.tokenUri?.raw?.startsWith("data:application/json;base64");
   const isVideo = media?.format === "mp4";
-  const isIPFSOnly: boolean = !media && !!token.tokenUri?.raw?.startsWith("ipfs://");
+  // const isIPFSOnly: boolean = !media && !!token.tokenUri?.raw?.startsWith("ipfs://");
   const ipfsURL =
     media?.raw.replace("ipfs://", "https://ipfs.io/ipfs/") ??
     token.tokenUri?.gateway?.replace("ipfs://", "https://ipfs.io/ipfs/") ??
@@ -24,8 +24,10 @@ export function useMedia({ token, chainId }: MediaArgs) {
   // @ts-ignore
   const parentBaseImage = token.rawMetadata["parent_base_image"];
 
+  console.log(token);
+
   const mediaUrl = useMemo(() => {
-    if (isVideo || isIPFSOnly) {
+    if (isVideo) {
       return ipfsURL;
     }
 
@@ -50,7 +52,6 @@ export function useMedia({ token, chainId }: MediaArgs) {
   }, [
     isBase64,
     ipfsURL,
-    isIPFSOnly,
     isVideo,
     media?.gateway,
     media?.raw,
