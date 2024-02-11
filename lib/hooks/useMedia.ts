@@ -21,6 +21,8 @@ export function useMedia({ token, chainId }: MediaArgs) {
 
   // @ts-ignore
   const canvasData = token.rawMetadata["image_canvas_data"];
+  // @ts-ignore
+  const parentBaseImage = token.rawMetadata["parent_base_image"];
 
   const mediaUrl = useMemo(() => {
     if (isVideo || isIPFSOnly) {
@@ -64,6 +66,7 @@ export function useMedia({ token, chainId }: MediaArgs) {
     rawMedia: media,
     mediaUrl,
     isVideo,
-    canvasData
+    canvasData,
+    parentBaseImage
   };
 }

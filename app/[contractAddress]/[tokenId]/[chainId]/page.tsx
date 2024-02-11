@@ -123,10 +123,6 @@ export default function Token({ params, searchParams }: TokenParams) {
    * then display "special edition" badge
    */
   const hasChildren = Boolean(tokens.length > 0);
-
-  console.log({hasChildren})
-  console.log({account, nftImages, nftMetadata})
-
   const [flipped, set] = useState<boolean>(false)
   const { transform, opacity } = useSpring({
     opacity: flipped ? 1 : 0,

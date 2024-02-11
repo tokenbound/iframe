@@ -1,6 +1,8 @@
+import { PanelProps } from "@/app/[contractAddress]/[tokenId]/[chainId]/Panel";
 import { useMedia } from "@/lib/hooks";
 import { Nft, OwnedNft } from "alchemy-sdk";
 import clsx from "clsx";
+import CanvasDraw from "react-canvas-draw";
 
 /* eslint-disable @next/next/no-img-element */
 interface Props {
@@ -9,7 +11,7 @@ interface Props {
 }
 
 export const MediaViewer = ({ token, chainId }: Props) => {
-  const { mediaUrl, isVideo } = useMedia({ token, chainId });
+  const { mediaUrl, isVideo, canvasData, parentBaseImage } = useMedia({ token, chainId });
   const borderRadius = "rounded-2xl";
 
   if (isVideo) {
@@ -29,6 +31,33 @@ export const MediaViewer = ({ token, chainId }: Props) => {
         )}
       </>
     );
+  }
+
+
+  const style = {
+    backgroundImage: `${parentBaseImage ? `-webkit-linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.6)), url(${parentBaseImage})` : `bg-black` }`,
+    backgroundSize: `cover`,
+    borderRadius: `8px`,
+    width: "100%",
+    height: "100%"
+  };
+
+  if (canvasData) {
+    return (
+      <CanvasDraw
+        ref={(canvasDraw) => {
+          if (canvasDraw) {
+            return canvasDraw.loadSaveData(canvasData);
+          }
+        }}
+        brushColor={"white"}
+        brushRadius={0}
+        lazyRadius={5}
+        disabled
+        hideGrid
+        style={style}
+      />
+    )
   }
 
   return (

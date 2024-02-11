@@ -32,7 +32,7 @@ import { chainIdToOpenseaAssetUrl } from "@/lib/constants";
 
 const GRADIENT = `bg-gradient-to-r from-blue-400 to-emerald-400`
 
-interface Props {
+interface PanelProps {
   className?: string;
   approvalTokensCount?: number;
   account?: string;
@@ -57,7 +57,7 @@ export const Panel = ({
   title,
   chainId,
   parent
-}: Props) => {
+}: PanelProps) => {
   // const [copied, setCopied] = useState(false);
   // const [currentTab, setCurrentTab] = useState(TABS.COLLECTIBLES);
   // const displayedAddress = account;
@@ -125,7 +125,7 @@ export const Panel = ({
         />
       ) : null}
         {tokens && tokens.length ? (
-          <ul className="custom-scroll overflow-y-auto">
+          <ul className="custom-scroll overflow-y-auto w-full">
             {tokens.map((t, i) => {
               const openseaUrl = `${chainIdToOpenseaAssetUrl[chainId]}/${t.contract.address}/${t.tokenId}`;
               const is1155 = t.tokenType === "ERC1155";
@@ -133,7 +133,7 @@ export const Panel = ({
               return (
                 <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
                   <a href={openseaUrl} target="_blank" className="cursor-pointer">
-                    <div className="relative">
+                    <div className="relative h-[450px] w-[450px]">
                       <MediaViewer token={t} chainId={chainId} />
                       {is1155 && (
                         <div className="absolute top-4 left-4 text-white rounded-lg py-1 px-2 bg-[#000] bg-opacity-10 backdrop-blur-sm">
