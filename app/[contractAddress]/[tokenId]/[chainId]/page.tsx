@@ -9,11 +9,11 @@ import { TbLogo } from "@/components/icon";
 import { useGetApprovals, useNft, useTBADetails } from "@/lib/hooks";
 import { TbaOwnedNft } from "@/lib/types";
 import { getAddress } from "viem";
-import { DisplayTokensButton } from "./TokenDetail";
 import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSpring, a } from "@react-spring/web";
 import { Panel } from "./Panel";
+import { DisplayTokensButton } from "@/components/DisplayTokensButton";
 
 interface TokenParams {
   params: {
