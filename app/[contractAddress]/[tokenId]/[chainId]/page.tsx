@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSpring, a } from "@react-spring/web";
 import { Panel } from "./Panel";
 import { DisplayTokensButton } from "@/components/DisplayTokensButton";
-
+export const GRADIENT = `bg-gradient-to-r from-blue-400 to-emerald-400`
 interface TokenParams {
   params: {
     tokenId: string;
@@ -115,7 +115,7 @@ export default function Token({ params, searchParams }: TokenParams) {
   const showLoading = disableloading !== "true" && nftMetadataLoading;
 
   const hasChildren = !!(account && nftImages && nftMetadata);
-  const gradient = `bg-gradient-to-r from-blue-400 to-emerald-400`
+
 
   const [flipped, set] = useState<boolean>(false)
   const { transform, opacity } = useSpring({
@@ -150,7 +150,7 @@ export default function Token({ params, searchParams }: TokenParams) {
             }
             `}
           >
-            <div className={`absolute -inset-1.5 ${gradient} blur-md opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-1000 animate-tilt`}></div>
+            <div className={`absolute -inset-1.5 ${GRADIENT} blur-md opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-1000 animate-tilt`}></div>
             {!isNil(nftImages) ? (
               nftImages.map((image, i) => (
                 <img

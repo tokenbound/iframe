@@ -1,6 +1,9 @@
 "use client";
 
 import { useSearchParams } from 'next/navigation'
+import { useSpring, config, useSpringRef, useTransition, useChain, animated } from "@react-spring/web"
+import { useState } from 'react';
+import data from './data';
 
 export default function TestIframe() {
   const searchParams = useSearchParams();
@@ -9,6 +12,34 @@ export default function TestIframe() {
   const local = "http://localhost:3000/0x59293a46d552e56130647f648bcfe255ad3abbcc/17/1"
 
   const toTest = test && String(test).toLowerCase() === "prod" ? prod : local;
+
+  const [open, set] = useState(false);
+
+  const springApi = useSpringRef();
+  const { size, ...rest } = useSpring({
+    ref: springApi,
+    config: config.stiff,
+    from: { size: "20%", background: "hotpink" },
+    to: {
+      size: open ? "100%" : "20%",
+      background: open ? "white" : "hotpink",
+    },
+  });
+
+  const transApi = useSpringRef();
+  const transition = useTransition(open ? data : [], {
+    ref: transApi,
+    trail: 400 / data.length,
+    from: { opacity: 0, scale: 0 },
+    enter: { opacity: 1, scale: 1 },
+    leave: { opacity: 0, scale: 0 },
+  });
+
+  // This will orchestrate the two animations above, comment the last arg and it creates a sequence
+  useChain(open ? [springApi, transApi] : [transApi, springApi], [
+    0,
+    open ? 0.1 : 0.6,
+  ]);
 
   return (
     <section className="p-6 flex flex-col gap-6">
@@ -19,10 +50,27 @@ export default function TestIframe() {
       <div className="min-w-[500px] h-[500px]">
         <iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" className="w-full h-full" frameBorder="0" height="100%" id="AssetMedia--frame" sandbox="allow-scripts" src={toTest}></iframe>
       </div>
-      <div>
-        title & description
-
-        Duis vel sem sed nunc congue viverra a non odio. Vestibulum interdum vitae erat nec fermentum. Duis mollis consequat eros, eget blandit nibh euismod non. Nulla tincidunt mi nunc, ut facilisis odio tincidunt eu. Nunc vel fermentum purus. Etiam vehicula sollicitudin condimentum. Ut quis fringilla quam, et luctus dolor. Integer rhoncus tortor eget interdum ultrices. Phasellus vestibulum, quam in fringilla venenatis, sapien dolor hendrerit eros, nec congue massa quam eget tellus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed cursus est erat, id mattis turpis dictum at. Suspendisse tincidunt turpis vel elit varius dapibus. Suspendisse potenti.
+      <div className='flex-1'>
+      <div className={`
+        w-full h-full bg-blue-100 p-[20px] flex items-center justify-center
+      `}>
+          <animated.div
+            style={{ ...rest, width: size, height: size }}
+            className={`
+              relative grid grid-cols-4 gap-[25px] p-[25px] bg-white rounded-md cursor-pointer will-change-auto
+            `}
+            onClick={() => set((open) => !open)}
+          >
+            {transition((style, item) => (
+              <animated.div
+                className={`
+                  w-full h-full bg-white rounded-md will-change-auto
+                `}
+                style={{ ...style, background: item.css }}
+              />
+            ))}
+          </animated.div>
+        </div>
       </div>
     </div>
     <div className="flex flex-row gap-6">

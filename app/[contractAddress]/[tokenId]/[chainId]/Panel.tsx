@@ -24,6 +24,7 @@ import { Key, Terminal } from "lucide-react";
 import { Badge } from "@/components/ui/badge"
 import { AddressDisplay } from "@/components/AddressDisplay";
 import { useSpring, config, useSpringRef, useTransition, useChain, animated } from "@react-spring/web"
+import { GRADIENT } from "./page";
 
 export const TABS = {
   COLLECTIBLES: "Collectibles",
@@ -103,7 +104,8 @@ export const Panel = ({
     <div
       className={clsx(
         className,
-        "custom-scroll h-full space-y-3 overflow-y-auto rounded-t-lg border-t-0 bg-white px-2 pt-2 relative"
+        "custom-scroll h-full space-y-3 overflow-y-auto rounded-lg border-0 px-2 pt-2 relative",
+        GRADIENT
       )}
     >
 
