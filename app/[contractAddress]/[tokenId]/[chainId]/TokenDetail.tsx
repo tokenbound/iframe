@@ -1,7 +1,5 @@
-import { Variants, motion } from "framer-motion";
 import { Panel } from "./Panel";
 import { TbaOwnedNft } from "@/lib/types";
-import { SignedLogo } from "@/components/icon/SignedLogo";
 import {
   Drawer,
   DrawerContent,
@@ -22,30 +20,12 @@ interface Props {
   logo?: string;
 }
 
-const variants = {
-  closed: { y: "100%", transition: { duration: 0.75 } },
-  open: { y: "0", transition: { duration: 0.75 }, height: "85%" },
-} as Variants;
-
-const iconVariant = {
-  hover: {
-    opacity: 1,
-    boxShadow: "0px 1px 14px 0px rgba(0, 0, 0, 0.12)",
-    transition: { duration: 0.3, ease: "easeInOut" },
-  },
-  unHovered: {
-    opacity: 0.7,
-    boxShadow: "none",
-    transition: { duration: 0.3, ease: "easeInOut" },
-  },
-};
-
-type LogoType = {
-  [logo: string]: any;
-};
-
-const Logo: LogoType = {
-  DEFAULT: SignedLogo,
+export const DisplayTokensButton = () => {
+  return (
+    <div className="py-2 px-4 uppercase text-[0.5rem] font-bold rounded-3xl border-2 text-slate-100 flex flex-col items-center bg-yellow-800 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-20 border-slate-200 hover:scale-105 transition duration-300">
+      artist signature edition
+    </div>
+  );
 };
 
 export const TokenDetail = ({
@@ -61,12 +41,11 @@ export const TokenDetail = ({
   chainId,
   logo,
 }: Props) => {
-  const CustomLogo = logo ? Logo[logo.toUpperCase()] : Logo["DEFAULT"];
   return (
     <div className={`${className} max-w-[1080px]`}>
       <Drawer shouldScaleBackground={false}>
-        <div className="absolute left-4 top-4 z-10 rounded-full cursor-pointer">
-          <DrawerTrigger><CustomLogo /></DrawerTrigger>
+        <div className="absolute right-0 bottom-0 z-10 rounded-full cursor-pointer p-3">
+          <DrawerTrigger><DisplayTokensButton /></DrawerTrigger>
         </div>
         <DrawerContent className="w-full mx-auto">
           <Panel

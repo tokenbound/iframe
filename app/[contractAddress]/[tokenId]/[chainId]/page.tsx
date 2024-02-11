@@ -116,9 +116,11 @@ export default function Token({ params, searchParams }: TokenParams) {
   if (showLoading) {
     return <Skeleton className="w-full h-full bg-slate-400" />
   }
+  const hasChildren = !!(account && nftImages && nftMetadata);
+  const gradient = `bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-700`
   return (
     <>
-      {account && nftImages && nftMetadata && (
+      {hasChildren && (
         <TokenDetail
           isOpen={showTokenDetail}
           handleOpenClose={setShowTokenDetail}
@@ -132,23 +134,29 @@ export default function Token({ params, searchParams }: TokenParams) {
           handleAccountChange={handleAccountChange}
         />
       )}
-      <div
-        className={`bg-white h-full w-full grid grid-cols-1 grid-rows-1 transition ${
-          imagesLoaded ? "" : "blur-xl"
-        }`}
-      >
-        {!isNil(nftImages) ? (
-          nftImages.map((image, i) => (
-            <img
-            key={i}
-            className="col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0"
-            src={image}
-            alt="Nft image"
-          />
-          ))
-        ) : (
-          <></>
-        )}
+      <div className={
+        `${hasChildren ?  `p-6` : `p-0`} bg-black`
+      }>
+        <div
+          className={`relative group h-full w-full grid grid-cols-1 grid-rows-1 transition ${
+            imagesLoaded ? "" : "blur-xl"
+          }
+          `}
+        >
+          <div className={`absolute -inset-2.5 ${gradient} blur-lg opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-1000 animate-tilt`}></div>
+          {!isNil(nftImages) ? (
+            nftImages.map((image, i) => (
+              <img
+              key={i}
+              className={`col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0 ${hasChildren ? "rounded-lg" : "rounded-none"} bg-slate-200`}
+              src={image}
+              alt="Nft image"
+            />
+            ))
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
     </>
   );
