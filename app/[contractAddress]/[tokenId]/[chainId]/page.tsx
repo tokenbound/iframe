@@ -131,7 +131,6 @@ export default function Token({ params, searchParams }: TokenParams) {
     config: { mass: 5, tension: 500, friction: 80 },
   })
 
-
   if (showLoading) {
     return <Skeleton className="w-full h-full bg-slate-400" />
   }
@@ -142,9 +141,7 @@ export default function Token({ params, searchParams }: TokenParams) {
           <DisplayTokensButton />
         </div>
       )}
-      <div className={
-        `${hasChildren ?  `p-4` : `p-0`} bg-black`
-      }>
+      <div className={`bg-black`}>
         <a.div
           className={`
           cursor-pointer will-change-auto
@@ -162,7 +159,7 @@ export default function Token({ params, searchParams }: TokenParams) {
               nftImages.map((image, i) => (
                 <img
                 key={i}
-                className={`col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0 w-full h-full ${hasChildren ? "rounded-lg" : "rounded-none"} bg-slate-200`}
+                className={`col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0 w-full h-full bg-slate-200`}
                 src={image}
                 alt="Nft image"
               />
@@ -174,7 +171,7 @@ export default function Token({ params, searchParams }: TokenParams) {
         </a.div>
         <a.div
           className={`
-            absolute top-0 left-0 p-4 w-full h-full will-change-auto
+            absolute top-0 left-0 w-full h-full will-change-auto
           `}
           style={{
             opacity,
@@ -182,7 +179,7 @@ export default function Token({ params, searchParams }: TokenParams) {
             rotateX: '180deg',
           }}
         >
-          <div className={`w-full h-full rounded-lg`}>
+          <div className={`w-full h-full`}>
             <Panel
               approvalTokensCount={approvalData?.filter((item) => item.hasApprovals).length}
               account={account}

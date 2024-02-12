@@ -13,11 +13,12 @@ export default function TestIframe() {
   const searchParams = useSearchParams();
   const test = searchParams.get("test");
   const parentChainId = searchParams.get("parentChainId");
+  const childChainId = searchParams.get("childChainId");
   const contractAddress = searchParams.get("contractAddress");
   const tokenId = searchParams.get("tokenId");
 
   const prod = `https://iframe-ten-tau.vercel.app/${contractAddress}/${tokenId}/${parentChainId}`
-  const local = `http://localhost:3000/${contractAddress}/${tokenId}/${parentChainId}`
+  const local = `http://localhost:3000/${contractAddress}/${tokenId}/${parentChainId}?childNetwork=${childChainId}`
 
   const toTest = test && String(test).toLowerCase() === "prod" ? prod : local;
 

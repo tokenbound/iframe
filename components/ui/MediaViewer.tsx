@@ -14,7 +14,6 @@ interface Props {
 
 export const MediaViewer = ({ token, chainId }: Props) => {
   const { mediaUrl, isVideo, canvasData, parentBaseImage } = useMedia({ token, chainId });
-  const [isCanvas, toggleCanvas] = useState<boolean>(false);
   const borderRadius = "rounded-2xl";
 
   if (isVideo) {
@@ -42,20 +41,19 @@ export const MediaViewer = ({ token, chainId }: Props) => {
 
   return (
     <>
-      <div className="relative w-[450px] h-[450px]">
+      <div className="w-full h-full flex flex-col items-center justify-center">
         {
-          isCanvas ?
+          parentBaseImage && canvasData ?
           <SignatureCanvas baseImage={parentBaseImage} canvasData={canvasData} />
           :
           <img
-            className="aspect-square rounded-xl object-cover"
+            className="aspect-square rounded-lg object-cover"
             src={mediaUrl}
             alt="token image"
             width={1080}
             height={1080}
           />
         }
-        <div className="absolute top-0 left-0 p-2 cursor-pointer hover:scale-110 transition duration-200 ease-in" onClick={() => toggleCanvas(true)}><PlayCircle className="w-6 h-6 text-white" /></div>
       </div>
     </>
   );
@@ -71,8 +69,6 @@ const SignatureCanvas = ({
     backgroundImage: `${baseImage ? `-webkit-linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.6)), url(${baseImage})` : `bg-black` }`,
     backgroundSize: `cover`,
     borderRadius: `8px`,
-    width: "100%",
-    height: "100%"
   };
   return (
     <CanvasDraw
@@ -83,7 +79,6 @@ const SignatureCanvas = ({
       }}
       brushColor={"white"}
       brushRadius={0}
-      lazyRadius={5}
       disabled
       hideGrid
       style={style}

@@ -101,8 +101,7 @@ export const Panel = ({
     <div
       className={clsx(
         className,
-        "custom-scroll h-full space-y-3 overflow-y-auto rounded-lg border-0 px-2 pt-2 relative",
-        GRADIENT
+        "custom-scroll h-full overflow-y-auto border-0 relative bg-black",
       )}
     >
 
@@ -125,22 +124,22 @@ export const Panel = ({
         />
       ) : null}
         {tokens && tokens.length ? (
-          <ul className="custom-scroll overflow-y-auto w-full">
+          <ul className="custom-scroll overflow-y-auto w-full h-full">
             {tokens.map((t, i) => {
               const openseaUrl = `${chainIdToOpenseaAssetUrl[chainId]}/${t.contract.address}/${t.tokenId}`;
               const is1155 = t.tokenType === "ERC1155";
               const balance = t.balance;
               return (
-                <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none">
-                  <div className="relative h-[450px] w-[450px]">
+                <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none w-full h-full">
+                  <div className="w-full h-full">
                     <MediaViewer token={t} chainId={chainId} />
-                    {is1155 && (
+                    {/* {is1155 && (
                       <div className="absolute top-4 left-4 text-white rounded-lg py-1 px-2 bg-[#000] bg-opacity-10 backdrop-blur-sm">
                         <div className="text-xl md:text-2xl font-sans font-semibold">
                           x{balance}
                         </div>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </li>
               );

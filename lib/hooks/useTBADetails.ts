@@ -47,12 +47,12 @@ export const useTBADetails = ({
   } = useSWR(`tbaV2NFTs-${tbaV2?.data}}`, async () => {
     if (tbaV2) {
       console.log("Inside fetching the nfts for v2: ", tbaV2);
-      const [nfts, lensNFT] = await Promise.all([
+      const [nfts] = await Promise.all([
         getNfts(chainId, tbaV2.data as `0x${string}`),
-        getLensNfts(tbaV2.data as `0x${string}`),
+        // getLensNfts(tbaV2.data as `0x${string}`),
       ]);
 
-      return [...nfts, ...lensNFT];
+      return [...nfts];
     }
 
     return [];
