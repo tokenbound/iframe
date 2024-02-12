@@ -128,7 +128,7 @@ export default function Token({ params, searchParams }: TokenParams) {
   const { transform, opacity } = useSpring({
     opacity: flipped ? 1 : 0,
     transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
-    config: { mass: 5, tension: 500, friction: 80 },
+    config: { mass: 25, tension: 300, friction: 100 },
   })
 
   if (showLoading) {
