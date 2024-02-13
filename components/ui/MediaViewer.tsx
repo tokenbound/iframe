@@ -10,21 +10,25 @@ import CanvasDraw from "react-canvas-draw";
 interface Props {
   token: Nft | OwnedNft;
   chainId: number;
+  isFlipped?:boolean;
 }
 
-export const MediaViewer = ({ token, chainId }: Props) => {
+export const MediaViewer = ({ token, chainId, isFlipped }: Props) => {
   const { mediaUrl, isVideo, canvasData, parentBaseImage } = useMedia({ token, chainId });
   const borderRadius = "rounded-lg";
 
   const [actionStatus, setActionStatus] = useState<"idle" | "wip" | "completed">("idle");
-  const delayDuration = 2; // seconds
+  const delayDuration = 1; // seconds
+
   useEffect(() => {
-    setActionStatus("wip");
-    // Use setTimeout to simulate a delayed action
-    setTimeout(() => {
-      setActionStatus("completed");
-    }, delayDuration * 1000);
-  }, [actionStatus]);
+    if (isFlipped) {
+      setActionStatus("wip");
+      // Use setTimeout to simulate a delayed action
+      setTimeout(() => {
+        setActionStatus("completed");
+      }, delayDuration * 1000);
+    }
+  }, [actionStatus, isFlipped]);
 
   if (isVideo) {
     return (
@@ -58,7 +62,7 @@ export const MediaViewer = ({ token, chainId }: Props) => {
           :
           <img
             className="aspect-square rounded-lg object-cover"
-            src={mediaUrl}
+            src={parentBaseImage}
             alt="token image"
             width={"400px"}
             height={"400px"}

@@ -45,6 +45,7 @@ interface PanelProps {
     contractAddress?: string;
     tokenId?: string;
   }
+  isFlipped?:boolean;
 }
 
 export const Panel = ({
@@ -56,7 +57,8 @@ export const Panel = ({
   tokens,
   title,
   chainId,
-  parent
+  parent,
+  isFlipped
 }: PanelProps) => {
   // const [copied, setCopied] = useState(false);
   // const [currentTab, setCurrentTab] = useState(TABS.COLLECTIBLES);
@@ -132,7 +134,7 @@ export const Panel = ({
               return (
                 <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none w-full h-full">
                   <div className="w-full h-full">
-                    <MediaViewer token={t} chainId={chainId} />
+                    <MediaViewer token={t} chainId={chainId} isFlipped={isFlipped} />
                     {/* {is1155 && (
                       <div className="absolute top-4 left-4 text-white rounded-lg py-1 px-2 bg-[#000] bg-opacity-10 backdrop-blur-sm">
                         <div className="text-xl md:text-2xl font-sans font-semibold">

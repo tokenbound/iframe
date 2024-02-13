@@ -11,11 +11,11 @@ import { TbaOwnedNft } from "@/lib/types";
 import { getAddress } from "viem";
 import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSpring, a } from "@react-spring/web";
+import { useSpring, a, config } from "@react-spring/web";
 import { Panel } from "./Panel";
 import { DisplayTokensButton } from "@/components/DisplayTokensButton";
 
-const GRADIENT = `bg-gradient-to-r from-blue-400 to-emerald-400`
+// const GRADIENT = `bg-gradient-to-r from-blue-400 to-emerald-400`
 
 interface TokenParams {
   params: {
@@ -129,7 +129,7 @@ export default function Token({ params, searchParams }: TokenParams) {
   const { transform, opacity } = useSpring({
     opacity: flipped ? 1 : 0,
     transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
-    config: { mass: 25, tension: 300, friction: 100 },
+    config: config.gentle,
   })
 
   if (showLoading) {
@@ -155,7 +155,7 @@ export default function Token({ params, searchParams }: TokenParams) {
             }
             `}
           >
-            <div className={`absolute -inset-1.5 ${GRADIENT} blur-md opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-1000 animate-tilt`}></div>
+            {/* <div className={`absolute -inset-1.5 ${GRADIENT} blur-md opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-1000 animate-tilt`}></div> */}
             {!isNil(nftImages) ? (
               nftImages.map((image, i) => (
                 <img
@@ -193,6 +193,7 @@ export default function Token({ params, searchParams }: TokenParams) {
                 contractAddress: nftMetadata?.contract.address,
                 tokenId: nftMetadata?.tokenId
               }}
+              isFlipped={flipped}
             />
           </div>
         </a.div>
