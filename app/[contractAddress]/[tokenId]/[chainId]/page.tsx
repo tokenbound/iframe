@@ -27,13 +27,14 @@ interface TokenParams {
     disableloading: string;
     logo?: string;
     childNetwork?: string;
+    flip?: boolean;
   };
 }
 
 export default function Token({ params, searchParams }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const { tokenId, contractAddress, chainId } = params;
-  const { disableloading, logo, childNetwork } = searchParams;
+  const { disableloading, logo, childNetwork, flip } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
   const chainIdNumber = parseInt(chainId);
   const tokenboundClient = new TokenboundClient({ chainId: chainIdNumber });
@@ -124,7 +125,7 @@ export default function Token({ params, searchParams }: TokenParams) {
    * then display "special edition" badge
    */
   const hasChildren = Boolean(tokens.length > 0);
-  const [flipped, set] = useState<boolean>(false)
+  const [flipped, set] = useState<boolean>(flip ?? false);
   const { transform, opacity } = useSpring({
     opacity: flipped ? 1 : 0,
     transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
