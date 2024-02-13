@@ -93,6 +93,7 @@ const SignatureCanvas = ({
       }}
       brushColor={"white"}
       brushRadius={0}
+      lazyRadius={0}
       disabled
       hideGrid
       style={style}
