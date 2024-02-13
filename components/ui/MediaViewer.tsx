@@ -18,7 +18,7 @@ export const MediaViewer = ({ token, chainId, isFlipped }: Props) => {
   const borderRadius = "rounded-lg";
 
   const [actionStatus, setActionStatus] = useState<"idle" | "wip" | "completed">("idle");
-  const delayDuration = 1; // seconds
+  const delayDuration = 0.5; // seconds
 
   useEffect(() => {
     if (isFlipped) {
