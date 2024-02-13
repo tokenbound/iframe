@@ -3,7 +3,7 @@ import { useMedia } from "@/lib/hooks";
 import { Nft, OwnedNft } from "alchemy-sdk";
 import clsx from "clsx";
 import { PlayCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CanvasDraw from "react-canvas-draw";
 
 /* eslint-disable @next/next/no-img-element */
@@ -14,7 +14,17 @@ interface Props {
 
 export const MediaViewer = ({ token, chainId }: Props) => {
   const { mediaUrl, isVideo, canvasData, parentBaseImage } = useMedia({ token, chainId });
-  const borderRadius = "rounded-2xl";
+  const borderRadius = "rounded-lg";
+
+  const [actionStatus, setActionStatus] = useState<"idle" | "wip" | "completed">("idle");
+  const delayDuration = 2; // seconds
+  useEffect(() => {
+    setActionStatus("wip");
+    // Use setTimeout to simulate a delayed action
+    setTimeout(() => {
+      setActionStatus("completed");
+    }, delayDuration * 1000);
+  }, [actionStatus]);
 
   if (isVideo) {
     return (
@@ -43,15 +53,15 @@ export const MediaViewer = ({ token, chainId }: Props) => {
     <>
       <div className="w-full h-full flex flex-col items-center justify-center">
         {
-          parentBaseImage && canvasData ?
+          parentBaseImage && canvasData && actionStatus === "completed" ?
           <SignatureCanvas baseImage={parentBaseImage} canvasData={canvasData} />
           :
           <img
             className="aspect-square rounded-lg object-cover"
             src={mediaUrl}
             alt="token image"
-            width={1080}
-            height={1080}
+            width={"400px"}
+            height={"400px"}
           />
         }
       </div>

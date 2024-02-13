@@ -23,9 +23,6 @@ export function useMedia({ token, chainId }: MediaArgs) {
   const canvasData = token.rawMetadata["image_canvas_data"];
   // @ts-ignore
   const parentBaseImage = token.rawMetadata["parent_base_image"];
-
-  console.log(token);
-
   const mediaUrl = useMemo(() => {
     if (isVideo) {
       return ipfsURL;

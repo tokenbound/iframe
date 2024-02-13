@@ -101,7 +101,7 @@ export const Panel = ({
     <div
       className={clsx(
         className,
-        "custom-scroll h-full overflow-y-auto border-0 relative bg-black",
+        "custom-scroll h-full overflow-y-auto border-0 relative bg-zinc-900",
       )}
     >
 
