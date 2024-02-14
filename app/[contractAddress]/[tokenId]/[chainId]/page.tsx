@@ -137,7 +137,7 @@ export default function Token({ params, searchParams }: TokenParams) {
   }
   return (
     <>
-      {hasChildren && (
+      {hasChildren && !flip && (
         <div
           className="absolute bottom-0 right-0 z-10 cursor-pointer rounded-full p-3"
           onClick={() => set((state) => !state)}
