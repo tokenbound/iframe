@@ -12,8 +12,8 @@ export default async function getBinderRevealedMetadata(
   contractAddress: `0x${string}`,
   tokenId: string
 ) {
-  const providerUrl = chainIdToRpcUrl[11155111];
-  const client = getPublicClient(11155111, providerUrl);
+  const providerUrl = chainIdToRpcUrl[8453];
+  const client = getPublicClient(8453, providerUrl);
 
   // response should be an ipfs link for "revealed" art
   // revealed = has been signed on by the artist

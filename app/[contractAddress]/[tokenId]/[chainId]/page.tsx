@@ -75,7 +75,7 @@ export default function Token({ params, searchParams }: TokenParams) {
     tokenboundClient,
     tokenId,
     tokenContract: contractAddress as `0x${string}`,
-    chainId: parseInt(childNetwork ?? "11155111"),
+    chainId: parseInt(childNetwork ?? "8453"),
   });
 
   // Get nft's TBA account bytecode to check if account is deployed or not
