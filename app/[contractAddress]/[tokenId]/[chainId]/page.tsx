@@ -130,15 +130,18 @@ export default function Token({ params, searchParams }: TokenParams) {
     opacity: flipped ? 1 : 0,
     transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
     config: config.gentle,
-  })
+  });
 
   if (showLoading) {
-    return <Skeleton className="w-full h-full bg-slate-400" />
+    return <Skeleton className="h-full w-full bg-slate-400" />;
   }
   return (
     <>
       {hasChildren && (
-        <div className="absolute right-0 bottom-0 z-10 rounded-full cursor-pointer p-3" onClick={() => set(state => !state)}>
+        <div
+          className="absolute bottom-0 right-0 z-10 cursor-pointer rounded-full p-3"
+          onClick={() => set((state) => !state)}
+        >
           <DisplayTokensButton />
         </div>
       )}
@@ -147,10 +150,10 @@ export default function Token({ params, searchParams }: TokenParams) {
           className={`
           cursor-pointer will-change-auto
         `}
-        style={{ opacity: opacity.to(o => 1 - o), transform }}
+          style={{ opacity: opacity.to((o) => 1 - o), transform }}
         >
           <div
-            className={`relative group h-full w-full grid grid-cols-1 grid-rows-1 transition ${
+            className={`group relative grid h-full w-full grid-cols-1 grid-rows-1 transition ${
               imagesLoaded ? "" : "blur-xl"
             }
             `}
@@ -159,11 +162,11 @@ export default function Token({ params, searchParams }: TokenParams) {
             {!isNil(nftImages) ? (
               nftImages.map((image, i) => (
                 <img
-                key={i}
-                className={`col-span-1 col-start-1 row-span-1 row-start-1 translate-x-0 w-full h-full bg-slate-200`}
-                src={image}
-                alt="Nft image"
-              />
+                  key={i}
+                  className={`col-span-1 col-start-1 row-span-1 row-start-1 h-full w-full translate-x-0 bg-slate-200`}
+                  src={image}
+                  alt="Nft image"
+                />
               ))
             ) : (
               <></>
@@ -172,15 +175,15 @@ export default function Token({ params, searchParams }: TokenParams) {
         </a.div>
         <a.div
           className={`
-            absolute top-0 left-0 w-full h-full will-change-auto
+            absolute left-0 top-0 h-full w-full will-change-auto
           `}
           style={{
             opacity,
             transform,
-            rotateX: '180deg',
+            rotateX: "180deg",
           }}
         >
-          <div className={`w-full h-full`}>
+          <div className={`h-full w-full`}>
             <Panel
               approvalTokensCount={approvalData?.filter((item) => item.hasApprovals).length}
               account={account}
@@ -191,7 +194,7 @@ export default function Token({ params, searchParams }: TokenParams) {
               handleAccountChange={handleAccountChange}
               parent={{
                 contractAddress: nftMetadata?.contract.address,
-                tokenId: nftMetadata?.tokenId
+                tokenId: nftMetadata?.tokenId,
               }}
               isFlipped={flipped}
             />

@@ -11,17 +11,25 @@ export async function getNfts(chainId: number, account: string) {
     const response = await alchemy.nft.getNftsForOwner(account, {
       orderBy: NftOrdering.TRANSFERTIME,
     });
+
     if (!response.ownedNfts) {
       return [];
     }
-    const toReturn = response.ownedNfts.filter((nft) => BINDER_CAMPAIGNS.includes(nft.contract.address));
+    const toReturn = response.ownedNfts.filter((nft) =>
+      BINDER_CAMPAIGNS.includes(nft.contract.address)
+    );
+
     const nfts: OwnedNft[] = [];
     for (let i = 0; i < toReturn.length; i++) {
-      const rawMetadata = await getBinderRevealedMetadata(toReturn[i].contract.address as `0x${string}`, toReturn[i].tokenId)
+      const rawMetadata = await getBinderRevealedMetadata(
+        toReturn[i].contract.address as `0x${string}`,
+        toReturn[i].tokenId
+      );
+
       nfts.push({
         ...toReturn[i],
-        rawMetadata
-      })
+        rawMetadata,
+      });
     }
     return nfts;
   } catch (err) {

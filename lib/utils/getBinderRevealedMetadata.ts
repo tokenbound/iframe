@@ -2,12 +2,16 @@ import { NftMetadata } from "alchemy-sdk";
 import { getPublicClient } from "../clients";
 import { chainIdToRpcUrl } from "../constants";
 import { BINDER_DROP_ABI } from "./constants";
+import { ThirdwebStorage } from "@thirdweb-dev/storage";
 
 type BinderRevealedMetadata = NftMetadata & {
-  image_canvas_data: string
-}
+  image_canvas_data: string;
+};
 
-export default async function getBinderRevealedMetadata (contractAddress: `0x${string}`, tokenId: string) {
+export default async function getBinderRevealedMetadata(
+  contractAddress: `0x${string}`,
+  tokenId: string
+) {
   const providerUrl = chainIdToRpcUrl[11155111];
   const client = getPublicClient(11155111, providerUrl);
 
@@ -19,14 +23,20 @@ export default async function getBinderRevealedMetadata (contractAddress: `0x${s
     functionName: "tokenURI",
     args: [tokenId],
   })) as string;
+  console.log("fetching");
 
-  const fetchedMetadata = await (await fetch(
-    response.includes("ipfs://") ?
-    response.replace("ipfs://", "https://ipfs.io/ipfs/")
-    :
-    response
-    )).json() as BinderRevealedMetadata;
+  const ipfsUrl = response.includes("ipfs://")
+    ? response.replace("ipfs://", "https://ipfs.io/ipfs/")
+    : response;
+
+  const haharesponse = await fetch("/api", {
+    method: "POST",
+    body: JSON.stringify({
+      ipfsUrl: response,
+    }),
+  });
+  const { url } = await haharesponse.json();
+  const fetchedMetadata = (await (await fetch(url)).json()) as BinderRevealedMetadata;
+
   return fetchedMetadata;
 }
-
-

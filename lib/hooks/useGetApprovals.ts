@@ -8,7 +8,6 @@ import request from "graphql-request";
 export const useGetApprovals = (ownedNfts: OwnedNft[], owner?: string, chainID = 1) => {
   const contractsString = ownedNfts?.map((item) => item.contract.address).join(",");
   const ignoreFetch = !owner || ownedNfts.length === 0;
-
   return useSWR(
     ignoreFetch ? null : `${owner}/${chainID}&contractAddresses=${contractsString}`,
     async () => {

@@ -51,7 +51,7 @@ export const useTBADetails = ({
         getNfts(chainId, tbaV2.data as `0x${string}`),
         // getLensNfts(tbaV2.data as `0x${string}`),
       ]);
-
+      console.log("nfts: ", nfts);
       return [...nfts];
     }
 
@@ -60,7 +60,8 @@ export const useTBADetails = ({
 
   const { data: tbaNFTs } = useSWR(`tbaNFTs-${tba}`, async () => {
     const [nfts, lensNFT] = await Promise.all([getNfts(chainId, tba), getLensNfts(tba)]);
-
+    console.log("nfts2: ", nfts);
+    console.log("lensNFT: ", lensNFT);
     return [...nfts, ...lensNFT];
   });
 
