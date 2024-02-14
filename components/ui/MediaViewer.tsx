@@ -56,18 +56,13 @@ export const MediaViewer = ({ token, chainId, isFlipped }: Props) => {
   return (
     <>
       <div className="w-full h-full flex flex-col items-center justify-center">
-        {
-          parentBaseImage && canvasData && actionStatus === "completed" ?
-          <SignatureCanvas baseImage={parentBaseImage} canvasData={canvasData} />
-          :
           <img
             className="aspect-square rounded-lg object-cover"
-            src={parentBaseImage}
+            src={mediaUrl}
             alt="token image"
             width={"400px"}
             height={"400px"}
           />
-        }
       </div>
     </>
   );
