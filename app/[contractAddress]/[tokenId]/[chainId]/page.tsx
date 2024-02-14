@@ -36,7 +36,8 @@ export default function Token({ params, searchParams }: TokenParams) {
   const { tokenId, contractAddress, chainId } = params;
   const { disableloading, logo, childNetwork, flip } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
-  const chainIdNumber = parseInt(chainId);
+  // const chainIdNumber = parseInt(chainId);
+  const chainIdNumber = 1;
   const tokenboundClient = new TokenboundClient({ chainId: chainIdNumber });
 
   const {
