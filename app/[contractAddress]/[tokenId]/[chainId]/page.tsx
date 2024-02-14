@@ -78,6 +78,8 @@ export default function Token({ params, searchParams }: TokenParams) {
     chainId: parseInt(childNetwork ?? "8453"),
   });
 
+  console.log({nfts, account, tba});
+
   // Get nft's TBA account bytecode to check if account is deployed or not
   const { data: accountIsDeployed } = useSWR(
     account ? `/account/${account}/bytecode` : null,

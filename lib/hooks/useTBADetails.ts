@@ -17,6 +17,7 @@ export const useTBADetails = ({
   tokenContract,
   chainId,
 }: TBADetailsParams) => {
+  console.log({chainId});
   const [account, setAccount] = useState("");
   const [nfts, setNfts] = useState<TbaOwnedNft[]>([]);
 
