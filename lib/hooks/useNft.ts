@@ -59,7 +59,7 @@ export const useNft = ({
 
   return {
     data: [nftImage],
-    nftMetadata: nftMetadata || (firstFetchNftMetadata ? firstFetchNftMetadata[0]:undefined),
+    nftMetadata: nftMetadata || firstFetchNftMetadata?.[0],
     loading,
     parent,
     isTBA,

@@ -55,7 +55,7 @@ export const MediaViewer = ({ token, chainId }: Props) => {
   );
 };
 
-const SignatureCanvas = ({
+export const SignatureCanvas = ({
   baseImage, canvasData
 }: {
   baseImage?: string;

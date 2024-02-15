@@ -8,6 +8,7 @@ import { Variants, motion } from "framer-motion";
 import ParentPanel from "./ParentPanel";
 import { ChevronDownCircle, ChevronUpCircle } from "lucide-react";
 import { Nft } from "alchemy-sdk";
+import { SignatureCanvas } from "@/components/ui";
 
 
 interface TokenParams {
@@ -42,7 +43,7 @@ export default function Token({ params, searchParams }: TokenParams) {
     chainId: chainIdNumber,
   });
 
-  const {nftMetadata: parentNftMetadata} = useNft({
+  const {nftMetadata: parentNftMetadata, data: parentNftImages} = useNft({
     tokenId: parent?.parent_token_id ? parseInt(parent?.parent_token_id) : undefined,
     contractAddress: parent?.parent_contract_address as `0x${string}`,
     chainId: parent?.parent_chain_id ? parseInt(parent?.parent_chain_id) : undefined
@@ -82,7 +83,8 @@ export default function Token({ params, searchParams }: TokenParams) {
   if (showLoading) {
     return <Skeleton className="h-full w-full bg-slate-400" />;
   }
-  console.log({isTBA});
+
+  const displayCanvas = canvasData && parent?.parent_base_image
   return (
     <>
       {isTBA && parentNftMetadata && (
@@ -103,14 +105,20 @@ export default function Token({ params, searchParams }: TokenParams) {
           </motion.div>
         </div>
       )}
-      <div className={`bg-black`}>
+      <div className={`bg-black w-full h-full`}>
         <div
           className={`group relative grid h-full w-full grid-cols-1 grid-rows-1 transition ${
             imagesLoaded ? "" : "blur-xl"
           }
           `}
         >
-          {!isNil(nftImages) ? (
+          {
+            displayCanvas &&
+            <div className="w-full h-full flex flex-col items-center justify-center">
+            <SignatureCanvas baseImage={parent?.parent_base_image} canvasData={JSON.stringify(canvasData)} />
+            </div>
+          }
+          {!displayCanvas && !isNil(nftImages) ? (
             nftImages.map((image, i) => (
               <img
                 key={i}

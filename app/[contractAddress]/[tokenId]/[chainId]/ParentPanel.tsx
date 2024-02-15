@@ -28,7 +28,7 @@ const ParentPanel = ({parent}:{parent: Nft}) => {
       </div>
       <Alert className="mb-6">
         <AlertDescription>
-          The above asset lives in following token&apos;s vault. These assets are owned by the token and can be controlled by the owner of the parent token.
+          The above autograph lives in following token&apos;s vault. These assets are owned by the token and can be controlled by the owner of the parent token.
         </AlertDescription>
       </Alert>
       <div className="flex flex-row gap-6">
