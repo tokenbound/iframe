@@ -7,7 +7,7 @@ import getBinderRevealedMetadata from "./getBinderRevealedMetadata";
 
 export async function getNfts(chainId: number, account: string) {
   try {
-    const alchemy = getAlchemy(8453);
+    const alchemy = getAlchemy(chainId);
     const response = await alchemy.nft.getNftsForOwner(account, {
       orderBy: NftOrdering.TRANSFERTIME,
     });
@@ -17,15 +17,18 @@ export async function getNfts(chainId: number, account: string) {
     }
     console.log({response});
     const toReturn = response.ownedNfts.filter((nft) =>
-      BINDER_CAMPAIGNS.includes(nft.contract.address)
+    {
+      const isIncluded = BINDER_CAMPAIGNS.includes(nft.contract.address.toLowerCase());
+      return isIncluded;
+    }
     );
     const nfts: OwnedNft[] = [];
     for (let i = 0; i < toReturn.length; i++) {
       const rawMetadata = await getBinderRevealedMetadata(
         toReturn[i].contract.address as `0x${string}`,
-        toReturn[i].tokenId
+        toReturn[i].tokenId,
+        chainId
       );
-
       nfts.push({
         ...toReturn[i],
         rawMetadata,

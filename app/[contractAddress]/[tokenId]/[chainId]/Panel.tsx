@@ -19,6 +19,7 @@ import { TbaOwnedNft } from "@/lib/types";
 // import { useGetTokenBalances } from "@/lib/hooks";
 // import { getEtherscanLink, shortenAddress } from "@/lib/utils";
 import { chainIdToOpenseaAssetUrl } from "@/lib/constants";
+import { Skeleton } from "@/components/ui/skeleton";
 // import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 // import { Key, Terminal } from "lucide-react";
 // import { Badge } from "@/components/ui/badge"
@@ -46,6 +47,7 @@ interface PanelProps {
     tokenId?: string;
   }
   isFlipped?:boolean;
+  isLoading?:boolean;
 }
 
 export const Panel = ({
@@ -58,7 +60,8 @@ export const Panel = ({
   title,
   chainId,
   parent,
-  isFlipped
+  isFlipped,
+  isLoading
 }: PanelProps) => {
   // const [copied, setCopied] = useState(false);
   // const [currentTab, setCurrentTab] = useState(TABS.COLLECTIBLES);
@@ -98,8 +101,13 @@ export const Panel = ({
   //   // open ? 0.1 : 0.6,
   // ]);
 
-  return (
+  if (isLoading) {
+    return (
+      <Skeleton className="h-full w-full bg-slate-400" />
+    )
+  }
 
+  return (
     <div
       className={clsx(
         className,

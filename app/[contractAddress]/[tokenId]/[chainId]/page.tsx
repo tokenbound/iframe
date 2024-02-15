@@ -36,8 +36,8 @@ export default function Token({ params, searchParams }: TokenParams) {
   const { tokenId, contractAddress, chainId } = params;
   const { disableloading, logo, childNetwork, flip } = searchParams;
   const [showTokenDetail, setShowTokenDetail] = useState(false);
-  // const chainIdNumber = parseInt(chainId);
-  const chainIdNumber = 1;
+  const chainIdNumber = parseInt(chainId);
+  // const chainIdNumber = 1;
   const tokenboundClient = new TokenboundClient({ chainId: chainIdNumber });
 
   const {
@@ -99,7 +99,7 @@ export default function Token({ params, searchParams }: TokenParams) {
 
   const [tokens, setTokens] = useState<TbaOwnedNft[]>([]);
 
-  const { data: approvalData } = useGetApprovals(nfts, account, chainIdNumber);
+  const { data: approvalData, isLoading } = useGetApprovals(nfts, account, chainIdNumber);
 
   useEffect(() => {
     if (nfts !== undefined) {
@@ -200,6 +200,7 @@ export default function Token({ params, searchParams }: TokenParams) {
                 tokenId: nftMetadata?.tokenId,
               }}
               isFlipped={flipped}
+              isLoading = {isLoading}
             />
           </div>
         </a.div>
