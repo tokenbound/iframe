@@ -65,6 +65,8 @@ export const SignatureCanvas = ({
     backgroundImage: `${baseImage ? `-webkit-linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.6)), url(${baseImage})` : `bg-black` }`,
     backgroundSize: `cover`,
     borderRadius: `8px`,
+    width: `100%`,
+    height: `100%`
   };
   return (
     <CanvasDraw

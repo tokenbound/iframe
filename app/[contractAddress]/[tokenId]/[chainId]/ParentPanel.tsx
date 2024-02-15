@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 const ParentPanelLayout = ({children}: {children: React.ReactNode}) => {
   return (
-    <div className="bg-white h-full rounded-t-3xl p-6">
+    <div className="bg-white h-full rounded-t-3xl p-6 overflow-scroll">
       {children}
     </div>
   )

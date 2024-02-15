@@ -12,7 +12,6 @@ export const useGetApprovals = (ownedNfts: OwnedNft[], owner?: string, chainID =
     ignoreFetch ? null : `${owner}/${chainID}&contractAddresses=${contractsString}`,
     async () => {
       const response = await handleNftApprovals(ownedNfts, owner as string, chainID);
-
       return response;
     }
   );
