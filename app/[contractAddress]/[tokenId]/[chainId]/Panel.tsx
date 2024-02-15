@@ -142,7 +142,7 @@ export const Panel = ({
               return (
                 <li key={`${t.contract.address}-${t.tokenId}-${i}`} className="list-none w-full h-full">
                   <div className="w-full h-full">
-                    <MediaViewer token={t} chainId={chainId} isFlipped={isFlipped} />
+                    <MediaViewer token={t} chainId={chainId} />
                     {/* {is1155 && (
                       <div className="absolute top-4 left-4 text-white rounded-lg py-1 px-2 bg-[#000] bg-opacity-10 backdrop-blur-sm">
                         <div className="text-xl md:text-2xl font-sans font-semibold">
