@@ -1,21 +1,14 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
-import useSWR from "swr";
 import { isNil } from "lodash";
-import { TokenboundClient } from "@tokenbound/sdk";
-import { getAccountStatus } from "@/lib/utils";
-import { TbLogo } from "@/components/icon";
-import { useGetApprovals, useNft, useTBADetails } from "@/lib/hooks";
-import { TbaOwnedNft } from "@/lib/types";
-import { getAddress } from "viem";
-import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
+import { useNft } from "@/lib/hooks";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSpring, a, config } from "@react-spring/web";
-import { Panel } from "./Panel";
-import { DisplayTokensButton } from "@/components/DisplayTokensButton";
+import { Variants, motion } from "framer-motion";
+import ParentPanel from "./ParentPanel";
+import { ChevronDownCircle, ChevronUpCircle } from "lucide-react";
+import { Nft } from "alchemy-sdk";
 
-// const GRADIENT = `bg-gradient-to-r from-blue-400 to-emerald-400`
 
 interface TokenParams {
   params: {
@@ -34,24 +27,30 @@ interface TokenParams {
 export default function Token({ params, searchParams }: TokenParams) {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const { tokenId, contractAddress, chainId } = params;
-  const { disableloading, logo, childNetwork, flip } = searchParams;
-  const [showTokenDetail, setShowTokenDetail] = useState(false);
+  const { disableloading } = searchParams;
   const chainIdNumber = parseInt(chainId);
-  // const chainIdNumber = 1;
-  const tokenboundClient = new TokenboundClient({ chainId: chainIdNumber });
-
   const {
     data: nftImages,
     nftMetadata,
     loading: nftMetadataLoading,
+    parent,
+    isTBA,
+    canvasData
   } = useNft({
     tokenId: parseInt(tokenId as string),
-    contractAddress: params.contractAddress as `0x${string}`,
-    hasCustomImplementation: HAS_CUSTOM_IMPLEMENTATION,
+    contractAddress: contractAddress as `0x${string}`,
     chainId: chainIdNumber,
   });
+
+  const {nftMetadata: parentNftMetadata} = useNft({
+    tokenId: parent?.parent_token_id ? parseInt(parent?.parent_token_id) : undefined,
+    contractAddress: parent?.parent_contract_address as `0x${string}`,
+    chainId: parent?.parent_chain_id ? parseInt(parent?.parent_chain_id) : undefined
+  })
+
   useEffect(() => {
     if (!isNil(nftImages) && nftImages.length) {
+      // @ts-ignore
       const imagePromises = nftImages.map((src: string) => {
         return new Promise((resolve, reject) => {
           const image = new Image();
@@ -71,139 +70,59 @@ export default function Token({ params, searchParams }: TokenParams) {
     }
   }, [nftImages, nftMetadataLoading]);
 
-  // Fetch nft's TBA
-  const { account, nfts, handleAccountChange, tba, tbaV2 } = useTBADetails({
-    tokenboundClient,
-    tokenId,
-    tokenContract: contractAddress as `0x${string}`,
-    chainId: parseInt(childNetwork ?? "8453"),
-  });
+  const [isShowing, toggleShow] = useState<boolean>(false);
 
-  console.log({nfts, account, tba});
-
-  // Get nft's TBA account bytecode to check if account is deployed or not
-  const { data: accountIsDeployed } = useSWR(
-    account ? `/account/${account}/bytecode` : null,
-    async () => tokenboundClient.checkAccountDeployment({ accountAddress: account as `0x{string}` })
-  );
-
-  const { data: isLocked } = useSWR(account ? `/account/${account}/locked` : null, async () => {
-    if (!accountIsDeployed) {
-      return false;
-    }
-
-    const { data, error } = await getAccountStatus(chainIdNumber, account!);
-
-    return data ?? false;
-  });
-
-  const [tokens, setTokens] = useState<TbaOwnedNft[]>([]);
-
-  const { data: approvalData, isLoading } = useGetApprovals(nfts, account, chainIdNumber);
-
-  useEffect(() => {
-    if (nfts !== undefined) {
-      nfts.map((token) => {
-        const foundApproval = approvalData?.find((item) => {
-          const contract = item.contract.address;
-          const tokenId = item.tokenId;
-          const hasApprovals = item.hasApprovals;
-          const matchedAddress = getAddress(contract) === getAddress(token.contract.address);
-          const matchedTokenId = String(tokenId) && String(token.tokenId);
-          if (matchedAddress && matchedTokenId && hasApprovals) {
-            return true;
-          }
-        });
-        token.hasApprovals = foundApproval?.hasApprovals || false;
-      });
-      setTokens(nfts);
-    }
-  }, [nfts, approvalData, account]);
   const showLoading = disableloading !== "true" && nftMetadataLoading;
 
-  /**
-   * @todo
-   * this should ideally be hasSignedNFT
-   * and should check for binder signed NFTs and
-   * then display "special edition" badge
-   */
-  const hasChildren = Boolean(tokens.length > 0);
-  const [flipped, set] = useState<boolean>(flip ?? false);
-  const { transform, opacity } = useSpring({
-    opacity: flipped ? 1 : 0,
-    transform: `perspective(600px) rotateX(${flipped ? 180 : 0}deg)`,
-    config: config.gentle,
-  });
+  const variants = {
+    closed: { y: "100%", transition: { duration: 0.75 }, height: "0%" },
+    open: { y: "0", transition: { duration: 0.35 }, height: "55%" },
+  } as Variants;
 
   if (showLoading) {
     return <Skeleton className="h-full w-full bg-slate-400" />;
   }
+  console.log({isTBA});
   return (
     <>
-      {hasChildren && (
-        <div
-          className="absolute bottom-0 right-0 z-10 cursor-pointer rounded-full p-3"
-          onClick={() => set((state) => !state)}
-        >
-          <DisplayTokensButton />
+      {isTBA && parentNftMetadata && (
+        <div className="max-w-[1080px]">
+          <div
+            className="absolute top-0 left-0 z-10 cursor-pointer rounded-full m-3 p-1 text-zinc-900 transition-opacity duration-500 ease-in opacity-50 hover:opacity-100 bg-zinc-300"
+            onClick={() => toggleShow(t => !t)}
+          >
+            {isShowing ? <ChevronDownCircle /> :<ChevronUpCircle /> }
+          </div>
+          <motion.div
+            className={`custom-scroll absolute bottom-0 z-10 w-full max-w-[1080px] overflow-y-auto`}
+            animate={isShowing ? "open" : "closed"}
+            variants={variants}
+            initial="closed"
+          >
+            <ParentPanel parent={parentNftMetadata as Nft} />
+          </motion.div>
         </div>
       )}
       <div className={`bg-black`}>
-        <a.div
-          className={`
-          cursor-pointer will-change-auto
-        `}
-          style={{ opacity: opacity.to((o) => 1 - o), transform }}
-        >
-          <div
-            className={`group relative grid h-full w-full grid-cols-1 grid-rows-1 transition ${
-              imagesLoaded ? "" : "blur-xl"
-            }
-            `}
-          >
-            {/* <div className={`absolute -inset-1.5 ${GRADIENT} blur-md opacity-60 group-hover:opacity-100 transition duration-1000 group-hover:duration-1000 animate-tilt`}></div> */}
-            {!isNil(nftImages) ? (
-              nftImages.map((image, i) => (
-                <img
-                  key={i}
-                  className={`col-span-1 col-start-1 row-span-1 row-start-1 h-full w-full translate-x-0 bg-slate-200`}
-                  src={image}
-                  alt="Nft image"
-                />
-              ))
-            ) : (
-              <></>
-            )}
-          </div>
-        </a.div>
-        <a.div
-          className={`
-            absolute left-0 top-0 h-full w-full will-change-auto
+        <div
+          className={`group relative grid h-full w-full grid-cols-1 grid-rows-1 transition ${
+            imagesLoaded ? "" : "blur-xl"
+          }
           `}
-          style={{
-            opacity,
-            transform,
-            rotateX: "180deg",
-          }}
         >
-          <div className={`h-full w-full`}>
-            <Panel
-              approvalTokensCount={approvalData?.filter((item) => item.hasApprovals).length}
-              account={account}
-              tokens={tokens}
-              title={nftMetadata?.title ?? ""}
-              chainId={chainIdNumber}
-              accounts={[tba, tbaV2 as string]}
-              handleAccountChange={handleAccountChange}
-              parent={{
-                contractAddress: nftMetadata?.contract.address,
-                tokenId: nftMetadata?.tokenId,
-              }}
-              isFlipped={flipped}
-              isLoading = {isLoading}
-            />
-          </div>
-        </a.div>
+          {!isNil(nftImages) ? (
+            nftImages.map((image, i) => (
+              <img
+                key={i}
+                className={`col-span-1 col-start-1 row-span-1 row-start-1 h-full w-full translate-x-0 bg-slate-200`}
+                src={image}
+                alt="Nft image"
+              />
+            ))
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
     </>
   );

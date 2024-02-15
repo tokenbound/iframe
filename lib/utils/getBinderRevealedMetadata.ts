@@ -2,15 +2,21 @@ import { NftMetadata } from "alchemy-sdk";
 import { getPublicClient } from "../clients";
 import { chainIdToRpcUrl } from "../constants";
 import { BINDER_DROP_ABI } from "./constants";
-import { ThirdwebStorage } from "@thirdweb-dev/storage";
 
-type BinderRevealedMetadata = NftMetadata & {
+export type BinderRevealedMetadata = NftMetadata & {
   image_canvas_data: string;
+  isTBA: boolean;
+  parent: {
+    "parent_contract_address": string,
+    "parent_token_id": string,
+    "parent_chain_id": string,
+    "parent_base_image": string
+  }
 };
 
 export default async function getBinderRevealedMetadata(
   contractAddress: `0x${string}`,
-  tokenId: string,
+  tokenId: number | string,
   chainId: number
 ) {
   const providerUrl = chainIdToRpcUrl[chainId];

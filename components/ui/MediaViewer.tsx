@@ -2,33 +2,20 @@
 import { useMedia } from "@/lib/hooks";
 import { Nft, OwnedNft } from "alchemy-sdk";
 import clsx from "clsx";
-import { PlayCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CanvasDraw from "react-canvas-draw";
 
 /* eslint-disable @next/next/no-img-element */
 interface Props {
   token: Nft | OwnedNft;
   chainId: number;
-  isFlipped?:boolean;
 }
 
-export const MediaViewer = ({ token, chainId, isFlipped }: Props) => {
-  const { mediaUrl, isVideo, canvasData, parentBaseImage } = useMedia({ token, chainId });
+export const MediaViewer = ({ token, chainId }: Props) => {
+  const { mediaUrl, isVideo } = useMedia({ token, chainId });
   const borderRadius = "rounded-lg";
 
-  const [actionStatus, setActionStatus] = useState<"idle" | "wip" | "completed">("idle");
-  const delayDuration = 0.3; // seconds
 
-  useEffect(() => {
-    if (isFlipped) {
-      setActionStatus("wip");
-      // Use setTimeout to simulate a delayed action
-      setTimeout(() => {
-        setActionStatus("completed");
-      }, delayDuration * 1000);
-    }
-  }, [actionStatus, isFlipped]);
 
   if (isVideo) {
     return (
@@ -53,17 +40,9 @@ export const MediaViewer = ({ token, chainId, isFlipped }: Props) => {
     return <NoMedia className={borderRadius} />
   }
 
-  console.log({
-    mediaUrl, parentBaseImage
-  })
-
   return (
     <>
       <div className="w-full h-full flex flex-col items-center justify-center">
-        {
-          parentBaseImage && canvasData && actionStatus === "completed" ?
-          <SignatureCanvas baseImage={parentBaseImage} canvasData={canvasData} />
-          :
           <img
             className="aspect-square rounded-lg object-cover"
             src={mediaUrl}
@@ -71,7 +50,6 @@ export const MediaViewer = ({ token, chainId, isFlipped }: Props) => {
             width={"400px"}
             height={"400px"}
           />
-         }
       </div>
     </>
   );
@@ -101,6 +79,7 @@ const SignatureCanvas = ({
       disabled
       hideGrid
       style={style}
+      hideInterface={true}
     />
   )
 }

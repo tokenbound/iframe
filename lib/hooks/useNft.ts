@@ -1,74 +1,68 @@
-import { getAlchemy } from "@/lib/clients";
+import { useEffect, useState } from "react";
+import getBinderRevealedMetadata, { BinderRevealedMetadata } from "../utils/getBinderRevealedMetadata";
 import useSWR from "swr";
-import { getAlchemyImageSrc, getNftAsset } from "@/lib/utils";
+import { getAlchemy } from "../clients";
 
-interface FormatImageReturnParams {
-  imageData?: string | string[];
-  loading: boolean;
-}
-
-function formatImageReturn({ imageData, loading }: FormatImageReturnParams): string[] | null {
-  if (loading) return null;
-
-  if (!imageData) {
-    return ["/no-img.jpg"];
-  }
-
-  return typeof imageData === "string" ? [imageData] : imageData;
-}
-
-interface CustomImplementation {
-  contractAddress: `0x${string}`;
-}
-
+/**
+ *
+ * The hook will fetch from alchemy (returns type Nft)
+ * then fetches directly from the contract
+ * if fetch from the contract results in metadata with isTBA = true
+ * it returns the metadata fetched from the contract
+ * if not, returns the metadata fetched from alchemy
+ *
+ */
 export const useNft = ({
   tokenId,
-  apiEndpoint,
-  refreshInterval = 120000,
-  cacheKey,
   contractAddress,
-  hasCustomImplementation,
   chainId,
 }: {
-  tokenId: number;
-  apiEndpoint?: string;
-  refreshInterval?: number;
-  cacheKey?: string;
-  contractAddress: `0x${string}`;
-  hasCustomImplementation: boolean;
-  chainId: number;
+  tokenId?: number;
+  contractAddress?: `0x${string}`;
+  chainId?: number;
 }) => {
-  let key = null;
-  if (hasCustomImplementation) key = cacheKey ?? `getNftAsset-${tokenId}`;
+  const [nftMetadata, setNftMetadata] = useState<BinderRevealedMetadata>();
+  const [nftImage, setNftImage] = useState<string>();
+  const [canvasData, setCanvasData] = useState<string>();
+  const [loading, setLoading] = useState(false);
+  const [isTBA, setIsTBA] = useState<boolean>(false);
+  const [parent, setParent] = useState<BinderRevealedMetadata["parent"]>();
 
-  const {
-    data: customNftData,
-    isLoading: customNftLoading,
-    error: customNftError,
-  } = useSWR(key, () => getNftAsset(tokenId, apiEndpoint), {
-    refreshInterval: refreshInterval,
-    shouldRetryOnError: false,
-    retry: 0,
-  });
-
-  if (customNftError) console.log("CUSTOM NFT DATA FETCH ERROR: ", customNftError);
-
-  const { data: nftMetadata, isLoading: nftMetadataLoading } = useSWR(
+  const { data: firstFetchNftMetadata, isLoading: nftMetadataLoading } = useSWR(
     `nftMetadata/${contractAddress}/${tokenId}`,
     (url: string) => {
       const [, contractAddress, tokenId] = url.split("/");
-      const alchemy = getAlchemy(chainId);
+      const alchemy = getAlchemy(chainId ?? 1);
       return alchemy.nft.getNftMetadataBatch([{ contractAddress, tokenId }]);
     }
   );
-  const loading = hasCustomImplementation ? customNftLoading : nftMetadataLoading;
+
+  const getMetadata = async () => {
+    if (!contractAddress || !chainId || !tokenId) return;
+    setLoading(true);
+    const nftMetadata = await getBinderRevealedMetadata(contractAddress, tokenId, chainId);
+    if (nftMetadata.isTBA && nftMetadata.parent) {
+      setNftMetadata(nftMetadata);
+      setNftImage(nftMetadata.image);
+      if (nftMetadata.image_canvas_data) {
+        setCanvasData(nftMetadata.image_canvas_data);
+      }
+      setIsTBA(true);
+      setParent(nftMetadata.parent)
+      setLoading(false);
+      return;
+    }
+  }
+  useEffect(() => {
+    getMetadata();
+  }, [tokenId, contractAddress, chainId])
 
   return {
-    data:
-      hasCustomImplementation && !customNftError
-        ? formatImageReturn({ imageData: customNftData, loading })
-        : formatImageReturn({ imageData: getAlchemyImageSrc(nftMetadata?.[0]), loading }),
-    nftMetadata: nftMetadata?.[0],
+    data: [nftImage],
+    nftMetadata: nftMetadata || (firstFetchNftMetadata ? firstFetchNftMetadata[0]:undefined),
     loading,
+    parent,
+    isTBA,
+    canvasData
   };
 };
