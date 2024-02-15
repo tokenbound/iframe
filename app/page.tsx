@@ -43,7 +43,7 @@ export default function Token() {
 
   const variants = {
     closed: { y: "100%", transition: { duration: 0.75 }, height: "0%" },
-    open: { y: "0", transition: { duration: 0.35 }, height: "55%" },
+    open: { y: "0", transition: { duration: 0.35 }, height: "85%" },
   } as Variants;
 
   if (showLoading) {
