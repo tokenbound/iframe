@@ -18,7 +18,7 @@ const fetcher = (url: string) => fetch(url).then(r => r.json());
 export default function Token() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("for");
-  const { data, error, isLoading: isLoadingOrder } = useSWR(`http://localhost:3001/api/campaigns/123/orders/${orderId}`, fetcher)
+  const { data, error, isLoading: isLoadingOrder } = useSWR(`${process.env.NEXT_PUBLIC_MAIN_APP_URL}/api/campaigns/123/orders/${orderId}`, fetcher)
 
   const order = data?.order;
 
