@@ -7,7 +7,7 @@ export const metadata = {
   title: "Binder iframe",
   description: "View your nft's tokenbound signatures",
 };
-
+//hello
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
