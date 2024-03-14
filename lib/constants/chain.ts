@@ -6,6 +6,8 @@ import {
   polygon,
   polygonMumbai,
   sepolia,
+  base,
+  baseSepolia,
 } from "viem/chains";
 import { alchemyApiKey } from "./apiKeys";
 
@@ -20,6 +22,8 @@ export const chainIdToEtherscanUrl: ChainIdToUrl = {
   420: "https://goerli-optimism.etherscan.io",
   137: "https://polygonscan.com",
   80001: "https://mumbai.polygonscan.com",
+  84532: "https://sepolia.basescan.org/",
+  8453: "https://basescan.org",
 };
 
 export const chainIdToOpenseaAssetUrl: ChainIdToUrl = {
@@ -30,6 +34,8 @@ export const chainIdToOpenseaAssetUrl: ChainIdToUrl = {
   420: "https://opensea.io/assets/optimism-goerli",
   137: "https://opensea.io/assets/matic",
   80001: "https://testnets.opensea.io/assets/mumbai",
+  84532: "https://testnets.opensea.io/assets/base-sepolia/",
+  8453: "https://opensea.io/assets/base",
 };
 
 export const chainIdToViemNetwork: { [key: number]: any } = {
@@ -40,6 +46,8 @@ export const chainIdToViemNetwork: { [key: number]: any } = {
   420: optimismGoerli,
   137: polygon,
   80001: polygonMumbai,
+  84532: baseSepolia,
+  8453: base,
 };
 
 export const chainIdToRpcUrl: ChainIdToUrl = {
@@ -50,4 +58,6 @@ export const chainIdToRpcUrl: ChainIdToUrl = {
   420: `https://opt-goerli.g.alchemy.com/v2/${alchemyApiKey}`,
   137: `https://polygon-mainnet.g.alchemy.com/v2/${alchemyApiKey}`,
   80001: `https://polygon-mumbai.g.alchemy.com/v2/${alchemyApiKey}`,
+  84532: `https://base-sepolia.g.alchemy.com/v2/${alchemyApiKey}`,
+  8453: `https://base-mainnet.g.alchemy.com/v2/${alchemyApiKey}`,
 };
