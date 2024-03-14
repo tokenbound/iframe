@@ -11,6 +11,7 @@ import { TbaOwnedNft } from "@/lib/types";
 import { getAddress } from "viem";
 import { TokenDetail } from "./TokenDetail";
 import { HAS_CUSTOM_IMPLEMENTATION } from "@/lib/constants";
+import { base, baseSepolia } from "viem/chains";
 
 interface TokenParams {
   params: {
@@ -31,7 +32,14 @@ export default function Token({ params, searchParams }: TokenParams) {
   const [showTokenDetail, setShowTokenDetail] = useState(false);
   const chainIdNumber = parseInt(chainId);
 
-  const tokenboundClient = new TokenboundClient({ chainId: chainIdNumber });
+  let tokenboundClient: TokenboundClient;
+
+  if (chainIdNumber === 84532) {
+    // @ts-ignore
+    tokenboundClient = new TokenboundClient({ chain: baseSepolia });
+  } else {
+    tokenboundClient = new TokenboundClient({ chainId: chainIdNumber });
+  }
 
   const {
     data: nftImages,

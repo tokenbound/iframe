@@ -6,6 +6,7 @@ import { alchemyLens, getAlchemy } from "@/lib/clients";
 export async function getNfts(chainId: number, account: string) {
   try {
     const alchemy = getAlchemy(chainId);
+
     const response = await alchemy.nft.getNftsForOwner(account, {
       orderBy: NftOrdering.TRANSFERTIME,
     });
