@@ -1,6 +1,6 @@
-import { getAlchemy } from "@/lib/clients";
 import useSWR from "swr";
 import { getAlchemyImageSrc, getNftAsset } from "@/lib/utils";
+import { fetchAlchemyNftMetadata } from "@/lib/utils/fetchAlchemyNftMetadata";
 
 interface FormatImageReturnParams {
   imageData?: string | string[];
@@ -15,10 +15,6 @@ function formatImageReturn({ imageData, loading }: FormatImageReturnParams): str
   }
 
   return typeof imageData === "string" ? [imageData] : imageData;
-}
-
-interface CustomImplementation {
-  contractAddress: `0x${string}`;
 }
 
 export const useNft = ({
@@ -53,13 +49,11 @@ export const useNft = ({
 
   if (customNftError) console.log("CUSTOM NFT DATA FETCH ERROR: ", customNftError);
 
+  // Bypass alchemy-sdk metadata helpers — they fail on Alchemy's current NFT API
+  // response shape and cause the iframe to fall back to /no-img.jpg.
   const { data: nftMetadata, isLoading: nftMetadataLoading } = useSWR(
-    `nftMetadata/${contractAddress}/${tokenId}`,
-    (url: string) => {
-      const [, contractAddress, tokenId] = url.split("/");
-      const alchemy = getAlchemy(chainId);
-      return alchemy.nft.getNftMetadataBatch([{ contractAddress, tokenId }]);
-    }
+    `nftMetadata/${chainId}/${contractAddress}/${tokenId}`,
+    () => fetchAlchemyNftMetadata(contractAddress, tokenId, chainId)
   );
 
   const loading = hasCustomImplementation ? customNftLoading : nftMetadataLoading;
@@ -68,8 +62,8 @@ export const useNft = ({
     data:
       hasCustomImplementation && !customNftError
         ? formatImageReturn({ imageData: customNftData, loading })
-        : formatImageReturn({ imageData: getAlchemyImageSrc(nftMetadata?.[0]), loading }),
-    nftMetadata: nftMetadata?.[0],
+        : formatImageReturn({ imageData: getAlchemyImageSrc(nftMetadata), loading }),
+    nftMetadata,
     loading,
   };
 };
